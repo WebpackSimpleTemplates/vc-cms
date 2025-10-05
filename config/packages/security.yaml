@@ -22,6 +22,7 @@ security:
                 enable_csrf: true
             logout:
                 path: app_logout
+            access_denied_handler: App\Handlers\AccessDeniedHandler
                 # where to redirect after logout
                 # target: app_any_route
 
@@ -30,6 +31,8 @@ security:
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_READER
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
@@ -37,7 +40,8 @@ security:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
-        - { path: ^/, roles: ROLE_USER }
+        - { path: ^/user, roles: ROLE_ADMIN }
+        - { path: ^/, roles: ROLE_READER }
 
 when@test:
     security:

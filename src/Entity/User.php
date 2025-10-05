@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -33,6 +34,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\Column(length: 255, nullable:true)]
+    private ?string $displayName = null;
+
+    #[ORM\Column(length: 255, nullable:true)]
+    private ?string $fullname = null;
+
+    #[ORM\Column(type: Types::TEXT, nullable:true)]
+    private ?string $avatar = null;
 
     public function getId(): ?int
     {
@@ -67,8 +77,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
@@ -110,22 +118,62 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     public function getRolesDisplay() {
-        return (
-            str_replace(
-                "ROLE_READER", "Читатель",
-            str_replace(
-                "ROLE_ADMIN", "Администратор",
-            str_replace(
-                "ROLE_USER", "Пользователь",
-            str_replace(
-                "ROLE_OPERATOR", "Консультант",
-            join(", ", $this->getRoles())))))
-        );
+        $result = [];
+
+        if (in_array("ROLE_READER", $this->roles)) {
+            $result[] = "Читатель";
+        }
+
+        if (in_array("ROLE_ADMIN", $this->roles)) {
+            $result[] = "Администратор";
+        }
+
+        if (in_array("ROLE_OPERATOR", $this->roles)) {
+            $result[] = "Консультант";
+        }
+
+        return join(", ", $result);
     }
 
     #[\Deprecated]
     public function eraseCredentials(): void
     {
         // @deprecated, to be removed when upgrading to Symfony 8
+    }
+
+    public function getDisplayName(): ?string
+    {
+        return $this->displayName;
+    }
+
+    public function setDisplayName(?string $displayName): static
+    {
+        $this->displayName = $displayName;
+
+        return $this;
+    }
+
+    public function getFullname(): ?string
+    {
+        return $this->fullname;
+    }
+
+    public function setFullname(?string $fullname): static
+    {
+        $this->fullname = $fullname;
+
+        return $this;
+    }
+
+    public function getAvatar(): ?string
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar(?string $avatar): static
+    {
+        $this->avatar = $avatar;
+
+        return $this;
     }
 }

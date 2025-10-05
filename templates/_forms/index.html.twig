@@ -6,12 +6,28 @@
 {%- endblock form_row -%}
 
 {%- block widget_attributes -%}
-    {%- set attr = attr|merge({class: attr.class|default(widget_class|default('input w-full')) ~ (errors|length ? ' ' ~ widget_errors_class|default('input-error'))}) -%}
+    {% set type = type|default('text') %}
+    
+    {% if type == 'file' %}
+        {%- set attr = attr|merge({
+            class: 
+                attr.class|default(widget_class|default('file-input w-full'))
+                ~ (errors|length ? ' ' ~ widget_errors_class|default('file-input-error'))
+            })
+        -%}
+    {% else %} 
+        {%- set attr = attr|merge({
+            class: 
+                attr.class|default(widget_class|default('input w-full'))
+                ~ (errors|length ? ' ' ~ widget_errors_class|default('input-error'))
+            })
+        -%}
+    {% endif %}
     {{- parent() -}}
 {%- endblock widget_attributes -%}
 
 {%- block form_label -%}
-    {%- set label_attr = label_attr|merge({class: label_attr.class|default(label_class|default('block text-gray-800'))}) -%}
+    {%- set label_attr = label_attr|merge({class: label_attr.class|default(label_class|default('label'))}) -%}
     {{- parent() -}}
 {%- endblock form_label -%}
 

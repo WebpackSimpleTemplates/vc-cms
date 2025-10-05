@@ -1,0 +1,18 @@
+{% extends "base.html.twig" %}
+
+{% block title %}
+  Ошибка доступа
+{% endblock %}
+
+{% block body %}
+  <twig:Header />
+  <div class="p-5">
+    <button class="btn btn-sm mb-2" onclick="history.back()">
+      <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0z"></path><path d="M11.67 3.87 9.9 2.1 0 12l9.9 9.9 1.77-1.77L3.54 12z"></path></svg>
+      Назад
+    </button>
+    <div class="alert alert-error w-max">  
+      У вас не достаточно прав для доступа к запрашиваемому ресурсу
+    </div>
+  </div>
+{% endblock %}

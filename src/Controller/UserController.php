@@ -8,15 +8,39 @@ use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/user')]
 final class UserController extends AbstractController
 {
-    public function __construct(private UserPasswordHasherInterface $userPasswordHasher) {}
+    public function __construct(
+        private UserPasswordHasherInterface $userPasswordHasher,
+        private KernelInterface $kernel
+    ) {}
+
+    private function mapUserForm(FormInterface $form, User $user) {
+        $plainPassword = $form->get('plainPassword')->getData();
+
+        if ($plainPassword) {
+            $user->setPassword($this->userPasswordHasher->hashPassword($user, $plainPassword));
+        }
+
+        $avatarFile = ($form->get("avatar")->getData());
+
+        if ($avatarFile) {
+            /** @var UploadedFile $avatarFile */
+            $filename = uniqid()."-".$avatarFile->getClientOriginalName();
+            $user->setAvatar("/uploads"."/".$filename);
+
+            $avatarFile->move($this->kernel->getProjectDir()."/public/uploads/", $filename);
+        }
+    }
 
     #[Route(name: 'app_user_index', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
@@ -34,10 +58,7 @@ final class UserController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-             $plainPassword = $form->get('plainPassword')->getData();
-
-            // encode the plain password
-            $user->setPassword($this->userPasswordHasher->hashPassword($user, $plainPassword));
+            $this->mapUserForm($form, $user);
 
             $entityManager->persist($user);
             $entityManager->flush();
@@ -52,17 +73,13 @@ final class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, User $user, EntityManagerInterface $entityManager, KernelInterface $kernel): Response
     {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $plainPassword = $form->get('plainPassword')->getData();
-
-            if ($plainPassword) {
-                $user->setPassword($this->userPasswordHasher->hashPassword($user, $plainPassword));
-            }
+            $this->mapUserForm($form, $user);
 
             $entityManager->flush();
 

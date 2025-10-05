@@ -3,30 +3,24 @@
 namespace App\Form;
 
 use App\Entity\User;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CreateUserType extends AbstractType
+class CreateUserType extends UserType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email', EmailType::class, [ "label" => "Электронная почта" ])
-            ->add('roles', ChoiceType::class, [
-                "choices" => [
-                    "Пользователь" => "ROLE_USER",
-                    "Администратор" => "ROLE_ADMIN",
-                    "Читатель" => "ROLE_READER",
-                    "Консультант" => "ROLE_OPERATOR",
+            ->add('avatar', FileType::class, [
+                "attr" => [
+                    "accept" => "image/*",
                 ],
-                "label" => "Роли-доступы",
-                'expanded' => true,
-                'multiple' => true,
-            ])
+                "label" => "Аватар",
+            ]);
+        $this-> _buildForm($builder, $options);
+        $builder
             ->add('plainPassword', PasswordType::class, [
                 "required" => true,
                 'mapped' => false,

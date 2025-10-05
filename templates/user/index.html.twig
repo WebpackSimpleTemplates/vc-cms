@@ -16,7 +16,10 @@
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Аватар</th>
                     <th>Электронная почта</th>
+                    <th>ФИО</th>
+                    <th>Отображаемое имя</th>
                     <th>Роли-доступы</th>
                     <th></th>
                 </tr>
@@ -25,7 +28,16 @@
             {% for user in users %}
                 <tr>
                     <td>{{ user.id }}</td>
+                    <td>
+                        {% if user.avatar %}
+                            <img src="{{ user.avatar }}" class="w-8 h-8 rounded-full object-cover object-center">
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
                     <td>{{ user.email }}</td>
+                    <td>{{ user.fullname }}</td>
+                    <td>{{ user.displayName }}</td>
                     <td>
                         {{ user.getRolesDisplay() }}
                     </td>
