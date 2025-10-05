@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Вход{% endblock %}
+
+{% block body %}
+    <img class="h-80 bg-primary object-conver object-top w-full" src="/bg.jpg">
+    <form method="post" class="card p-4 bg-base-100 shadow-xl mx-auto max-w-[90%] w-md -mt-15 gap-4">
+        {% if error %}
+            <div class="alert alert-error">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+        {% if app.user %}
+            <div class="alert alert-warning">
+                Вы авторизованы как {{ app.user.userIdentifier }}, <a class="link" href="{{ path('app_logout') }}">Выйти</a>
+            </div>
+        {% endif %}
+        <div>
+            <img src="/logo.svg" class="w-30 mb-1">
+            <div class="text-3xl font-semibold">
+                Авторизация
+            </div>
+        </div>
+        <div>
+            <label class="label mb-1" for="username">Электронная почта</label>
+            <input type="email" value="{{ last_username }}" name="_username" id="username" class="input w-full" autocomplete="email" required autofocus>
+        </div>
+        <div>
+            <label class="label mb-1" for="password">Пароль</label>
+            <input type="password" name="_password" id="password" class="input w-full" autocomplete="current-password" required>
+        </div>
+        <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+        <button class="btn btn-lg btn-primary mt-2 text-white" type="submit">
+            Войти
+        </button>
+    </form>
+{% endblock %}

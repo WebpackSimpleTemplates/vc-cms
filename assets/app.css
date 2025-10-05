@@ -1,0 +1,8 @@
+@import "tailwindcss";
+@plugin "daisyui"  {
+  themes: corporate --default, dark --prefersdark;
+}
+
+* {
+  --color-primary: #05588f;
+}
