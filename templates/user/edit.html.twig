@@ -19,12 +19,14 @@
 
     {{ include('user/_form.html.twig') }}
 
-    <div class="h-3" ></div>
-    <form class="ml-auto w-max" method="post" action="{{ path('app_user_delete', {'id': user.id}) }}" onsubmit="return confirm('Вы уверны что хотите удалить данного пользователя?');">
-        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-        <button class="btn btn-error btn-outline">
-            Удалить
-        </button>
-    </form>
+    {% if can_delete %}
+        <div class="h-3" ></div>
+        <form class="ml-auto w-max" method="post" action="{{ path('app_user_delete', {'id': user.id}) }}" onsubmit="return confirm('Вы уверны что хотите удалить данного пользователя?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+            <button class="btn btn-error btn-outline">
+                Удалить
+            </button>
+        </form>
+    {% endif %}
 </div>
 {% endblock %}
