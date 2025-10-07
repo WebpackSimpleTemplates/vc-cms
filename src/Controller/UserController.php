@@ -88,11 +88,9 @@ final class UserController extends AbstractController
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('user/edit.html.twig', [
+        return $this->render('user/profile.html.twig', [
             'user' => $user,
             'form' => $form,
-            'is_self' => true,
-            'back_to' => 'app_main'
         ]);
     }
 
@@ -117,13 +115,19 @@ final class UserController extends AbstractController
             'user' => $user,
             'form' => $form,
             'is_self' => $currentUser->getId() === $user->getId(),
-            'back_to' => 'app_user_index'
         ]);
     }
 
     #[Route('/{id}/delete', name: 'app_user_delete', methods: ['POST'])]
     public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+
+        if ($currentUser->getId() === $user->getId()) {
+            throw $this->createAccessDeniedException();
+        }
+
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($user);
             $entityManager->flush();

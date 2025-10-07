@@ -43,7 +43,8 @@ security:
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/user/profile, roles: ROLE_USER }
         - { path: ^/user, roles: ROLE_ADMIN }
-        - { path: ^/, roles: ROLE_READER }
+        - { path: ^/channel, roles: ROLE_ADMIN }
+        - { path: ^/, roles: ROLE_USER }
 
 when@test:
     security:

@@ -18,7 +18,7 @@
     {% else %} 
         {%- set attr = attr|merge({
             class: 
-                attr.class|default(widget_class|default('input w-full'))
+                attr.class|default(widget_class|default('input w-full '))
                 ~ (errors|length ? ' ' ~ widget_errors_class|default('input-error'))
             })
         -%}
@@ -83,3 +83,7 @@
     {%- set widget_class = widget_class|default('radio') -%}
     {{- parent() -}}
 {%- endblock radio_widget -%}
+
+{% block textarea_widget %}
+    <textarea class="textarea block w-full" {{ block('widget_attributes') }}>{{ value }}</textarea>
+{% endblock textarea_widget %}
