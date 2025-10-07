@@ -3,33 +3,27 @@
 {% block title %}Информация о пользователе{% endblock %}
 
 {% block content %}
-<a 
-    class="btn btn-sm mb-2"
-    href="{{ path('app_user_index') }}"
->
-    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0V0z"></path><path d="M15.41 16.59 10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"></path></svg>
-    Пользователи
-</a>
-<div class="card shadow bg-base-100 p-3 max-w-md mx-auto">
-    <div class="text-xl mb-4">Информация о пользователе</div>
+    {{ include('user/_header.html.twig') }}
+    <div class="card shadow bg-base-100 p-3 max-w-md mx-auto">
+        <div class="text-xl mb-4">Информация о пользователе</div>
 
-    {% if user.avatar %}
-        <label class="label">
-            Текущий аватар
-        </label>
-        <img src="{{ user.avatar }}" class="w-15 h-15 rounded-full object-cover object-center mb-4">
-    {% endif %}
+        {% if user.avatar %}
+            <label class="label">
+                Текущий аватар
+            </label>
+            <img src="{{ user.avatar }}" class="w-15 h-15 rounded-full object-cover object-center mb-4">
+        {% endif %}
 
-    {{ include('user/_form.html.twig') }}
+        {{ include('user/_form.html.twig') }}
 
-    {% if not is_self %}
-        <div class="h-3" ></div>
-        <form class="ml-auto w-max" method="post" action="{{ path('app_user_delete', {'id': user.id}) }}" onsubmit="return confirm('Вы уверны что хотите удалить данного пользователя?');">
-            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
-            <button class="btn btn-error btn-outline">
-                Удалить
-            </button>
-        </form>
-    {% endif %}
-</div>
+        {% if not is_self %}
+            <div class="h-3" ></div>
+            <form class="ml-auto w-max" method="post" action="{{ path('app_user_delete', {'id': user.id}) }}" onsubmit="return confirm('Вы уверны что хотите удалить данного пользователя?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                <button class="btn btn-error btn-outline">
+                    Удалить
+                </button>
+            </form>
+        {% endif %}
+    </div>
 {% endblock %}

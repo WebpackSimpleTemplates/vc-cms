@@ -1,6 +1,6 @@
 {% extends 'layout.html.twig' %}
 
-{% block title %}Подключенные каналы{% endblock %}
+{% block title %}Все каналы{% endblock %}
 
 {% block content %}
     {{ include('user/_header.html.twig') }}
@@ -24,15 +24,17 @@
                         <td>{{ channel.title }}</td>
                         <td>{{ channel.description }}</td>
                         <td>
-                            <form
-                                method="post"
-                                action="{{ path('app_user_channels_disconnect', { 'id': user.id, 'channel': channel.id }) }}"
-                                onsubmit="return confirm('Вы уверены, что хотите отключить канал от данного пользователя?');"
-                            >
-                                <button type="submit" class="btn btn-sm">
-                                    Отключить
+                            {% if channel.connected %}
+                                <button disabled class="btn btn-sm">
+                                    Подключен
                                 </button>
-                            </form>
+                            {% else %}
+                                <form method="post" action="{{ path('app_user_channels_connect', { 'id': user.id, 'channel': channel.id }) }}">
+                                    <button type="submit" class="btn btn-sm">
+                                        Подключить
+                                    </button>
+                                </form>
+                            {% endif %}
                         </td>
                     </tr>
                 {% else %}

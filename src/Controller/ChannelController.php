@@ -42,15 +42,7 @@ final class ChannelController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_channel_show', methods: ['GET'])]
-    public function show(Channel $channel): Response
-    {
-        return $this->render('channel/show.html.twig', [
-            'channel' => $channel,
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'app_channel_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}', name: 'app_channel_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Channel $channel, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ChannelType::class, $channel);
@@ -68,7 +60,7 @@ final class ChannelController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_channel_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_channel_delete', methods: ['POST'])]
     public function delete(Request $request, Channel $channel, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$channel->getId(), $request->getPayload()->getString('_token'))) {
