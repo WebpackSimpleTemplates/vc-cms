@@ -12,10 +12,10 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class UserType extends AbstractType
+class UserProfileType extends AbstractType
 {
     protected function _buildForm(FormBuilderInterface $builder, array $options) {
-         $builder
+        $builder
             ->add('email', EmailType::class, [ "label" => "Электронная почта" ])
             ->add('fullname', TextType::class, [ "label" => "ФИО" ])
             ->add('displayName', TextType::class, [ "label" => "Отображаемое имя" ])
@@ -42,9 +42,10 @@ class UserType extends AbstractType
                 ],
                 "label" => "Аватар",
                 "required" => false,
-            ]);
-        $this-> _buildForm($builder, $options);
-        $builder
+            ])
+            ->add('email', EmailType::class, [ "label" => "Электронная почта" ])
+            ->add('fullname', TextType::class, [ "label" => "ФИО" ])
+            ->add('displayName', TextType::class, [ "label" => "Отображаемое имя" ])
             ->add('plainPassword', PasswordType::class, [
                 "required" => false,
                 'mapped' => false,

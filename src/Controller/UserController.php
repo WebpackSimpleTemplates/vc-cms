@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\CreateUserType;
+use App\Form\UserProfileType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -72,9 +73,35 @@ final class UserController extends AbstractController
         ]);
     }
 
+    #[Route('/profile', name: 'app_user_profile', methods: ['GET', 'POST'])]
+    public function profile(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+        $form = $this->createForm(UserProfileType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->mapUserForm($form, $user);
+
+            $entityManager->flush();
+
+            return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('user/edit.html.twig', [
+            'user' => $user,
+            'form' => $form,
+            'is_self' => true,
+            'back_to' => 'app_main'
+        ]);
+    }
+
     #[Route('/{id}', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
+        /** @var User $currentUser */
+        $currentUser = $this->getUser();
+
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
@@ -89,7 +116,8 @@ final class UserController extends AbstractController
         return $this->render('user/edit.html.twig', [
             'user' => $user,
             'form' => $form,
-            'can_delete' => $user->getUserIdentifier() !== $this->getUser()->getUserIdentifier(),
+            'is_self' => $currentUser->getId() === $user->getId(),
+            'back_to' => 'app_user_index'
         ]);
     }
 
