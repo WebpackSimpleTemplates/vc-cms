@@ -213,4 +213,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function isOperator() {
+        return in_array('ROLE_OPERATOR', $this->getRoles());
+    }
 }

@@ -1,0 +1,25 @@
+<div class="flex flex-row items-end gap-2 mb-2">
+  <a 
+      class="btn btn-sm"
+      href="{{ path('app_channel_index') }}"
+  >
+      <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0V0z"></path><path d="M15.41 16.59 10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"></path></svg>
+      Каналы
+  </a>
+  <div role="tablist" class="tabs tabs-border">
+    <a
+      role="tab"
+      href="{{ path('app_channel_edit', { 'id': channel.id }) }}"
+      class="tab{% if app.request.attributes.get('_route') == 'app_channel_edit' %} tab-active{% endif %}"
+    >
+      Информация
+    </a>
+    <a
+      role="tab"
+      href="{{ path('app_channel_users', { 'id': channel.id }) }}"
+      class="tab{% if app.request.attributes.get('_route') == 'app_channel_users' %} tab-active{% endif %}"
+    >
+      Консультанты
+    </a>
+  </div>
+</div>
