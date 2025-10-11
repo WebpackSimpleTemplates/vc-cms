@@ -20,6 +20,10 @@ security:
                 check_path: /api/login_check
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+        api:
+            pattern:   ^/api
+            stateless: true
+            jwt: ~
         main:
             lazy: true
             provider: app_user_provider
@@ -38,10 +42,6 @@ security:
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
-        api:
-            pattern:   ^/api
-            stateless: true
-            jwt: ~
     role_hierarchy:
         ROLE_OPERATOR: ROLE_USER
         ROLE_READER: ROLE_USER
@@ -55,6 +55,7 @@ security:
         - { path: ^/user/profile, roles: ROLE_USER }
         - { path: ^/user, roles: ROLE_ADMIN }
         - { path: ^/channel, roles: ROLE_ADMIN }
+        - { path: ^/api/consultant, roles: ROLE_OPERATOR }
         - { path: ^/, roles: ROLE_USER }
 
 when@test:

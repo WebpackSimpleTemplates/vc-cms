@@ -3,7 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\CallRepository;
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 #[ORM\Entity(repositoryClass: CallRepository::class)]
 class Call
@@ -34,6 +36,7 @@ class Call
     #[ORM\Column(nullable: true)]
     private ?\DateTime $closedAt = null;
 
+    #[Ignore]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Channel $channel = null;
@@ -137,5 +140,11 @@ class Call
         $this->channel = $channel;
 
         return $this;
+    }
+
+    public function accept(User $user)
+    {
+        $this->consultant = $user;
+        $this->acceptedAt = new DateTime();
     }
 }

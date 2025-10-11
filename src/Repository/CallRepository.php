@@ -3,9 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\Call;
+use App\Entity\Channel;
+use App\Entity\User;
 use DateInterval;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -71,14 +74,17 @@ class CallRepository extends ServiceEntityRepository
 
         return $this->createQueryBuilder("c")
             ->select([
-                "IDENTITY(c.channel) as id",
+                "ch.id as id",
+                "ch.title as title",
+                "ch.prefix as prefix",
                 "COUNT(c) as count",
                 "AVG(:now - c.waitStart) as avg",
                 "MAX(:now - c.waitStart) as max",
             ])
             ->where("c.acceptedAt IS NULL AND c.closedAt IS NULL")
+            ->leftJoin(Channel::class, "ch", Join::WITH, "ch.id = c.channel")
             ->setParameter("now", $onlineTime)
-            ->groupBy("c.channel")
+            ->groupBy("ch")
             ->getQuery()
             ->getResult()
         ;
@@ -101,5 +107,63 @@ class CallRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    public function getActiveChannelsForUser(User $user)
+    {
+        $channels = $user->getChannels()->toArray();
+        $onlineTime = new DateTime()->format(DateTime::ATOM);
+
+        $qb = $this->createQueryBuilder("c")
+            ->select([
+                "ch.id as id",
+                "ch.title as title",
+                "ch.prefix as prefix",
+                "COUNT(c) as count",
+                "AVG(:now - c.waitStart) as avg",
+                "MAX(:now - c.waitStart) as max",
+            ])
+            ->leftJoin(Channel::class, "ch", Join::WITH, "ch.id = c.channel")
+            ->where("c.acceptedAt IS NULL")
+            ->andWhere("c.closedAt IS NULL")
+            ->groupBy("ch")
+            ->setParameter("now", $onlineTime)
+        ;
+
+        if (count($channels)) {
+            $qb = $qb
+                ->andWhere("ch.id IN(:ids)")
+                ->setParameter("ids", array_map(fn ($ch) => $ch->getId(), $channels))
+            ;
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getNextCall(User $user, ?Channel $channel = null)
+    {
+        $channels = $user->getChannels()->toArray();
+
+        $qb = $this->createQueryBuilder("c")
+            ->orderBy("c.waitStart", "asc")
+            ->where("c.closedAt IS NULL")
+            ->andWhere("c.acceptedAt IS NULL")
+        ;
+
+        if ($channel) {
+            $qb = $qb
+                ->andWhere("c.channel = :channel")
+                ->setParameter("channel", $channel->getId())
+            ;
+        } else if ($channels) {
+            $qb = $qb
+                ->andWhere("c.channel IN(:ids)")
+                ->setParameter("ids", array_map(fn ($ch) => $ch->getId(), $channels))
+            ;
+        }
+
+        $result = (array) $qb->getQuery()->getResult();
+
+        return count($result) > 0 ? $result[0] : null;
     }
 }

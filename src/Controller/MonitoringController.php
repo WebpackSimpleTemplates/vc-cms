@@ -66,8 +66,7 @@ final class MonitoringController extends AbstractController
         $datay=array_map(fn ($raw) => mapValue($raw[$param]), $results);
 
         if (count($datay)) {
-            $channelsIds = array_map(fn($raw) => $raw['id'], $results);
-            $channelsTitles = $channelRepository->getChannelsTitles($channelsIds);
+            $channelsTitles = array_map(fn($raw) => $raw['prefix'], $results);
             $graph->xaxis->SetTickLabels($channelsTitles);
             $b1plot = new BarPlot($datay);
 
