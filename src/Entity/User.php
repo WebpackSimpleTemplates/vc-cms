@@ -52,9 +52,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Channel::class, inversedBy: 'users')]
     private Collection $channels;
 
+    /**
+     * @var Collection<int, Call>
+     */
+    #[ORM\OneToMany(targetEntity: Call::class, mappedBy: 'consultant')]
+    private Collection $calls;
+
     public function __construct()
     {
         $this->channels = new ArrayCollection();
+        $this->calls = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -126,7 +133,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $data = (array) $this;
         $data["\0" . self::class . "\0password"] = hash('crc32c', $this->password);
-        
+
         return $data;
     }
 
@@ -216,5 +223,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function isOperator() {
         return in_array('ROLE_OPERATOR', $this->getRoles());
+    }
+
+    /**
+     * @return Collection<int, Call>
+     */
+    public function getCalls(): Collection
+    {
+        return $this->calls;
+    }
+
+    public function addCall(Call $call): static
+    {
+        if (!$this->calls->contains($call)) {
+            $this->calls->add($call);
+            $call->setConsultant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCall(Call $call): static
+    {
+        if ($this->calls->removeElement($call)) {
+            // set the owning side to null (unless already changed)
+            if ($call->getConsultant() === $this) {
+                $call->setConsultant(null);
+            }
+        }
+
+        return $this;
     }
 }

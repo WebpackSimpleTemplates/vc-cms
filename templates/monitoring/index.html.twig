@@ -3,7 +3,88 @@
 {% block title %}Отчёты{% endblock %}
 
 {% block content %}
-<div class="card p-3 bg-base-100 shadow">
-    Monitoring
+<div class="flex flex-row flex-wrap gap-2">
+    <div class="text-2xl font-semibold w-full">
+        Мониториг
+    </div>
+    <div class="card p-3 shadow w-sm bg-base-100">
+        Звонки
+        <div class="flex flex-row items-start mt-2">
+            <div class="flex-1">
+                <div class="text-xs text-secondary">
+                    Активных
+                </div>
+                <div class="text-lg font-bold">
+                    {{ calls.total }}
+                </div>
+            </div>
+            <div class="flex-1">
+                <div class="text-xs text-secondary">
+                    Принято
+                </div>
+                <div class="text-lg font-bold text-success">
+                    {{ calls.serve }}
+                </div>
+            </div>
+            <div class="flex-1">
+                <div class="text-xs text-secondary">
+                    Ожидают
+                </div>
+                <div class="text-lg font-bold text-error">
+                    {{ calls.wait }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card p-3 shadow w-sm bg-base-100">
+        Консультанты
+        <div class="flex flex-row items-start mt-2">
+            <div class="flex-1">
+                <div class="text-xs text-secondary">
+                    Онлайн
+                </div>
+                <div class="text-lg font-bold">
+                    {{ consultants.total }}
+                </div>
+            </div>
+            <div class="flex-1">
+                <div class="text-xs text-secondary">
+                    Обслуживают
+                </div>
+                <div class="text-lg font-bold text-success">
+                    {{ consultants.serve }}
+                </div>
+            </div>
+            <div class="flex-1">
+                <div class="text-xs text-secondary">
+                    Ожидают
+                </div>
+                <div class="text-lg font-bold text-error">
+                    {{ consultants.wait }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-xl w-full">
+        Звонки
+    </div>
+    <div class="card p-3 shadow w-xs bg-base-100">
+        Среднее время обслуживания
+        <div class="text-lg font-bold flex flex-row items-start justify-center mt-2 py-2">
+            {{ callsTimes.avgServe }}
+        </div>
+    </div>
+    <div class="card p-3 shadow w-xs bg-base-100">
+        Среднее время ожидания
+        <div class="text-lg font-bold flex flex-row items-start justify-center mt-2 py-2">
+            {{ callsTimes.avgWait }}
+        </div>
+    </div>
+    <div class="card p-3 shadow w-xs bg-base-100">
+        Максимальное время ожидания
+        <div class="text-lg font-bold flex flex-row items-start justify-center mt-2 py-2">
+            {{ callsTimes.maxWait }}
+        </div>
+    </div>
 </div>
 {% endblock %}
