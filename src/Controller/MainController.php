@@ -3,16 +3,26 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManager;
+use Symfony\Component\Security\Core\Authorization\AccessDecisionManagerInterface;
 
 final class MainController extends AbstractController
 {
+    public function __construct(
+        private Security $security,
+        private AccessDecisionManagerInterface $accessDecisionManager,
+    ){}
+
     #[Route('/', name: 'app_main')]
     public function index(): Response
     {
-        return $this->render('main/index.html.twig', [
-            'controller_name' => 'MainController',
-        ]);
+        if ($this->accessDecisionManager->decide($this->security->getToken(), ["ROLE_READER"])) {
+            return $this->redirectToRoute("app_monitoring");
+        }
+
+        return $this->redirectToRoute("app_user_profile");
     }
 }
