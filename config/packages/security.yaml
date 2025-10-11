@@ -13,6 +13,13 @@ security:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+        login:
+            pattern: ^/api/login
+            stateless: true
+            json_login:
+                check_path: /api/login_check
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
         main:
             lazy: true
             provider: app_user_provider
@@ -31,6 +38,10 @@ security:
 
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
+        api:
+            pattern:   ^/api
+            stateless: true
+            jwt: ~
     role_hierarchy:
         ROLE_OPERATOR: ROLE_USER
         ROLE_READER: ROLE_USER

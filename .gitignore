@@ -24,3 +24,7 @@
 /public/build/
 ###< pentatrion/vite-bundle ###
 /public/uploads
+###> lexik/jwt-authentication-bundle ###
+/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
+test.http
