@@ -33,9 +33,7 @@ class CallRepository extends ServiceEntityRepository
 
     public function getActiveTimes()
     {
-        $onlineTime = new DateTime()
-            ->add(DateInterval::createFromDateString('-15 second'))
-            ->format(DateTime::ATOM);
+        $onlineTime = new DateTime()->format(DateTime::ATOM);
 
         $wait = $this->createQueryBuilder("c")
             ->select([
@@ -51,6 +49,7 @@ class CallRepository extends ServiceEntityRepository
         $serve = $this->createQueryBuilder("c")
             ->select([
                 "AVG(:now - c.acceptedAt) as avg",
+                "MAX(:now - c.acceptedAt) as max",
             ])
             ->setParameter("now", $onlineTime)
             ->where("c.acceptedAt IS NOT NULL AND c.closedAt IS NULL")
@@ -62,6 +61,45 @@ class CallRepository extends ServiceEntityRepository
             "avgWait" => $wait['avg'] ? $wait['avg'] : '00:00:00',
             "maxWait" => $wait['max'] ? $wait['max'] : '00:00:00',
             "avgServe" => $serve['avg'] ? $serve['avg'] : '00:00:00',
+            "maxServe" => $serve['max'] ? $serve['max'] : '00:00:00',
         ];
+    }
+
+    public function getActiveChannels()
+    {
+        $onlineTime = new DateTime()->format(DateTime::ATOM);
+
+        return $this->createQueryBuilder("c")
+            ->select([
+                "IDENTITY(c.channel) as id",
+                "COUNT(c) as count",
+                "AVG(:now - c.waitStart) as avg",
+                "MAX(:now - c.waitStart) as max",
+            ])
+            ->where("c.acceptedAt IS NULL AND c.closedAt IS NULL")
+            ->setParameter("now", $onlineTime)
+            ->groupBy("c.channel")
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function getServeChannels()
+    {
+        $onlineTime = new DateTime()->format(DateTime::ATOM);
+
+        return $this->createQueryBuilder("c")
+            ->select([
+                "IDENTITY(c.channel) as id",
+                "COUNT(c) as count",
+                "AVG(:now - c.acceptedAt) as avg",
+                "MAX(:now - c.acceptedAt) as max",
+            ])
+            ->where("c.acceptedAt IS NOT NULL AND c.closedAt IS NULL")
+            ->setParameter("now", $onlineTime)
+            ->groupBy("c.channel")
+            ->getQuery()
+            ->getResult()
+        ;
     }
 }

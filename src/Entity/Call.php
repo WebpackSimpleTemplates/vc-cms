@@ -34,6 +34,10 @@ class Call
     #[ORM\Column(nullable: true)]
     private ?\DateTime $closedAt = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Channel $channel = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -119,6 +123,18 @@ class Call
     public function setClosedAt(?\DateTime $closedAt): static
     {
         $this->closedAt = $closedAt;
+
+        return $this;
+    }
+
+    public function getChannel(): ?Channel
+    {
+        return $this->channel;
+    }
+
+    public function setChannel(?Channel $channel): static
+    {
+        $this->channel = $channel;
 
         return $this;
     }

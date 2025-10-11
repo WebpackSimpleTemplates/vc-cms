@@ -12,10 +12,10 @@
         <div class="flex flex-row items-start mt-2">
             <div class="flex-1">
                 <div class="text-xs text-secondary">
-                    Активных
+                    Активные
                 </div>
                 <div class="text-lg font-bold">
-                    {{ calls.total }}
+                    {{ callsCounts.total }}
                 </div>
             </div>
             <div class="flex-1">
@@ -23,7 +23,7 @@
                     Принято
                 </div>
                 <div class="text-lg font-bold text-success">
-                    {{ calls.serve }}
+                    {{ callsCounts.serve }}
                 </div>
             </div>
             <div class="flex-1">
@@ -31,7 +31,7 @@
                     Ожидают
                 </div>
                 <div class="text-lg font-bold text-error">
-                    {{ calls.wait }}
+                    {{ callsCounts.wait }}
                 </div>
             </div>
         </div>
@@ -44,7 +44,7 @@
                     Онлайн
                 </div>
                 <div class="text-lg font-bold">
-                    {{ consultants.total }}
+                    {{ consultantsCounts.total }}
                 </div>
             </div>
             <div class="flex-1">
@@ -52,7 +52,7 @@
                     Обслуживают
                 </div>
                 <div class="text-lg font-bold text-success">
-                    {{ consultants.serve }}
+                    {{ consultantsCounts.serve }}
                 </div>
             </div>
             <div class="flex-1">
@@ -60,19 +60,42 @@
                     Ожидают
                 </div>
                 <div class="text-lg font-bold text-error">
-                    {{ consultants.wait }}
+                    {{ consultantsCounts.wait }}
                 </div>
             </div>
         </div>
     </div>
-    <div class="text-xl w-full">
-        Звонки
-    </div>
-    <div class="card p-3 shadow w-xs bg-base-100">
-        Среднее время обслуживания
-        <div class="text-lg font-bold flex flex-row items-start justify-center mt-2 py-2">
-            {{ callsTimes.avgServe }}
+    <div class="card p-3 shadow w-sm bg-base-100">
+        Каналы
+        <div class="flex flex-row items-start mt-2">
+            <div class="flex-1">
+                <div class="text-xs text-secondary">
+                    Всего
+                </div>
+                <div class="text-lg font-bold">
+                    {{ channelsCounts.total }}
+                </div>
+            </div>
+            <div class="flex-1">
+                <div class="text-xs text-secondary">
+                    Активные
+                </div>
+                <div class="text-lg font-bold text-success">
+                    {{ channelsCounts.active }}
+                </div>
+            </div>
+            <div class="flex-1">
+                <div class="text-xs text-secondary">
+                    Неактивные
+                </div>
+                <div class="text-lg font-bold text-error">
+                    {{ channelsCounts.empty }}
+                </div>
+            </div>
         </div>
+    </div>
+    <div class="w-full text-lg font-semibold">
+        Звонки
     </div>
     <div class="card p-3 shadow w-xs bg-base-100">
         Среднее время ожидания
@@ -85,6 +108,46 @@
         <div class="text-lg font-bold flex flex-row items-start justify-center mt-2 py-2">
             {{ callsTimes.maxWait }}
         </div>
+    </div>
+    <div class="card p-3 shadow w-xs bg-base-100">
+        Среднее время обслуживания
+        <div class="text-lg font-bold flex flex-row items-start justify-center mt-2 py-2">
+            {{ callsTimes.avgServe }}
+        </div>
+    </div>
+    <div class="card p-3 shadow w-xs bg-base-100">
+        Максимальное время обслуживания
+        <div class="text-lg font-bold flex flex-row items-start justify-center mt-2 py-2">
+            {{ callsTimes.maxServe }}
+        </div>
+    </div>
+    <div class="w-full text-lg font-semibold">
+        Каналы
+    </div>
+    <div class="card p-3 shadow w-md bg-base-100">
+        Количество ожидающих звонков
+        <img src="{{ path('app_monitoring_channels') }}" class="w-full h-[250px] object-contain object-center" >
+    </div>
+    <div class="card p-3 shadow w-md bg-base-100">
+        Среднее время ожидания (мин.)
+        <img src="{{ path('app_monitoring_channels') }}?param=avg" class="w-full h-[250px] object-contain object-center" >
+    </div>
+    <div class="card p-3 shadow w-md bg-base-100">
+        Максимальное время ожидания (мин.)
+        <img src="{{ path('app_monitoring_channels') }}?param=max" class="w-full h-[250px] object-contain object-center" >
+    </div>
+    <div class="w-full h-2"></div>
+    <div class="card p-3 shadow w-md bg-base-100">
+        Количество принятых звонков
+        <img src="{{ path('app_monitoring_channels') }}?type=serve" class="w-full h-[250px] object-contain object-center" >
+    </div>
+    <div class="card p-3 shadow w-md bg-base-100">
+        Среднее время обслуживания (мин.)
+        <img src="{{ path('app_monitoring_channels') }}?type=serve&param=avg" class="w-full h-[250px] object-contain object-center" >
+    </div>
+    <div class="card p-3 shadow w-md bg-base-100">
+        Максимальное время обслуживания (мин.)
+        <img src="{{ path('app_monitoring_channels') }}?type=serve&param=max" class="w-full h-[250px] object-contain object-center" >
     </div>
 </div>
 {% endblock %}

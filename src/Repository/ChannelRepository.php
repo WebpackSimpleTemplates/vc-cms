@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Call;
 use App\Entity\Channel;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -16,28 +17,48 @@ class ChannelRepository extends ServiceEntityRepository
         parent::__construct($registry, Channel::class);
     }
 
-//    /**
-//     * @return Channel[] Returns an array of Channel objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('c.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    public function getCounts()
+    {
+        $entityManager = $this->getEntityManager();
 
-//    public function findOneBySomeField($value): ?Channel
-//    {
-//        return $this->createQueryBuilder('c')
-//            ->andWhere('c.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+        $active = $entityManager->createQueryBuilder()
+            ->from(Call::class, "c")
+            ->select(['COUNT(DISTINCT IDENTITY(c.channel)) as count'])
+            ->where("c.closedAt IS NULL")
+            ->getQuery()
+            ->getSingleColumnResult()[0];
+
+
+        $total = $this->count();
+
+        return [
+            "total" => $total,
+            "active" => $active,
+            "empty" => $total - $active,
+        ];
+    }
+
+    public function getChannelsTitles(array $ids)
+    {
+        $results = $this->createQueryBuilder("c")
+            ->select(["c.prefix", "c.id"])
+            ->where("c.id IN(:ids)")
+            ->setParameter("ids", $ids)
+            ->getQuery()
+            ->getResult()
+        ;
+
+        $prefixs = [];
+
+        foreach ($ids as $id) {
+            foreach ($results as $raw) {
+                if ($raw['id'] == $id) {
+                    $prefixs[] = $raw['prefix'];
+                    break;
+                }
+            }
+        }
+
+        return $prefixs;
+    }
 }
