@@ -1,5 +1,5 @@
 <div class="flex flex-row items-end gap-2 mb-2">
-  <a 
+  <a
       class="btn btn-sm"
       href="{{ path('app_channel_index') }}"
   >
@@ -17,7 +17,7 @@
     <a
       role="tab"
       href="{{ path('app_channel_users', { 'id': channel.id }) }}"
-      class="tab{% if app.request.attributes.get('_route') == 'app_channel_users' %} tab-active{% endif %}"
+      class="tab{% if app.request.attributes.get('_route') == 'app_channel_users' or app.request.attributes.get('_route') == 'app_channel_users_all' %} tab-active{% endif %}"
     >
       Консультанты
     </a>

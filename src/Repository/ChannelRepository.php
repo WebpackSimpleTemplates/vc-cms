@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Call;
 use App\Entity\Channel;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -15,6 +16,14 @@ class ChannelRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Channel::class);
+    }
+
+    public function getMany() {
+        $qb = $this->createQueryBuilder('c');
+
+        $qb->orderBy('c.id', 'desc');
+
+        return $qb;
     }
 
     public function getCounts()
@@ -38,27 +47,18 @@ class ChannelRepository extends ServiceEntityRepository
         ];
     }
 
-    public function getChannelsTitles(array $ids)
+    public function getUserChannelsQuery(User $user)
     {
-        $results = $this->createQueryBuilder("c")
-            ->select(["c.prefix", "c.id"])
-            ->where("c.id IN(:ids)")
-            ->setParameter("ids", $ids)
-            ->getQuery()
-            ->getResult()
-        ;
+        $qb = $this->createQueryBuilder('c');
 
-        $prefixs = [];
+        $qb->orderBy('c.id', 'desc');
 
-        foreach ($ids as $id) {
-            foreach ($results as $raw) {
-                if ($raw['id'] == $id) {
-                    $prefixs[] = $raw['prefix'];
-                    break;
-                }
-            }
-        }
+        $qb->join('c.users', 'u');
 
-        return $prefixs;
+        $qb->where("u.id = :uid");
+
+        $qb->setParameter("uid", $user->getId());
+
+        return $qb;
     }
 }

@@ -1,6 +1,6 @@
 
 <div class="flex flex-row items-end gap-2 mb-2">
-  <a 
+  <a
       class="btn btn-sm"
       href="{{ path('app_user_index') }}"
   >
@@ -19,7 +19,7 @@
       <a
         role="tab"
         href="{{ path('app_user_channels', { 'id': user.id }) }}"
-        class="tab{% if app.request.attributes.get('_route') == 'app_user_channels' %} tab-active{% endif %}"
+        class="tab{% if app.request.attributes.get('_route') == 'app_user_channels' or app.request.attributes.get('_route') == 'app_user_channels_all' %} tab-active{% endif %}"
       >
         Каналы
       </a>

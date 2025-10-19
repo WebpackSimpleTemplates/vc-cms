@@ -15,7 +15,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for user in users %}
+                {% for user in pagination %}
                     <tr>
                         <td>{{ user.id }}</td>
                         <td>{{ user.fullname }}</td>
@@ -38,5 +38,6 @@
                 {% endfor %}
             </tbody>
         </table>
+        {{ knp_pagination_render(pagination) }}
     </div>
 {% endblock %}

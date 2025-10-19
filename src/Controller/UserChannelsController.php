@@ -6,7 +6,9 @@ use App\Entity\Channel;
 use App\Entity\User;
 use App\Repository\ChannelRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -16,30 +18,40 @@ final class UserChannelsController extends AbstractController
     public function __construct(private EntityManagerInterface $entityManager) {}
 
     #[Route("/connected", name: 'app_user_channels')]
-    public function index(User $user): Response
+    public function index(User $user, ChannelRepository $channelRepository, PaginatorInterface $paginator, Request $request): Response
     {
         return $this->render('user/channels.html.twig', [
             'user' => $user,
-            'channels' => $user->getChannels(),
+            'pagination' => $paginator->paginate(
+                $channelRepository->getUserChannelsQuery($user),
+                $request->query->getInt("page", 1),
+                10,
+            ),
         ]);
     }
 
     #[Route("/all", name: 'app_user_channels_all')]
-    public function all(User $user, ChannelRepository $channelRepository): Response
+    public function all(User $user, ChannelRepository $channelRepository, PaginatorInterface $paginator, Request $request): Response
     {
-        $connectedIds = array_map(fn(Channel $ch) => $ch->getId(), (array) $user->getChannels()->toArray());
+        $pagination = $paginator->paginate(
+            $channelRepository->getMany(),
+            $request->query->getInt("page", 1),
+            10,
+        );
 
-        $channels = array_map(fn ($channel) => [
-            'id' => $channel->getId(),
-            'prefix' => $channel->getPrefix(),
-            'title' => $channel->getTitle(),
-            'description' => $channel->getDescription(),
-            'connected' => in_array($channel->getId(), $connectedIds),
-        ], $channelRepository->findAll());
+        $currentItemsIds = array_map(fn(Channel $ch) => $ch->getId(), (array) $pagination->getItems());
+
+        $connected = $channelRepository
+            ->getUserChannelsQuery($user)
+            ->andWhere("c.id IN(:ids)")
+            ->setParameter("ids", $currentItemsIds)
+            ->getQuery()
+            ->getResult();
 
         return $this->render('user/channels-all.html.twig', [
             'user' => $user,
-            'channels' => $channels,
+            'pagination' => $pagination,
+            'connectedIds' => array_map(fn(Channel $ch) => $ch->getId(), (array) $connected),
         ]);
     }
 
@@ -57,7 +69,7 @@ final class UserChannelsController extends AbstractController
     public function disconnect(User $user, Channel $channel): Response
     {
         $user->removeChannel($channel);
-        
+
         $this->entityManager->flush();
 
         return $this->redirectToRoute("app_user_channels", ['id' => $user->getId()]);

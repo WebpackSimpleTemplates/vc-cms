@@ -17,7 +17,7 @@
                 </tr>
             </thead>
             <tbody>
-                {% for channel in channels %}
+                {% for channel in pagination %}
                     <tr>
                         <td>{{ channel.id }}</td>
                         <td>{{ channel.prefix }}</td>
@@ -42,5 +42,6 @@
                 {% endfor %}
             </tbody>
         </table>
+        {{ knp_pagination_render(pagination) }}
     </div>
 {% endblock %}
