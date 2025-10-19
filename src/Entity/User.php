@@ -58,6 +58,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Call::class, mappedBy: 'consultant')]
     private Collection $calls;
 
+    #[ORM\Column(options:['default'=> false])]
+    private ?bool $isConsultant = null;
+
     public function __construct()
     {
         $this->channels = new ArrayCollection();
@@ -106,6 +109,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setRoles(array $roles): static
     {
+        $this->isConsultant = in_array("ROLE_OPERATOR", $roles);
         $this->roles = $roles;
 
         return $this;
@@ -251,6 +255,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $call->setConsultant(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isConsultant(): ?bool
+    {
+        return $this->isConsultant;
+    }
+
+    public function setIsConsultant(bool $isConsultant): static
+    {
+        $this->isConsultant = $isConsultant;
 
         return $this;
     }

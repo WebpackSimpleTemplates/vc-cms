@@ -43,9 +43,12 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     public function getOperators() {
-        $users = $this->findAll();
+        $qb = $this->createQueryBuilder('u');
 
-        return array_filter($users, fn(User $user) => $user->isOperator());
+        $qb->orderBy('u.id', 'desc');
+        $qb->where("u.isConsultant = true");
+
+        return $qb;
     }
 
     public function getChannelUsersQuery(Channel $channel)

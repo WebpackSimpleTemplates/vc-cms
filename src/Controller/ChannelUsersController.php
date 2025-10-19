@@ -34,7 +34,7 @@ final class ChannelUsersController extends AbstractController
     public function all(Channel $channel, UserRepository $userRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $pagination = $paginator->paginate(
-            $userRepository->getMany(),
+            $userRepository->getOperators(),
             $request->query->getInt("page", 1),
             10,
         );
@@ -43,7 +43,7 @@ final class ChannelUsersController extends AbstractController
 
         $connected = $userRepository
             ->getChannelUsersQuery($channel)
-            ->andWhere("c.id IN(:ids)")
+            ->andWhere("u.id IN(:ids)")
             ->setParameter("ids", $currentItemsIds)
             ->getQuery()
             ->getResult();
