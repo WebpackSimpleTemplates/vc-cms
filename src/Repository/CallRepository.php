@@ -21,6 +21,14 @@ class CallRepository extends ServiceEntityRepository
         parent::__construct($registry, Call::class);
     }
 
+    public function getMany() {
+        $qb = $this->createQueryBuilder('c');
+
+        $qb->orderBy('c.id', 'desc');
+
+        return $qb;
+    }
+
     public function getActiveCounts()
     {
         $total = $this->count(["closedAt" => null]);
@@ -68,7 +76,7 @@ class CallRepository extends ServiceEntityRepository
         ];
     }
 
-    public function getActiveChannels()
+    public function getActiveChannels($serve)
     {
         $onlineTime = new DateTime()->format(DateTime::ATOM);
 
@@ -81,29 +89,10 @@ class CallRepository extends ServiceEntityRepository
                 "AVG(:now - c.waitStart) as avg",
                 "MAX(:now - c.waitStart) as max",
             ])
-            ->where("c.acceptedAt IS NULL AND c.closedAt IS NULL")
+            ->where("c.acceptedAt IS ".($serve ? " NOT" : "")." NULL AND c.closedAt IS NULL")
             ->leftJoin(Channel::class, "ch", Join::WITH, "ch.id = c.channel")
             ->setParameter("now", $onlineTime)
             ->groupBy("ch")
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-    public function getServeChannels()
-    {
-        $onlineTime = new DateTime()->format(DateTime::ATOM);
-
-        return $this->createQueryBuilder("c")
-            ->select([
-                "IDENTITY(c.channel) as id",
-                "COUNT(c) as count",
-                "AVG(:now - c.acceptedAt) as avg",
-                "MAX(:now - c.acceptedAt) as max",
-            ])
-            ->where("c.acceptedAt IS NOT NULL AND c.closedAt IS NULL")
-            ->setParameter("now", $onlineTime)
-            ->groupBy("c.channel")
             ->getQuery()
             ->getResult()
         ;

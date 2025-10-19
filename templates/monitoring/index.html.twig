@@ -1,6 +1,6 @@
 {% extends 'layout.html.twig' %}
 
-{% block title %}Отчёты{% endblock %}
+{% block title %}Мониторинг{% endblock %}
 
 {% block content %}
 <div class="flex flex-row flex-wrap gap-2">
@@ -120,6 +120,58 @@
         <div class="text-lg font-bold flex flex-row items-start justify-center mt-2 py-2">
             {{ callsTimes.maxServe }}
         </div>
+    </div>
+    <div class="w-full card p-3 shadow max-w-6xl bg-base-100">
+        Текущие
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Номер</th>
+                    <th>Статус</th>
+                    <th>Время ожидания</th>
+                    <th>Время обслуживания</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for call in calls %}
+                    <tr>
+                        <td> {{ call.id }} </td>
+                        <td> {{ call.prefix }} {{ call.num }} </td>
+                        <td> {{ call.status }} </td>
+                        <td> {{ call.intervalWait }} </td>
+                        <td> {{ call.intervalProcess }} </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {{ knp_pagination_render(calls) }}
+    </div>
+    <div class="w-full text-lg font-semibold">
+        Консультанты
+    </div>
+    <div class="w-full card p-3 shadow max-w-6xl bg-base-100">
+        Онлайн
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>ФИО</th>
+                    <th>Статус</th>
+                    <th>Текущий звонок</th>
+                    <th>Время ожидания</th>
+                    <th>Время обслуживания</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for consultant in consultants %}
+                    <tr>
+                        <td> {{ consultant.id }} </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {{ knp_pagination_render(consultants) }}
     </div>
     <div class="w-full text-lg font-semibold">
         Каналы

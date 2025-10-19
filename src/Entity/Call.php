@@ -147,4 +147,47 @@ class Call
         $this->consultant = $user;
         $this->acceptedAt = new DateTime();
     }
+
+    public function getIntervalWait()
+    {
+        $endWait = new DateTime();
+
+        if ($this->acceptedAt) {
+            $endWait = $this->acceptedAt;
+        }
+
+        if ($this->closedAt) {
+            $endWait = $this->closedAt;
+        }
+
+        $timestamp = $endWait->getTimestamp() - $this->waitStart->getTimestamp();
+
+        return date("H:i:s", $timestamp);
+    }
+
+    public function getStatus()
+    {
+        if ($this->closedAt) {
+            return "Закрыт";
+        }
+
+        if ($this->acceptedAt) {
+            return "Обслуживается";
+        }
+
+        return "Ожидает";
+    }
+
+    public function getIntervalProcess()
+    {
+        if (!$this->acceptedAt) {
+            return "-";
+        }
+
+        $endTime = $this->closedAt ?? new DateTime();
+
+        $timestamp = $endTime->getTimestamp() - $this->acceptedAt->getTimestamp();
+
+        return date("H:i:s", $timestamp);
+    }
 }

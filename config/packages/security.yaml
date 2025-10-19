@@ -53,6 +53,7 @@ security:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/user/profile, roles: ROLE_USER }
+        - { path: ^/monitoring, roles: ROLE_READER }
         - { path: ^/user, roles: ROLE_ADMIN }
         - { path: ^/channel, roles: ROLE_ADMIN }
         - { path: ^/api/consultant, roles: ROLE_OPERATOR }

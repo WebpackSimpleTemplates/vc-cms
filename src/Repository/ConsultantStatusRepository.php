@@ -18,6 +18,14 @@ class ConsultantStatusRepository extends ServiceEntityRepository
         parent::__construct($registry, ConsultantStatus::class);
     }
 
+    public function getMany() {
+        $qb = $this->createQueryBuilder('c');
+
+        $qb->orderBy('c.id', 'desc');
+
+        return $qb;
+    }
+
     public function getCounts()
     {
 

@@ -11,6 +11,8 @@ use Symfony\Component\Routing\Attribute\Route;
 use Amenadiel\JpGraph\Graph;
 use Amenadiel\JpGraph\Plot\BarPlot;
 use App\Repository\ChannelRepository;
+use Knp\Component\Pager\Paginator;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 
@@ -20,7 +22,9 @@ final class MonitoringController extends AbstractController
     public function index(
         CallRepository $callRepository,
         ConsultantStatusRepository $consultantStatusRepository,
-        ChannelRepository $channelRepository
+        ChannelRepository $channelRepository,
+        PaginatorInterface $paginator,
+        Request $request
     ): Response
     {
         return $this->render('monitoring/index.html.twig', [
@@ -28,6 +32,22 @@ final class MonitoringController extends AbstractController
             "consultantsCounts" => $consultantStatusRepository->getCounts(),
             "channelsCounts" => $channelRepository->getCounts(),
             'callsTimes' => $callRepository->getActiveTimes(),
+            'calls' => $paginator->paginate(
+                $callRepository->getMany(),
+                $request->query->getInt('callsPage', 1),
+                10,
+                [
+                    Paginator::PAGE_PARAMETER_NAME => 'callsPage',
+                ]
+            ),
+            'consultants' => $paginator->paginate(
+                $consultantStatusRepository->getMany(),
+                $request->query->getInt('consultantsPage', 1),
+                10,
+                [
+                    Paginator::PAGE_PARAMETER_NAME => 'consultantsPage',
+                ]
+            ),
         ]);
     }
 
@@ -35,7 +55,6 @@ final class MonitoringController extends AbstractController
     public function barsChannels(
         Request $request,
         CallRepository $callRepository,
-        ChannelRepository $channelRepository
     )
     {
         function mapValue($value) {
@@ -51,7 +70,7 @@ final class MonitoringController extends AbstractController
         $param = $request->query->get("param", "count");
         $type = $request->query->get("type", "wait");
 
-        $results = $type === 'wait' ? $callRepository->getActiveChannels() : $callRepository->getServeChannels();
+        $results = $callRepository->getActiveChannels($type !== 'wait');
 
         $graph = new Graph\Graph(600,350,'auto');
         $graph->SetScale("textlin");
@@ -66,6 +85,7 @@ final class MonitoringController extends AbstractController
         $datay=array_map(fn ($raw) => mapValue($raw[$param]), $results);
 
         if (count($datay)) {
+            // dd($results);
             $channelsTitles = array_map(fn($raw) => $raw['prefix'], $results);
             $graph->xaxis->SetTickLabels($channelsTitles);
             $b1plot = new BarPlot($datay);
