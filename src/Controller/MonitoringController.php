@@ -28,12 +28,13 @@ final class MonitoringController extends AbstractController
     ): Response
     {
         return $this->render('monitoring/index.html.twig', [
+            'time' => date('d.m.Y H:i:s'),
             "callsCounts" => $callRepository->getActiveCounts(),
             "consultantsCounts" => $consultantStatusRepository->getCounts(),
             "channelsCounts" => $channelRepository->getCounts(),
             'callsTimes' => $callRepository->getActiveTimes(),
             'calls' => $paginator->paginate(
-                $callRepository->getMany(),
+                $callRepository->getActiveMany(),
                 $request->query->getInt('callsPage', 1),
                 10,
                 [

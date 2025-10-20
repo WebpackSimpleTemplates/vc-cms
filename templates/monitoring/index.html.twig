@@ -4,8 +4,13 @@
 
 {% block content %}
 <div class="flex flex-row flex-wrap gap-2">
-    <div class="text-2xl font-semibold w-full">
-        Мониториг
+    <div class="flex flex-row gap-2 items-start w-full">
+        <div class="text-2xl font-semibold">
+            Мониториг
+        </div>
+        <div class="text-sm text-secondary">
+            Время на сервере: {{ time }}
+        </div>
     </div>
     <div class="card p-3 shadow w-sm bg-base-100">
         Звонки

@@ -29,6 +29,15 @@ class CallRepository extends ServiceEntityRepository
         return $qb;
     }
 
+    public function getActiveMany()
+    {
+        $qb = $this->getMany();
+
+        $qb->where("c.closedAt IS NULL");
+
+        return $qb;
+    }
+
     public function getActiveCounts()
     {
         $total = $this->count(["closedAt" => null]);
