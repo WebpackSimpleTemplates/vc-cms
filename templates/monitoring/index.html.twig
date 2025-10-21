@@ -126,32 +126,6 @@
             {{ callsTimes.maxServe }}
         </div>
     </div>
-    <div class="w-full card p-3 shadow max-w-6xl bg-base-100">
-        Текущие
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Номер</th>
-                    <th>Статус</th>
-                    <th>Время ожидания</th>
-                    <th>Время обслуживания</th>
-                    <th>Консультант</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for call in calls %}
-                    <tr>
-                        <td> {{ call.prefix }} {{ call.num }} </td>
-                        <td> {{ call.status }} </td>
-                        <td> {{ call.intervalWait }} </td>
-                        <td> {{ call.intervalProcess }} </td>
-                        <td> {{ call.consultantName }} </td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {{ knp_pagination_render(calls) }}
-    </div>
     <div class="w-full text-lg font-semibold">
         Консультанты
     </div>
