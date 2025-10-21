@@ -10,13 +10,14 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api/client')]
 final class ApiClientController extends AbstractController
 {
-    #[Route('/start/{channel}', name: 'post_api_call', methods:['POST'])]
+    #[Route('/start/{channel}', name: 'api_start_call', methods:['POST'])]
     public function index(
         #[MapRequestPayload] StartCallPayload $payload,
         CallRepository $callRepository,
@@ -36,5 +37,21 @@ final class ApiClientController extends AbstractController
         $entityManager->flush();
 
         return $this->json($call);
+    }
+
+    #[Route('/{call}', name: 'api_call_info')]
+    public function call(Call $call)
+    {
+        return $this->json($call);
+    }
+
+    #[Route('/{call}/close', name:'api_close_call')]
+    public function closeCall(Call $call)
+    {
+        if (!$call->getClosedAt()) {
+            $call->setClosedAt(new DateTime());
+        }
+
+        return new Response(null, 204);
     }
 }

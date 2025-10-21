@@ -33,7 +33,6 @@ class Call
     private ?\DateTime $waitStart = null;
 
     #[ORM\ManyToOne(inversedBy: 'calls')]
-    #[Ignore]
     private ?User $consultant = null;
 
     #[ORM\Column(nullable: true)]
@@ -42,7 +41,6 @@ class Call
     #[ORM\Column(nullable: true)]
     private ?\DateTime $closedAt = null;
 
-    #[Ignore]
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?Channel $channel = null;
@@ -50,6 +48,7 @@ class Call
     /**
      * @var Collection<int, Message>
      */
+    #[Ignore]
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'call', orphanRemoval: true)]
     private Collection $messages;
 

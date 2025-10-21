@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/consultant')]
 final class ApiConsultantController extends AbstractController
 {
-    #[Route('/calls/count', name: 'app_api_consultant_calls_count')]
+    #[Route('/calls/count', name: 'api_consultant_calls_count')]
     public function callsCount(CallRepository $callRepository, Security $security)
     {
         return $this->json([
@@ -29,13 +29,13 @@ final class ApiConsultantController extends AbstractController
         ]);
     }
 
-    #[Route('/channels', name: 'app_api_consultant_channels')]
+    #[Route('/channels', name: 'api_consultant_channels')]
     public function channels(CallRepository $callRepository, Security $security)
     {
         return $this->json($callRepository->getActiveChannelsForUser($security->getUser()));
     }
 
-    #[Route('/accept-next/{id}', name: 'app_api_consultant_accept_next_by_channel')]
+    #[Route('/accept-next/{id}', name: 'api_consultant_accept_next_by_channel')]
     public function acceptNextByChannel(CallRepository $callRepository, Security $security, EntityManagerInterface $entityManager, Channel $channel)
     {
         /** @var User $user */
@@ -58,7 +58,7 @@ final class ApiConsultantController extends AbstractController
         ], 400);
     }
 
-    #[Route('/accept-next', name: 'app_api_consultant_accept_next')]
+    #[Route('/accept-next', name: 'api_consultant_accept_next')]
     public function acceptNext(CallRepository $callRepository, Security $security, EntityManagerInterface $entityManager, ?Channel $channel = null)
     {
         $user = $security->getUser();
@@ -117,7 +117,7 @@ final class ApiConsultantController extends AbstractController
         return $this->json(["result"=>"ok"]);
     }
 
-    #[Route('/password', methods:['PUT'])]
+    #[Route('/password', methods:['PUT'], name:'api_update_password_consultant')]
     public function updatePassword(
         UserPasswordHasherInterface $userPasswordHasher,
         Security $security,
