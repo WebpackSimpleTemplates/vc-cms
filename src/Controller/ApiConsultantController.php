@@ -4,22 +4,28 @@ namespace App\Controller;
 
 use App\Entity\Call;
 use App\Entity\Channel;
+use App\Entity\ConsultantStatus;
 use App\Entity\User;
+use App\Entity\ConsultantStatusPayload;
+use App\Entity\UpdatePassswordPayload;
 use App\Repository\CallRepository;
-use Doctrine\ORM\EntityManager;
+use App\Repository\ConsultantStatusRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api/consultant')]
 final class ApiConsultantController extends AbstractController
 {
     #[Route('/calls/count', name: 'app_api_consultant_calls_count')]
-    public function callsCount(CallRepository $callRepository)
+    public function callsCount(CallRepository $callRepository, Security $security)
     {
         return $this->json([
-            "count" => $callRepository->count(["closedAt" => null, "acceptedAt" => null]),
+            "count" => $callRepository->getActiveCallsCount($security->getUser()),
         ]);
     }
 
@@ -36,6 +42,10 @@ final class ApiConsultantController extends AbstractController
         $user = $security->getUser();
 
         $channels = $user->getChannels();
+
+        if (!count($channels)) {
+            return $this->acceptNext($callRepository, $security, $entityManager);
+        }
 
         foreach ($channels as $item) {
             if ($item->getId() === $channel->getId()) {
@@ -61,6 +71,67 @@ final class ApiConsultantController extends AbstractController
 
         $call->accept($user);
 
+        $entityManager->flush();
+
         return $this->json($call);
+    }
+
+    #[Route('/status', methods:['PUT'])]
+    public function status(
+        #[MapRequestPayload] ConsultantStatusPayload $payload,
+        ConsultantStatusRepository $consultantStatusRepository,
+        CallRepository $callRepository,
+        Security $security,
+        EntityManagerInterface $entityManager,
+    )
+    {
+        /** @var User $user */
+        $user = $security->getUser();
+
+        /** @var ConsultantStatus $raw */
+        $raw = $consultantStatusRepository->findOneBy(["userLink" => $user]);
+
+        if (!$raw) {
+            $raw = new ConsultantStatus()
+                ->setUserLink($user)
+                ->setPauseTime(0)
+                ->setServeTime(0)
+                ->setWaitTime(0)
+            ;
+
+            $entityManager->persist($raw);
+        }
+
+        $raw->setLastOnline(new DateTime());
+
+        $raw->setStatusWithIncrementTimes($payload->status, $payload->increment);
+
+        if (!$payload->callId) {
+            $raw->setCall(null);
+        } else if (!$raw->getCall() || $payload->callId !== $raw->getCall()->getId()) {
+            $raw->setCall($callRepository->findOneBy([ "id" => $payload->callId ]));
+        }
+
+        $entityManager->flush();
+
+        return $this->json(["result"=>"ok"]);
+    }
+
+    #[Route('/password', methods:['PUT'])]
+    public function updatePassword(
+        UserPasswordHasherInterface $userPasswordHasher,
+        Security $security,
+        EntityManagerInterface $entityManager,
+        #[MapRequestPayload] UpdatePassswordPayload $payload,
+    )
+    {
+        /** @var User $user */
+        $user = $security->getUser();
+
+        $user->setPassword($userPasswordHasher->hashPassword($user, $payload->password));
+
+        $entityManager->flush();
+
+        return $this->json(["result"=>"ok"]);
     }
 }

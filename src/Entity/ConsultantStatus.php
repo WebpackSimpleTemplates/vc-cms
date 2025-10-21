@@ -123,4 +123,60 @@ class ConsultantStatus
 
         return $this;
     }
+
+    public function setStatusWithIncrementTimes(string $status, int $increment)
+    {
+        $this->status = $status;
+
+        if ($status === 'pause') {
+            $this->pauseTime += $increment;
+        }
+        if ($status === 'wait') {
+            $this->waitTime += $increment;
+        }
+        if ($status === 'serve') {
+            $this->serveTime += $increment;
+        }
+    }
+
+    public function getStatusLabel() {
+        if ($this->status === 'pause') {
+            return "Пауза";
+        }
+        if ($this->status === 'wait') {
+            return "Ожидание";
+        }
+        if ($this->status === 'serve') {
+            return "Обслуживание";
+        }
+
+        return "-";
+    }
+
+
+    public function getTimeWaitStr()
+    {
+        return gmdate("H:i:s", $this->waitTime);
+    }
+
+    public function getTimeServeStr()
+    {
+        return gmdate("H:i:s", $this->serveTime);
+    }
+
+    public function getTimePauseStr()
+    {
+        return gmdate("H:i:s", $this->pauseTime);
+    }
+
+    public function getCallNum()
+    {
+        $call = $this->getCall();
+
+        if (!$call) {
+            return "-";
+        }
+
+        return $call->getPrefix()." ".$call->getNum();
+    }
 }

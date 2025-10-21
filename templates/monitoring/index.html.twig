@@ -166,12 +166,19 @@
                     <th>Текущий звонок</th>
                     <th>Время ожидания</th>
                     <th>Время обслуживания</th>
+                    <th>Время на паузе</th>
                 </tr>
             </thead>
             <tbody>
                 {% for consultant in consultants %}
                     <tr>
                         <td> {{ consultant.id }} </td>
+                        <td> {{ consultant.userLink.fullname }} </td>
+                        <td> {{ consultant.statusLabel }} </td>
+                        <td> {{ consultant.callNum }} </td>
+                        <td> {{ consultant.timeWaitStr }} </td>
+                        <td> {{ consultant.timeServeStr }} </td>
+                        <td> {{ consultant.timePauseStr }} </td>
                     </tr>
                 {% endfor %}
             </tbody>

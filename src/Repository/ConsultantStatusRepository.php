@@ -26,15 +26,29 @@ class ConsultantStatusRepository extends ServiceEntityRepository
         return $qb;
     }
 
+    public function getOnlineMany() {
+        $qb = $this->getMany();
+
+        $onlineTime = new DateTime();
+
+        $onlineTime->add(DateInterval::createFromDateString("-1 minute"));
+
+        $qb
+            ->where("c.lastOnline > :onlineTime")
+            ->setParameter("onlineTime", $onlineTime);
+
+        return $qb;
+    }
+
     public function getCounts()
     {
 
         $onlineTime = new DateTime()
-            ->add(DateInterval::createFromDateString('-15 second'))
+            ->add(DateInterval::createFromDateString('-1 minute'))
             ->format(DateTime::ATOM);
 
         $qb = $this->createQueryBuilder("cs")
-            ->where("cs.lastOnline < :now")
+            ->where("cs.lastOnline > :now")
             ->setParameter("now", $onlineTime)
             ->select(["COUNT(cs) as total"]);
 

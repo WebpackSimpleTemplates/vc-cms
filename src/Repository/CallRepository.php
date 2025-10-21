@@ -10,6 +10,7 @@ use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @extends ServiceEntityRepository<Call>
@@ -105,6 +106,28 @@ class CallRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+    }
+
+    public function getActiveCallsCount(User|UserInterface $user)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $channels = $user->getChannels()->toArray();
+
+        $qb
+            ->select([
+                'COUNT(c) as count'
+            ])
+            ->where("c.acceptedAt IS NULL")
+            ->andWhere("c.closedAt IS NULL");
+
+        if (count($channels)) {
+            $qb = $qb
+                ->andWhere("c.channel IN(:ids)")
+                ->setParameter("ids", $channels)
+            ;
+        }
+
+        return $qb->getQuery()->getSingleColumnResult()[0];
     }
 
     public function getActiveChannelsForUser(User $user)

@@ -42,7 +42,7 @@ final class MonitoringController extends AbstractController
                 ]
             ),
             'consultants' => $paginator->paginate(
-                $consultantStatusRepository->getMany(),
+                $consultantStatusRepository->getOnlineMany(),
                 $request->query->getInt('consultantsPage', 1),
                 10,
                 [

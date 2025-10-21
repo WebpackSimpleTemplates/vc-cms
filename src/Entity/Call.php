@@ -28,6 +28,7 @@ class Call
     private ?\DateTime $waitStart = null;
 
     #[ORM\ManyToOne(inversedBy: 'calls')]
+    #[Ignore]
     private ?User $consultant = null;
 
     #[ORM\Column(nullable: true)]
