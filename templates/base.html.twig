@@ -7,12 +7,11 @@
         <title>{% block title %}Welcome!{% endblock %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         {% block stylesheets %}
-            {{ vite_entry_link_tags('app') }}
+            {{ vite_entry_link_tags('appcss') }}
         {% endblock %}
 
         {% block javascripts %}
-            {{ vite_entry_script_tags('app') }}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
+            {{ vite_entry_script_tags('appjs') }}
         {% endblock %}
     </head>
     <body>

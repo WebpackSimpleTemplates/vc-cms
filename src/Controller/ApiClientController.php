@@ -6,6 +6,7 @@ use App\Entity\Call;
 use App\Entity\Channel;
 use App\Payload\StartCallPayload;
 use App\Repository\CallRepository;
+use App\Repository\HistoryRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PushRepository;
@@ -24,7 +25,7 @@ final class ApiClientController extends AbstractController
         CallRepository $callRepository,
         EntityManagerInterface $entityManager,
         Channel $channel,
-        PushRepository $pushRepository
+        PushRepository $pushRepository,
     ): JsonResponse
     {
         $call = new Call();
@@ -53,6 +54,7 @@ final class ApiClientController extends AbstractController
     public function closeCall(
         Call $call,
         PushRepository $pushRepository,
+        HistoryRepository $history,
     )
     {
         if (!$call->getClosedAt()) {
@@ -60,6 +62,8 @@ final class ApiClientController extends AbstractController
 
             $pushRepository->push("calls/".$call->getId(), "closed", $call);
             $pushRepository->push("", "call-closed", $call);
+
+            $history->write("Завершение звонка", $call->getPrefix()." ".$call->getNum(), true);
         }
 
         return new Response(null, 204);

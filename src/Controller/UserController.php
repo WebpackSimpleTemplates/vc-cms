@@ -6,6 +6,7 @@ use App\Entity\User;
 use App\Form\CreateUserType;
 use App\Form\UserProfileType;
 use App\Form\UserType;
+use App\Repository\HistoryRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -57,7 +58,11 @@ final class UserController extends AbstractController
     }
 
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        HistoryRepository $history,
+    ): Response
     {
         $user = new User();
         $form = $this->createForm(CreateUserType::class, $user);
@@ -69,6 +74,8 @@ final class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
+            $history->write("Создание пользователя", $user->getEmail());
+
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -79,9 +86,15 @@ final class UserController extends AbstractController
     }
 
     #[Route('/profile', name: 'app_user_profile', methods: ['GET', 'POST'])]
-    public function profile(Request $request, EntityManagerInterface $entityManager): Response
+    public function profile(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        HistoryRepository $history,
+    ): Response
     {
+        /** @var User $user */
         $user = $this->getUser();
+        $oldEmail = $user->getEmail();
         $form = $this->createForm(UserProfileType::class, $user);
         $form->handleRequest($request);
 
@@ -89,6 +102,8 @@ final class UserController extends AbstractController
             $this->mapUserForm($form, $user);
 
             $entityManager->flush();
+
+            $history->write("Редактирование профиля пользователя", $oldEmail." => ".$user->getEmail());
 
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -100,10 +115,17 @@ final class UserController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    public function edit(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        HistoryRepository $history,
+        User $user,
+    ): Response
     {
         /** @var User $currentUser */
         $currentUser = $this->getUser();
+
+        $oldEmail = $user->getEmail();
 
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
@@ -112,6 +134,8 @@ final class UserController extends AbstractController
             $this->mapUserForm($form, $user);
 
             $entityManager->flush();
+
+            $history->write("Редактирование пользователя", $oldEmail." => ".$user->getEmail());
 
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -124,7 +148,12 @@ final class UserController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'app_user_delete', methods: ['POST'])]
-    public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    public function delete(
+        Request $request,
+        User $user,
+        EntityManagerInterface $entityManager,
+        HistoryRepository $history,
+    ): Response
     {
         /** @var User $currentUser */
         $currentUser = $this->getUser();
@@ -136,6 +165,8 @@ final class UserController extends AbstractController
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($user);
             $entityManager->flush();
+
+            $history->write("Удаление пользователя", $user->getEmail());
         }
 
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);

@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Channel;
 use App\Form\ChannelType;
 use App\Repository\ChannelRepository;
+use App\Repository\HistoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,7 +29,11 @@ final class ChannelController extends AbstractController
     }
 
     #[Route('/new', name: 'app_channel_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(
+        Request $request,
+        EntityManagerInterface $entityManager,
+        HistoryRepository $history,
+    ): Response
     {
         $channel = new Channel();
         $form = $this->createForm(ChannelType::class, $channel);
@@ -37,6 +42,8 @@ final class ChannelController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($channel);
             $entityManager->flush();
+
+            $history->write("Создание канала", $channel->getTitle());
 
             return $this->redirectToRoute('app_channel_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -48,13 +55,17 @@ final class ChannelController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_channel_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Channel $channel, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Channel $channel, HistoryRepository $history, EntityManagerInterface $entityManager): Response
     {
+        $oldtitle = $channel->getTitle();
+
         $form = $this->createForm(ChannelType::class, $channel);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+
+            $history->write("Редактирование канала", $oldtitle." => ".$channel->getTitle());
 
             return $this->redirectToRoute('app_channel_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -66,11 +77,13 @@ final class ChannelController extends AbstractController
     }
 
     #[Route('/{id}/delete', name: 'app_channel_delete', methods: ['POST'])]
-    public function delete(Request $request, Channel $channel, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Channel $channel, HistoryRepository $history, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$channel->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($channel);
             $entityManager->flush();
+
+            $history->write("Удаление канала", $channel->getTitle());
         }
 
         return $this->redirectToRoute('app_channel_index', [], Response::HTTP_SEE_OTHER);

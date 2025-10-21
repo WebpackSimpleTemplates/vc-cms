@@ -8,17 +8,18 @@ import symfonyPlugin from "vite-plugin-symfony";
 export default defineConfig({
     plugins: [
         /* react(), // if you're using React */
-        symfonyPlugin(),
+        symfonyPlugin({ refresh: true }),
         tailwindcss(),
     ],
     build: {
         rollupOptions: {
             input: {
-                app: "./assets/app.js"
+                appjs: "./assets/app.js",
+                appcss: "./assets/app.css",
             },
         }
     },
     server: {
-        cors: true,
+        cors: true
     }
 });

@@ -33,6 +33,14 @@ final class MonitoringController extends AbstractController
             "consultantsCounts" => $consultantStatusRepository->getCounts(),
             "channelsCounts" => $channelRepository->getCounts(),
             'callsTimes' => $callRepository->getActiveTimes(),
+            'calls' => $paginator->paginate(
+                $callRepository->getActiveMany(),
+                $request->query->getInt('callsPage', 1),
+                10,
+                [
+                    Paginator::PAGE_PARAMETER_NAME => 'callsPage',
+                ]
+            ),
             'consultants' => $paginator->paginate(
                 $consultantStatusRepository->getOnlineMany(),
                 $request->query->getInt('consultantsPage', 1),

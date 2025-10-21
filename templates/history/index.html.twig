@@ -1,0 +1,73 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}История{% endblock %}
+
+{% block content %}
+<div class="card p-3 shadow w-full bg-base-100">
+    <div class="text-2xl font-semibold mb-4">История</div>
+
+    <form method="get" class="flex flex-row items-end gap-3">
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">Период</legend>
+            <div class="flex flex-row gap-2">
+                <input class="input w-38" type="date" name="start" value="{{ start }}" >
+                <input class="input w-38" type="date" name="end" value="{{ end }}" >
+            </div>
+        </fieldset>
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">Пользователь</legend>
+            <select class="select w-80" name="user" value="{{ user }}">
+                <option value="">-</option>
+                {% for item in users %}
+                    <option value="{{ item.id }}" {{ user == item.id ? 'selected' : '' }} >{{ item.displayName }}</option>
+                {% endfor %}
+            </select>
+        </fieldset>
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">Действие</legend>
+            <select class="select w-80" name="action" value="{{ action }}">
+                <option value="">-</option>
+                {% for item in actions %}
+                    <option value="{{ item.action }}" {{ action == item.action ? 'selected' : '' }} >{{ item.action }}</option>
+                {% endfor %}
+            </select>
+        </fieldset>
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">Роль</legend>
+            <select class="select w-80" name="role" value="{{ role }}">
+                <option value="">-</option>
+                <option value="ADMIN" {{ role == "ADMIN" ? 'selected' : '' }} >Администратор</option>
+                <option value="OPERATOR" {{ role == "OPERATOR" ? 'selected' : '' }} >Консультант</option>
+            </select>
+        </fieldset>
+        <button type="submit" class="btn mb-1">
+            Применить
+        </button>
+    </form>
+</div>
+<div class="card p-3 shadow w-full bg-base-100 mt-3">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Дата/время</th>
+                <th>Пользователь</th>
+                <th>Роли</th>
+                <th>Действие</th>
+                <th>Параметр</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in pagination %}
+                <tr>
+                    <td>{{ log.labelTime }}</td>
+                    <td>{{ log.usr.displayName }}</td>
+                    <td>{{ log.usr.rolesDisplay }}</td>
+                    <td>{{ log.action }}</td>
+                    <td>{{ log.params }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {{ knp_pagination_render(pagination) }}
+</div>
+{% endblock %}

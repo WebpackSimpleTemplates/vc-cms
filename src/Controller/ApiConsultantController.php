@@ -10,6 +10,7 @@ use App\Payload\ConsultantStatusPayload;
 use App\Payload\UpdatePassswordPayload;
 use App\Repository\CallRepository;
 use App\Repository\ConsultantStatusRepository;
+use App\Repository\HistoryRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PushRepository;
@@ -42,6 +43,7 @@ final class ApiConsultantController extends AbstractController
         Security $security,
         EntityManagerInterface $entityManager,
         PushRepository $pushRepository,
+        HistoryRepository $history,
         Channel $channel
     )
     {
@@ -51,12 +53,12 @@ final class ApiConsultantController extends AbstractController
         $channels = $user->getChannels();
 
         if (!count($channels)) {
-            return $this->acceptNext($callRepository, $security, $entityManager, $pushRepository);
+            return $this->acceptNext($callRepository, $security, $entityManager, $pushRepository, $history);
         }
 
         foreach ($channels as $item) {
             if ($item->getId() === $channel->getId()) {
-                return $this->acceptNext($callRepository, $security, $entityManager, $pushRepository, $channel);
+                return $this->acceptNext($callRepository, $security, $entityManager, $pushRepository, $history, $channel);
             }
         }
 
@@ -71,7 +73,8 @@ final class ApiConsultantController extends AbstractController
         Security $security,
         EntityManagerInterface $entityManager,
         PushRepository $pushRepository,
-        ?Channel $channel = null
+        HistoryRepository $history,
+        ?Channel $channel = null,
     )
     {
         $user = $security->getUser();
@@ -88,6 +91,8 @@ final class ApiConsultantController extends AbstractController
 
         $pushRepository->push("calls/".$call->getId(), "accepted", $call);
         $pushRepository->push("", "call-accepted", $call);
+
+        $history->write("Взятие звонка", $call->getPrefix()." ".$call->getNum(), true);
 
         return $this->json($call);
     }
