@@ -12,6 +12,7 @@ use App\Repository\CallRepository;
 use App\Repository\ConsultantStatusRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\PushRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -36,7 +37,13 @@ final class ApiConsultantController extends AbstractController
     }
 
     #[Route('/accept-next/{id}', name: 'api_consultant_accept_next_by_channel')]
-    public function acceptNextByChannel(CallRepository $callRepository, Security $security, EntityManagerInterface $entityManager, Channel $channel)
+    public function acceptNextByChannel(
+        CallRepository $callRepository,
+        Security $security,
+        EntityManagerInterface $entityManager,
+        PushRepository $pushRepository,
+        Channel $channel
+    )
     {
         /** @var User $user */
         $user = $security->getUser();
@@ -44,12 +51,12 @@ final class ApiConsultantController extends AbstractController
         $channels = $user->getChannels();
 
         if (!count($channels)) {
-            return $this->acceptNext($callRepository, $security, $entityManager);
+            return $this->acceptNext($callRepository, $security, $entityManager, $pushRepository);
         }
 
         foreach ($channels as $item) {
             if ($item->getId() === $channel->getId()) {
-                return $this->acceptNext($callRepository, $security, $entityManager, $channel);
+                return $this->acceptNext($callRepository, $security, $entityManager, $pushRepository, $channel);
             }
         }
 
@@ -59,7 +66,13 @@ final class ApiConsultantController extends AbstractController
     }
 
     #[Route('/accept-next', name: 'api_consultant_accept_next')]
-    public function acceptNext(CallRepository $callRepository, Security $security, EntityManagerInterface $entityManager, ?Channel $channel = null)
+    public function acceptNext(
+        CallRepository $callRepository,
+        Security $security,
+        EntityManagerInterface $entityManager,
+        PushRepository $pushRepository,
+        ?Channel $channel = null
+    )
     {
         $user = $security->getUser();
         /** @var Call $call */
@@ -72,6 +85,9 @@ final class ApiConsultantController extends AbstractController
         $call->accept($user);
 
         $entityManager->flush();
+
+        $pushRepository->push("calls/".$call->getId(), "accepted", $call);
+        $pushRepository->push("", "call-accepted", $call);
 
         return $this->json($call);
     }

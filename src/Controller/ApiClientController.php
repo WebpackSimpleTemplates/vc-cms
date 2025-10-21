@@ -8,6 +8,7 @@ use App\Payload\StartCallPayload;
 use App\Repository\CallRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\PushRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,7 +23,8 @@ final class ApiClientController extends AbstractController
         #[MapRequestPayload] StartCallPayload $payload,
         CallRepository $callRepository,
         EntityManagerInterface $entityManager,
-        Channel $channel
+        Channel $channel,
+        PushRepository $pushRepository
     ): JsonResponse
     {
         $call = new Call();
@@ -36,6 +38,8 @@ final class ApiClientController extends AbstractController
         $entityManager->persist($call);
         $entityManager->flush();
 
+        $pushRepository->push("", "call-created", $call);
+
         return $this->json($call);
     }
 
@@ -46,10 +50,16 @@ final class ApiClientController extends AbstractController
     }
 
     #[Route('/{call}/close', name:'api_close_call')]
-    public function closeCall(Call $call)
+    public function closeCall(
+        Call $call,
+        PushRepository $pushRepository,
+    )
     {
         if (!$call->getClosedAt()) {
             $call->setClosedAt(new DateTime());
+
+            $pushRepository->push("calls/".$call->getId(), "closed", $call);
+            $pushRepository->push("", "call-closed", $call);
         }
 
         return new Response(null, 204);

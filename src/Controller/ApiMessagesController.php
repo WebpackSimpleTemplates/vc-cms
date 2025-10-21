@@ -9,6 +9,7 @@ use App\Payload\MessagePayload;
 use App\Repository\MessageRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\PushRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,6 +34,7 @@ final class ApiMessagesController extends AbstractController
         #[MapRequestPayload] MessagePayload $payload,
         Call $call,
         EntityManagerInterface $entityManager,
+        PushRepository $pushRepository,
         Security $security,
     )
     {
@@ -58,6 +60,8 @@ final class ApiMessagesController extends AbstractController
             $message->setName("Клиент");
         }
 
+        $pushRepository->push("calls/messages/".$call->getId(), "message", $message);
+
         $entityManager->persist($message);
         $entityManager->flush();
 
@@ -68,6 +72,7 @@ final class ApiMessagesController extends AbstractController
     public function read(
         Call $call,
         MessageRepository $messageRepository,
+        PushRepository $pushRepository,
         Security $security,
     )
     {
@@ -90,6 +95,8 @@ final class ApiMessagesController extends AbstractController
         }
 
         $qb->getQuery()->execute();
+
+        $pushRepository->push("calls/messages/".$call->getId(), "read-messages", $user ? [ "authorId" => $user->getId() ] : []);
 
         return new Response(null, 204);
     }
