@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Entity\Call;
 use App\Entity\Channel;
 use App\Entity\User;
-use DateInterval;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -79,9 +78,9 @@ class CallRepository extends ServiceEntityRepository
         ;
 
         return [
-            "avgWait" => $wait['avg'] ? $wait['avg'] : '00:00:00',
+            "avgWait" => $wait['avg'] ? explode(".", $wait['avg'])[0] : '00:00:00',
             "maxWait" => $wait['max'] ? $wait['max'] : '00:00:00',
-            "avgServe" => $serve['avg'] ? $serve['avg'] : '00:00:00',
+            "avgServe" => $serve['avg'] ? explode(".", $serve['avg'])[0] : '00:00:00',
             "maxServe" => $serve['max'] ? $serve['max'] : '00:00:00',
         ];
     }
@@ -90,7 +89,7 @@ class CallRepository extends ServiceEntityRepository
     {
         $onlineTime = new DateTime()->format(DateTime::ATOM);
 
-        return $this->createQueryBuilder("c")
+        $result = $this->createQueryBuilder("c")
             ->select([
                 "ch.id as id",
                 "ch.title as title",
@@ -106,6 +105,8 @@ class CallRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult()
         ;
+
+        return $result;
     }
 
     public function getActiveCallsCount(User|UserInterface $user)
