@@ -187,4 +187,24 @@ class CallRepository extends ServiceEntityRepository
 
         return count($result) > 0 ? $result[0] : null;
     }
+
+    public function getNextNum(string $prefix)
+    {
+        $today = DateTime::createFromFormat("Y-m-d H:i:s", date("Y-m-d")." 00:00:00");
+
+        $qb = $this->createQueryBuilder("c");
+
+        $qb
+            ->select([
+                "MAX(c.num) as num"
+            ])
+            ->where("c.prefix = :prefix")
+            ->andWhere("c.waitStart > :today")
+            ->setParameter("prefix", $prefix)
+            ->setParameter("today", $today)
+        ;
+
+
+        return ($qb->getQuery()->getSingleColumnResult()[0] ?? 0) + 1;
+    }
 }
