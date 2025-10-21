@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Entity;
+namespace App\Payload;
 
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Type;
