@@ -73,7 +73,7 @@ final class MonitoringController extends AbstractController
 
         $results = $callRepository->getActiveChannels($type !== 'wait');
 
-        $graph = new Graph\Graph(400,220,'auto');
+        $graph = new Graph\Graph(424,250,'auto');
         $graph->SetScale("textlin");
 
         $graph->SetBox(false);
