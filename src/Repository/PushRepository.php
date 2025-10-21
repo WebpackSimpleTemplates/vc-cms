@@ -16,6 +16,11 @@ class PushRepository {
     ) { }
 
     public function push(string $url, string $event, $data = []) {
+        if ($this->parameter->get("app.push_server") === "none") {
+            $this->logger->warning("cancel push");
+            return;
+        }
+
         $dataStr = $this->serializer->serialize($data, "json");
         $body = (array) json_decode($dataStr);
         $body['event'] = $event;
