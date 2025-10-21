@@ -6,6 +6,7 @@ use App\Entity\Call;
 use App\Entity\Channel;
 use App\Payload\StartCallPayload;
 use App\Repository\CallRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -29,6 +30,7 @@ final class ApiClientController extends AbstractController
         $call->setPrefix($channel->getPrefix());
         $call->setChannel($channel);
         $call->setType($payload->type);
+        $call->setWaitStart(new DateTime());
 
         $entityManager->persist($call);
         $entityManager->flush();

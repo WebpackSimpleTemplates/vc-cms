@@ -131,21 +131,21 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Номер</th>
                     <th>Статус</th>
                     <th>Время ожидания</th>
                     <th>Время обслуживания</th>
+                    <th>Консультант</th>
                 </tr>
             </thead>
             <tbody>
                 {% for call in calls %}
                     <tr>
-                        <td> {{ call.id }} </td>
                         <td> {{ call.prefix }} {{ call.num }} </td>
                         <td> {{ call.status }} </td>
                         <td> {{ call.intervalWait }} </td>
                         <td> {{ call.intervalProcess }} </td>
+                        <td> {{ call.consultantName }} </td>
                     </tr>
                 {% endfor %}
             </tbody>
