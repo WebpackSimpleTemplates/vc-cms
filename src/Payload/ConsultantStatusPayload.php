@@ -11,11 +11,10 @@ class ConsultantStatusPayload
         #[NotBlank()]
         #[Type('string')]
         public readonly string $status,
-        #[NotBlank()]
+        #[Type('string')]
+        public readonly ?string $callId,
         #[Type('int')]
-        public readonly int $increment,
-        #[Type('int')]
-        public readonly ?int $callId,
+        public readonly int $increment = 15,
     )
     {}
 }
