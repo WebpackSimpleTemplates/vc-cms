@@ -2,4 +2,5 @@
 /.env.local
 /.env.local.php
 /.env.*.local
-/var
+/var/
+/node_modules/
