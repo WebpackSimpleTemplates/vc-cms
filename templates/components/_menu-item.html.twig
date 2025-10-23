@@ -1,1 +1,1 @@
-href="{{ path(route) }}" class="active:!bg-base-100/70 active:!text-base-content font-semibold {% if app.request.attributes.get('_route') == route %}bg-base-100{% endif %}"
+href="{{ path(route) }}" class="active:!bg-base-100/70 active:!text-base-content font-semibold {% if route in app.request.get('_route') %}bg-base-100{% endif %}"

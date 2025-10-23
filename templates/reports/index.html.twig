@@ -4,6 +4,37 @@
 
 {% block content %}
 <div class="card p-3 bg-base-100 shadow">
-    Reports
+    <div class="text-2xl font-semibold mb-4">
+        Отчёты
+    </div>
+    <form method="get" class="flex flex-row items-end gap-3">
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">Период</legend>
+            <div class="flex flex-row gap-2">
+                <a class="btn">
+                    Сегодня
+                </a>
+                <a class="btn">
+                    Вчера
+                </a>
+                <a class="btn">
+                    Этот месяц
+                </a>
+                <input class="input w-38" type="date" name="start" value="{{ start }}" >
+                <input class="input w-38" type="date" name="end" value="{{ end }}" >
+            </div>
+        </fieldset>
+        <button type="submit" class="btn btn-primary mb-1">
+            Применить
+        </button>
+    </form>
+</div>
+<div class="card p-3 bg-base-100 shadow mt-4">
+    <div role="tablist" class="tabs tabs-border">
+        <a role="tab" href="#" class="tab tab-active">Сводный</a>
+        <a role="tab" href="#" class="tab">По звонкам</a>
+        <a role="tab" href="#" class="tab">По консультантам</a>
+        <a role="tab" href="#" class="tab">По каналам</a>
+    </div>
 </div>
 {% endblock %}

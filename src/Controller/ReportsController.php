@@ -13,6 +13,8 @@ final class ReportsController extends AbstractController
     {
         return $this->render('reports/index.html.twig', [
             'controller_name' => 'ReportsController',
+            'start' => null,
+            'end' => null,
         ]);
     }
 }
