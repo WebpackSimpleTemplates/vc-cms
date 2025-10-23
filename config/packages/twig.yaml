@@ -1,6 +1,7 @@
 twig:
     file_name_pattern: '*.twig'
     form_themes: ['_forms/index.html.twig']
+    debug: true
 
 when@test:
     twig:

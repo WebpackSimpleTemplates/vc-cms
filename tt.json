@@ -1,0 +1,16 @@
+{
+    "message": "Uncaught PHP Exception RuntimeException: \"Unable to create the cache directory (/app/var/cache/prod/twig/ba).\" at FilesystemCache.php line 53",
+    "context": {
+        "exception": {
+            "class": "RuntimeException",
+            "message": "Unable to create the cache directory (/app/var/cache/prod/twig/ba).",
+            "code": 0,
+            "file": "/app/vendor/twig/twig/src/Cache/FilesystemCache.php:53"
+        }
+    },
+    "level": 500,
+    "level_name": "CRITICAL",
+    "channel": "request",
+    "datetime": "2025-10-23T13:21:31.765829+00:00",
+    "extra": {}
+}

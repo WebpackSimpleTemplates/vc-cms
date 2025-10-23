@@ -108,6 +108,6 @@ final class MonitoringController extends AbstractController
         }
 
         // Display the graph
-        return $graph->Stroke();
+        return new Response($graph->Stroke(), 200, ['Content-Type' => 'image/jpeg']);
     }
 }
