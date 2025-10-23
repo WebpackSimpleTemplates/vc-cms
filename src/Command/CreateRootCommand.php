@@ -14,10 +14,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[AsCommand(
-    name: 'app:create-admin',
-    description: 'Add a short description for your command',
+    name: 'app:create-root',
+    description: 'Добавить суперпользователя',
 )]
-class CreateAdminCommand extends Command
+class CreateRootCommand extends Command
 {
     public function __construct(
         private UserRepository $userRepository,
@@ -41,7 +41,7 @@ class CreateAdminCommand extends Command
         $email = $input->getArgument("email");
 
         if ($this->userRepository->findOneBy(["email" => $email])) {
-            $io->error("A user with such an email already exists");
+            $io->error("Пользователь с таким email уже существует");
             return Command::INVALID;
         }
 
@@ -50,12 +50,12 @@ class CreateAdminCommand extends Command
         $user = new User();
         $user->setEmail($email);
         $user->setPassword($this->userPasswordHasher->hashPassword($user, $password));
-        $user->setRoles(["ROLE_ADMIN"]);
+        $user->setRoles(["ROLE_ROOT"]);
 
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-        $io->success('User '.$email.' created with password: '.$password);
+        $io->success('Суперпользователь '.$email.' создан, пароль: '.$password);
 
         return Command::SUCCESS;
     }

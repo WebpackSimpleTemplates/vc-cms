@@ -43,6 +43,12 @@ final class UserController extends AbstractController
 
             $avatarFile->move($this->kernel->getProjectDir()."/public/uploads/", $filename);
         }
+
+        $roles = $form->get("roles")->getData();
+
+        if ($roles && in_array("ROLE_ROOT", $roles) && !in_array("ROLE_ROOT", $user->getRoles())) {
+            throw $this->createAccessDeniedException();
+        }
     }
 
     #[Route(name: 'app_user_index', methods: ['GET'])]
@@ -125,6 +131,10 @@ final class UserController extends AbstractController
         /** @var User $currentUser */
         $currentUser = $this->getUser();
 
+        if ($user->isRoot() && $user->getId() !== $currentUser->getId()) {
+            throw $this->createAccessDeniedException();
+        }
+
         $oldEmail = $user->getEmail();
 
         $form = $this->createForm(UserType::class, $user);
@@ -158,7 +168,7 @@ final class UserController extends AbstractController
         /** @var User $currentUser */
         $currentUser = $this->getUser();
 
-        if ($currentUser->getId() === $user->getId()) {
+        if ($user->isRoot() || $currentUser->getId() === $user->getId()) {
             throw $this->createAccessDeniedException();
         }
 

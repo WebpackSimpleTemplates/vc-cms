@@ -148,12 +148,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRolesDisplay() {
         $result = [];
 
-        if (in_array("ROLE_READER", $this->roles)) {
-            $result[] = "Читатель";
+
+        if (in_array("ROLE_ROOT", $this->roles)) {
+            $result[] = "Суперпользователь";
         }
 
-        if (in_array("ROLE_ADMIN", $this->roles)) {
+        if (in_array("ROLE_ADMIN", $this->roles) && !in_array("ROLE_ROOT", $this->roles)) {
             $result[] = "Администратор";
+        }
+
+        if (in_array("ROLE_READER", $this->roles) && !in_array("ROLE_ADMIN", $this->roles) && !in_array("ROLE_ROOT", $this->roles)) {
+            $result[] = "Читатель";
         }
 
         if (in_array("ROLE_OPERATOR", $this->roles)) {
@@ -273,5 +278,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->isConsultant = $isConsultant;
 
         return $this;
+    }
+
+    public function isRoot()
+    {
+        return in_array("ROLE_ROOT", $this->roles);
     }
 }
