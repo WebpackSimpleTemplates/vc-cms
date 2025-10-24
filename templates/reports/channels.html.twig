@@ -10,17 +10,17 @@
             <tr>
                 <th>ID</th>
                 <th>Канал</th>
-                <th>Принято звонков</th>
-                <th>Макс. время ожид.</th>
-                <th>Средн. время ожид.</th>
-                <th>Мин. время ожид.</th>
-                <th>Макс. время обсл.</th>
-                <th>Средн. время обсл.</th>
-                <th>Мин. время обсл.</th>
-                <th>Пропущено звонков</th>
-                <th>Макс. время ожид.</th>
-                <th>Средн. время ожид.</th>
-                <th>Мин. время ожид.</th>
+                <th class="bg-error/15">Пропущено звонков</th>
+                <th class="bg-error/15">Макс. время ожид.</th>
+                <th class="bg-error/15">Средн. время ожид.</th>
+                <th class="bg-error/15">Мин. время ожид.</th>
+                <th class="bg-success/5">Принято звонков</th>
+                <th class="bg-success/5">Макс. время ожид.</th>
+                <th class="bg-success/5">Средн. время ожид.</th>
+                <th class="bg-success/5">Мин. время ожид.</th>
+                <th class="bg-success/5">Макс. время обсл.</th>
+                <th class="bg-success/5">Средн. время обсл.</th>
+                <th class="bg-success/5">Мин. время обсл.</th>
             </tr>
         </thead>
         <tbody>
@@ -32,38 +32,38 @@
                     <td>
                         {{ channel.title }}
                     </td>
-                    <td>
-                        {{ channel.accepted }}
-                    </td>
-                    <td>
-                        {{ channel.maxWaitAc }}
-                    </td>
-                    <td>
-                        {{ channel.avgWaitAc }}
-                    </td>
-                    <td>
-                        {{ channel.minWaitAc }}
-                    </td>
-                    <td>
-                        {{ channel.maxServ }}
-                    </td>
-                    <td>
-                        {{ channel.avgServ }}
-                    </td>
-                    <td>
-                        {{ channel.minServ }}
-                    </td>
-                    <td>
+                    <td class="bg-error/15">
                         {{ channel.rejected }}
                     </td>
-                    <td>
+                    <td class="bg-error/15">
                         {{ channel.maxWaitRe }}
                     </td>
-                    <td>
+                    <td class="bg-error/15">
                         {{ channel.avgWaitRe }}
                     </td>
-                    <td>
+                    <td class="bg-error/15">
                         {{ channel.minWaitRe }}
+                    </td>
+                    <td class="bg-success/5">
+                        {{ channel.accepted }}
+                    </td>
+                    <td class="bg-success/5">
+                        {{ channel.maxWaitAc }}
+                    </td>
+                    <td class="bg-success/5">
+                        {{ channel.avgWaitAc }}
+                    </td>
+                    <td class="bg-success/5">
+                        {{ channel.minWaitAc }}
+                    </td>
+                    <td class="bg-success/5">
+                        {{ channel.maxServ }}
+                    </td>
+                    <td class="bg-success/5">
+                        {{ channel.avgServ }}
+                    </td>
+                    <td class="bg-success/5">
+                        {{ channel.minServ }}
                     </td>
                 </tr>
             {% endfor %}
