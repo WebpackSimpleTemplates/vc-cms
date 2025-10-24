@@ -10,6 +10,7 @@ use App\Repository\HistoryRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PushRepository;
+use DateInterval;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,6 +36,8 @@ final class ApiClientController extends AbstractController
         $call->setChannel($channel);
         $call->setType($payload->type);
         $call->setWaitStart(new DateTime());
+        $call->setHour((int) date("H"));
+        $call->setWeekday((int) date("w"));
 
         $entityManager->persist($call);
         $entityManager->flush();
@@ -53,6 +56,7 @@ final class ApiClientController extends AbstractController
     #[Route('/{call}/close', name:'api_close_call')]
     public function closeCall(
         Call $call,
+        EntityManagerInterface $entityManager,
         PushRepository $pushRepository,
         HistoryRepository $history,
     )
@@ -64,6 +68,8 @@ final class ApiClientController extends AbstractController
             $pushRepository->push("", "call-closed", $call);
 
             $history->write("Завершение звонка", $call->getPrefix()." ".$call->getNum(), true);
+
+            $entityManager->flush();
         }
 
         return new Response(null, 204);

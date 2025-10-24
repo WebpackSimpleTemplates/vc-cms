@@ -1,0 +1,35 @@
+<div class="card p-3 bg-base-100 shadow">
+    <div class="text-2xl font-semibold mb-4">
+        Отчёты
+    </div>
+    <form method="get" class="flex flex-row items-end gap-3">
+        <fieldset class="fieldset">
+            <legend class="fieldset-legend">Период</legend>
+            <div class="flex flex-row gap-2">
+                <input class="input w-38" type="date" name="from" value="{{ filter.from }}" >
+                <input class="input w-38" type="date" name="to" value="{{ filter.to }}" >
+                <a class="btn" href="{{ filter.today }}">
+                    Сегодня
+                </a>
+                <a class="btn" href="{{ filter.yesterday }}">
+                    Вчера
+                </a>
+                <a class="btn" href="{{ filter.currentMonth }}">
+                    Этот месяц
+                </a>
+            </div>
+        </fieldset>
+        <button type="submit" class="btn btn-primary mb-1">
+            Применить
+        </button>
+    </form>
+</div>
+<div class="card p-3 bg-base-100 shadow my-4">
+    <div role="tablist" class="tabs tabs-border">
+        <a {{ include("reports/_tab.html.twig", { 'route': 'app_reports' }) }}>Сводный</a>
+        <a {{ include("reports/_tab.html.twig", { 'route': 'app_reports_calls' }) }}>По звонкам</a>
+        <a {{ include("reports/_tab.html.twig", { 'route': 'app_reports_consultants' }) }}>По консультантам</a>
+        <a {{ include("reports/_tab.html.twig", { 'route': 'app_reports_channels' }) }}>По каналам</a>
+        <a {{ include("reports/_tab.html.twig", { 'route': 'app_reports_qualities' }) }}>По оценкам качества</a>
+    </div>
+</div>

@@ -6,6 +6,7 @@ use App\Repository\CallRepository;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Doctrine\UuidGenerator;
 use Ramsey\Uuid\UuidInterface;
@@ -51,6 +52,12 @@ class Call
     #[Ignore]
     #[ORM\OneToMany(targetEntity: Message::class, mappedBy: 'call', orphanRemoval: true)]
     private Collection $messages;
+
+    #[ORM\Column(type: Types::SMALLINT)]
+    private ?int $hour = null;
+
+    #[ORM\Column(type: Types::SMALLINT)]
+    private ?int $weekday = null;
 
     public function __construct()
     {
@@ -244,5 +251,33 @@ class Call
         }
 
         return $this->consultant->getDisplayName();
+    }
+
+    public function getHour(): ?int
+    {
+        return $this->hour;
+    }
+
+    public function setHour(int $hour): static
+    {
+        $this->hour = $hour;
+
+        return $this;
+    }
+
+    public function getWeekday(): ?int
+    {
+        return $this->weekday;
+    }
+
+    public function setWeekday(int $weekday): static
+    {
+        $this->weekday = $weekday;
+
+        if ($this->weekday === 0) {
+            $this->weekday = 7;
+        }
+
+        return $this;
     }
 }

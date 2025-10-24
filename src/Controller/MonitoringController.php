@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Amenadiel\JpGraph\Graph;
 use Amenadiel\JpGraph\Plot\BarPlot;
 use App\Repository\ChannelRepository;
+use App\Repository\GraphRepository;
 use Knp\Component\Pager\Paginator;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,58 +57,26 @@ final class MonitoringController extends AbstractController
     public function barsChannels(
         Request $request,
         CallRepository $callRepository,
+        GraphRepository $graphRepository,
     )
     {
-        function mapValue($value) {
-            if (gettype($value) === 'string') {
-                $comps = explode(":", $value);
-
-                return ((int) $comps[0]) * 60 + ((int) $comps[1]);
-            }
-
-            return $value;
-        }
+        $graph = $graphRepository->createGraph(424, 250);
 
         $param = $request->query->get("param", "count");
         $type = $request->query->get("type", "wait");
 
         $results = $callRepository->getActiveChannels($type !== 'wait');
 
-        $graph = new Graph\Graph(424,250,'auto');
-        $graph->SetScale("textlin");
+        $data = [];
 
-        $graph->SetBox(false);
-
-        $graph->ygrid->SetFill(false);
-
-        $graph->yaxis->HideLine(false);
-        $graph->yaxis->HideTicks(false,false);
-
-        $datay=array_map(fn ($raw) => mapValue($raw[$param]), $results);
-
-        if (count($datay)) {
-            // dd($results);
-            $channelsTitles = array_map(fn($raw) => $raw['prefix'], $results);
-            $graph->xaxis->SetTickLabels($channelsTitles);
-            $b1plot = new BarPlot($datay);
-
-            $graph->Add($b1plot);
-
-            $b1plot->SetColor("white");
-            $b1plot->SetFillColor("#05588f");
-            // $b1plot->SetWidth(30);
-        } else {
-            $graph->xaxis->SetTickLabels(['']);
-            $b1plot = new BarPlot([0]);
-
-            $graph->Add($b1plot);
-
-            $b1plot->SetColor("white");
-            $b1plot->SetFillColor("white");
-            $b1plot->SetWidth(1);
+        foreach ($results as $raw) {
+            $data[$raw['prefix']] = $raw[$param];
         }
 
-        // Display the graph
+        $graph->xaxis->SetTickLabels($graphRepository->getLables($data));
+
+        $graph->Add($graphRepository->createBarPlot("#05588f", $data));
+
         return new Response($graph->Stroke(), 200, ['Content-Type' => 'image/jpeg']);
     }
 }
