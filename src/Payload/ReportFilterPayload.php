@@ -8,6 +8,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ReportFilterPayload
 {
+    public function getNow()
+    {
+        return date("d.m.Y H:i:s");
+    }
+
     public static function createFromRequest(Request $request): ReportFilterPayload
     {
         $query = [];

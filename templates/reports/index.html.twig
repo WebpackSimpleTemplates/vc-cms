@@ -12,7 +12,7 @@
         <div class="text-sm text-secondary">
             Всего
         </div>
-        <div class="font-semibold text-lg{% if totals.rejected.total > totals.accepted.total %} text-error{% endif %}">
+        <div class="font-semibold text-lg{% if totals.rejected.total > 0 %} text-error{% endif %}">
             {{ totals.rejected.total }} звонок(ов)
         </div>
     </div>
@@ -49,7 +49,7 @@
         <div class="text-sm text-secondary">
             Всего
         </div>
-        <div class="font-semibold text-lg{% if totals.accepted.total > totals.rejected.total %} text-success{% endif %}">
+        <div class="font-semibold text-lg{% if totals.accepted.total > 0 %} text-success{% endif %}">
             {{ totals.accepted.total }} звонок(ов)
         </div>
     </div>
