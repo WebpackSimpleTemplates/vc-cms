@@ -8,9 +8,9 @@
     style="background-image: url(/bg.jpg);transform:scaleX(1)"
 ></div>
 <twig:Header />
-<div class="flex flex-row gap-3 pr-3 items-start relative">
+<div class="flex flex-row gap-3 pr-3 items-start justify-start relative w-full">
   <twig:Menu />
-  <div class="flex-1 pt-2">
+  <div class="flex-1 pt-2 w-full overflow-hidden">
     {% block content %}{% endblock %}
   </div>
 </div>

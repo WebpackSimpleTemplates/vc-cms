@@ -257,10 +257,45 @@ class CallReportsRepository extends ServiceEntityRepository
                 "MIN(c.closedAt - c.acceptedAt) as min",
             ])
             ->join(Call::class, "c", \Doctrine\ORM\Query\Expr\Join::WITH, "c.consultant = u")
+            ->where("1 = 1")
             ->groupBy("u.id", "u.displayName", "u.email")
         ;
 
         $this->mapQueryCalls($qb, $filter);
+
+        return $qb;
+    }
+
+    public function getChannelsTable(ReportFilterPayload $filter)
+    {
+        $qb = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->from(Channel::class, "ch")
+            ->select([
+                "ch.id AS id",
+                "ch.title AS title",
+                "COUNT(ac) as accepted",
+                "COUNT(re) as rejected",
+                "AVG(ac.closedAt - ac.acceptedAt) as avgServ",
+                "MAX(ac.closedAt - ac.acceptedAt) as maxServ",
+                "MIN(ac.closedAt - ac.acceptedAt) as minServ",
+                "AVG(ac.acceptedAt - ac.waitStart) as avgWaitAc",
+                "MAX(ac.acceptedAt - ac.waitStart) as maxWaitAc",
+                "MIN(ac.acceptedAt - ac.waitStart) as minWaitAc",
+                "AVG(re.closedAt - re.waitStart) as avgWaitRe",
+                "MAX(re.closedAt - re.waitStart) as maxWaitRe",
+                "MIN(re.closedAt - re.waitStart) as minWaitRe",
+            ])
+            ->where("1 = 1")
+            ->join(Call::class, "ac", \Doctrine\ORM\Query\Expr\Join::WITH, "ac.channel = ch")
+            ->andWhere("ac.acceptedAt IS NOT NULL")
+            ->join(Call::class, "re", \Doctrine\ORM\Query\Expr\Join::WITH, "re.channel = ch")
+            ->andWhere("re.acceptedAt IS NULL")
+            ->groupBy("ch.id", "ch.title")
+        ;
+
+        $this->mapQueryCalls($qb, $filter, "ac");
+        $this->mapQueryCalls($qb, $filter, "re");
 
         return $qb;
     }

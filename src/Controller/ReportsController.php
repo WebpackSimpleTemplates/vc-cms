@@ -64,12 +64,16 @@ final class ReportsController extends AbstractController
     }
 
     #[Route('/reports/channels', name: 'app_reports_channels')]
-    public function channels(Request $request): Response
+    public function channels(Request $request, PaginatorInterface $paginator): Response
     {
         $filter = ReportFilterPayload::createFromRequest($request);
 
         return $this->render('reports/channels.html.twig', [
             'filter' => $filter,
+            'pagination' => $paginator->paginate(
+                $this->repository->getChannelsTable($filter),
+                $request->query->getInt('page', 1),
+            ),
         ]);
     }
 

@@ -5,5 +5,12 @@
 }
 
 * {
+    box-sizing: border-box;
   --color-primary: #05588f;
+}
+
+
+body, html {
+    width: 100%;
+    margin: 0;
 }

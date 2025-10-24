@@ -4,5 +4,71 @@
 
 {% block content %}
 {% include "reports/_header.html.twig" %}
-По каналам
+<div class="card p-3 bg-base-100 shadow overflow-auto">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Канал</th>
+                <th>Принято звонков</th>
+                <th>Макс. время ожид.</th>
+                <th>Средн. время ожид.</th>
+                <th>Мин. время ожид.</th>
+                <th>Макс. время обсл.</th>
+                <th>Средн. время обсл.</th>
+                <th>Мин. время обсл.</th>
+                <th>Пропущено звонков</th>
+                <th>Макс. время ожид.</th>
+                <th>Средн. время ожид.</th>
+                <th>Мин. время ожид.</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for channel in pagination %}
+                <tr>
+                    <td>
+                        {{ channel.id }}
+                    </td>
+                    <td>
+                        {{ channel.title }}
+                    </td>
+                    <td>
+                        {{ channel.accepted }}
+                    </td>
+                    <td>
+                        {{ channel.maxWaitAc }}
+                    </td>
+                    <td>
+                        {{ channel.avgWaitAc }}
+                    </td>
+                    <td>
+                        {{ channel.minWaitAc }}
+                    </td>
+                    <td>
+                        {{ channel.maxServ }}
+                    </td>
+                    <td>
+                        {{ channel.avgServ }}
+                    </td>
+                    <td>
+                        {{ channel.minServ }}
+                    </td>
+                    <td>
+                        {{ channel.rejected }}
+                    </td>
+                    <td>
+                        {{ channel.maxWaitRe }}
+                    </td>
+                    <td>
+                        {{ channel.avgWaitRe }}
+                    </td>
+                    <td>
+                        {{ channel.minWaitRe }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {{ knp_pagination_render(pagination) }}
+</div>
 {% endblock %}
