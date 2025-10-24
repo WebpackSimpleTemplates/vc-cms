@@ -18,7 +18,9 @@ class ReportFilterPayload
         $query = [];
 
         foreach ($request->query->keys() as $key) {
-            $query[$key] = $request->query->get($key);
+            if ($key !== "page") {
+                $query[$key] = $request->query->get($key);
+            }
         }
 
         return new ReportFilterPayload($query);

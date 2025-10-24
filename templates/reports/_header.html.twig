@@ -12,20 +12,20 @@
             <div class="flex flex-row gap-2">
                 <input class="input w-38" type="date" name="from" value="{{ filter.from }}" >
                 <input class="input w-38" type="date" name="to" value="{{ filter.to }}" >
-                <a class="btn" href="{{ filter.today }}">
-                    Сегодня
-                </a>
-                <a class="btn" href="{{ filter.yesterday }}">
-                    Вчера
-                </a>
-                <a class="btn" href="{{ filter.currentMonth }}">
-                    Этот месяц
-                </a>
             </div>
         </fieldset>
-        <button type="submit" class="btn btn-primary mb-1">
+        <button type="submit" class="btn btn-primary mb-1 mr-5">
             Применить
         </button>
+        <a class="btn mb-1" href="{{ filter.today }}">
+            Сегодня
+        </a>
+        <a class="btn mb-1" href="{{ filter.yesterday }}">
+            Вчера
+        </a>
+        <a class="btn mb-1" href="{{ filter.currentMonth }}">
+            Этот месяц
+        </a>
     </form>
 </div>
 <div class="card p-3 bg-base-100 shadow my-4">

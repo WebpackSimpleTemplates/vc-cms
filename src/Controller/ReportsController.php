@@ -3,9 +3,12 @@
 namespace App\Controller;
 
 use Amenadiel\JpGraph\Plot\GroupBarPlot;
+use App\Entity\Channel;
+use App\Entity\User;
 use App\Payload\ReportFilterPayload;
 use App\Repository\CallReportsRepository;
 use App\Repository\GraphRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,12 +36,21 @@ final class ReportsController extends AbstractController
     }
 
     #[Route('/reports/calls', name: 'app_reports_calls')]
-    public function calls(Request $request): Response
+    public function calls(Request $request, PaginatorInterface $paginator): Response
     {
         $filter = ReportFilterPayload::createFromRequest($request);
 
         return $this->render('reports/calls.html.twig', [
             'filter' => $filter,
+            'pagination' => $paginator->paginate(
+                $this
+                    ->repository
+                    ->getClosed($filter)
+                    ->leftJoin(Channel::class, "channel", "WITH", "c.channel = channel")
+                    ->leftJoin(User::class, "consultant", "WITH", "c.consultant = consultant")
+                ,
+                $request->query->getInt('page', 1),
+            ),
         ]);
     }
 

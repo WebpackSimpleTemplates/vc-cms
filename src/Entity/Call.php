@@ -280,4 +280,19 @@ class Call
 
         return $this;
     }
+
+    public function formatWaitStart(): string
+    {
+        return $this->waitStart->format("d.m.Y H:i:s");
+    }
+
+    public function formatAcceptedAt(): string
+    {
+        return $this->acceptedAt ? $this->acceptedAt->format("d.m.Y H:i:s") : "-";
+    }
+
+    public function formatClosedAt(): string
+    {
+        return $this->closedAt ? $this->closedAt->format("d.m.Y H:i:s") : "-";
+    }
 }
