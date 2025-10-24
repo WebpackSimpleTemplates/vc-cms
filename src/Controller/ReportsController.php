@@ -43,24 +43,23 @@ final class ReportsController extends AbstractController
         return $this->render('reports/calls.html.twig', [
             'filter' => $filter,
             'pagination' => $paginator->paginate(
-                $this
-                    ->repository
-                    ->getClosed($filter)
-                    ->leftJoin(Channel::class, "channel", "WITH", "c.channel = channel")
-                    ->leftJoin(User::class, "consultant", "WITH", "c.consultant = consultant")
-                ,
+                $this->repository->getClosed($filter),
                 $request->query->getInt('page', 1),
             ),
         ]);
     }
 
     #[Route('/reports/consultants', name: 'app_reports_consultants')]
-    public function consultants(Request $request): Response
+    public function consultants(Request $request, PaginatorInterface $paginator): Response
     {
         $filter = ReportFilterPayload::createFromRequest($request);
 
         return $this->render('reports/consultants.html.twig', [
             'filter' => $filter,
+            'pagination' => $paginator->paginate(
+                $this->repository->getConsultants($filter),
+                $request->query->getInt('page', 1),
+            ),
         ]);
     }
 

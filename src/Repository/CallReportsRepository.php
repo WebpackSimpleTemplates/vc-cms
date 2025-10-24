@@ -4,8 +4,10 @@ namespace App\Repository;
 
 use App\Entity\Call;
 use App\Entity\Channel;
+use App\Entity\User;
 use App\Payload\ReportFilterPayload;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\AST\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -17,6 +19,25 @@ class CallReportsRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Call::class);
+    }
+
+    public function mapQueryCalls(QueryBuilder $qb, ReportFilterPayload $filter, string $alias = "c")
+    {
+        $qb->andWhere($alias.".closedAt IS NOT NULL");
+
+        if ($filter->from()) {
+            $qb
+                ->andWhere($alias.".waitStart >= :from")
+                ->setParameter("from", $filter->from()."T00:00:00.000Z")
+            ;
+        }
+
+        if ($filter->to()) {
+            $qb
+                ->andWhere($alias.".waitStart <= :to")
+                ->setParameter("to", $filter->to()."T23:59:59.999Z")
+            ;
+        }
     }
 
     function fInter(?string $val)
@@ -40,21 +61,9 @@ class CallReportsRepository extends ServiceEntityRepository
     public function getClosed(ReportFilterPayload $filter) {
         $qb = $this->createQueryBuilder('c');
 
-        $qb->where("c.closedAt IS NOT NULL");
+        $qb->where("1 = 1");
 
-        if ($filter->from()) {
-            $qb
-                ->andWhere("c.waitStart >= :from")
-                ->setParameter("from", $filter->from()."T00:00:00.000Z")
-            ;
-        }
-
-        if ($filter->to()) {
-            $qb
-                ->andWhere("c.waitStart <= :to")
-                ->setParameter("to", $filter->to()."T23:59:59.999Z")
-            ;
-        }
+        $this->mapQueryCalls($qb, $filter, 'c');
 
         return $qb;
     }
@@ -231,5 +240,28 @@ class CallReportsRepository extends ServiceEntityRepository
         }
 
         return $data;
+    }
+
+    public function getConsultants(ReportFilterPayload $filter)
+    {
+        $qb = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->from(User::class, "u")
+            ->select([
+                "u.id AS id",
+                "u.displayName AS displayName",
+                "u.email AS email",
+                "COUNT(c) as calls",
+                "AVG(c.closedAt - c.acceptedAt) as avg",
+                "MAX(c.closedAt - c.acceptedAt) as max",
+                "MIN(c.closedAt - c.acceptedAt) as min",
+            ])
+            ->join(Call::class, "c", \Doctrine\ORM\Query\Expr\Join::WITH, "c.consultant = u")
+            ->groupBy("u.id", "u.displayName", "u.email")
+        ;
+
+        $this->mapQueryCalls($qb, $filter);
+
+        return $qb;
     }
 }

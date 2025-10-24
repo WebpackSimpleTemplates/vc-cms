@@ -6,7 +6,7 @@
             {{ filter.now }}
         </span>
     </div>
-    <form method="get" class="flex flex-row items-end gap-3">
+    <form method="get" class="flex flex-row items-end gap-2">
         <fieldset class="fieldset">
             <legend class="fieldset-legend">Период</legend>
             <div class="flex flex-row gap-2">
@@ -14,7 +14,7 @@
                 <input class="input w-38" type="date" name="to" value="{{ filter.to }}" >
             </div>
         </fieldset>
-        <button type="submit" class="btn btn-primary mb-1 mr-5">
+        <button type="submit" class="btn btn-primary mb-1 mr-6">
             Применить
         </button>
         <a class="btn mb-1" href="{{ filter.today }}">

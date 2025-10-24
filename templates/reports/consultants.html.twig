@@ -4,5 +4,47 @@
 
 {% block content %}
 {% include "reports/_header.html.twig" %}
-По консультантам
+<div class="card p-3 bg-base-100 shadow overflow-auto">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Консультант</th>
+                <th>Email</th>
+                <th>Обслужено звонков</th>
+                <th>Макс. время обсл.</th>
+                <th>Средн. время обсл.</th>
+                <th>Мин. время обсл.</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in pagination %}
+                <tr>
+                    <td>
+                        {{ user.id }}
+                    </td>
+                    <td>
+                        {{ user.displayName }}
+                    </td>
+                    <td>
+                        {{ user.email }}
+                    </td>
+                    <td>
+                        {{ user.calls }}
+                    </td>
+                    <td>
+                        {{ user.max }}
+                    </td>
+                    <td>
+                        {{ user.avg }}
+                    </td>
+                    <td>
+                        {{ user.min }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {{ knp_pagination_render(pagination) }}
+</div>
 {% endblock %}
