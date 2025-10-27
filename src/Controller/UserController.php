@@ -46,8 +46,16 @@ final class UserController extends AbstractController
 
         $roles = $form->get("roles")->getData();
 
-        if ($roles && in_array("ROLE_ROOT", $roles) && !in_array("ROLE_ROOT", $user->getRoles())) {
-            throw $this->createAccessDeniedException();
+        if ($roles) {
+            if ($user->isRoot() && !in_array("ROLE_ROOT", $roles)) {
+                $roles[] = "ROLE_ROOT";
+            }
+
+            if (!$user->isRoot() && in_array("ROLE_ROOT", $roles)) {
+                throw $this->createAccessDeniedException();
+            }
+
+            $user->setRoles($roles);
         }
     }
 
