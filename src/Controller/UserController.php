@@ -43,20 +43,6 @@ final class UserController extends AbstractController
 
             $avatarFile->move($this->kernel->getProjectDir()."/public/uploads/", $filename);
         }
-
-        $roles = $form->get("roles")->getData();
-
-        if ($roles) {
-            if ($user->isRoot() && !in_array("ROLE_ROOT", $roles)) {
-                $roles[] = "ROLE_ROOT";
-            }
-
-            if (!$user->isRoot() && in_array("ROLE_ROOT", $roles)) {
-                throw $this->createAccessDeniedException();
-            }
-
-            $user->setRoles($roles);
-        }
     }
 
     #[Route(name: 'app_user_index', methods: ['GET'])]

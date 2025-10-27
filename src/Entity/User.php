@@ -29,6 +29,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var list<string> The user roles
      */
+    #[Ignore]
     #[ORM\Column]
     private array $roles = [];
 
@@ -93,6 +94,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *
      * @see UserInterface
      */
+    #[Ignore]
     public function getUserIdentifier(): string
     {
         return (string) $this->email;
@@ -113,6 +115,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function setRoles(array $roles): static
     {
+        if ($this->isRoot() && !in_array("ROLE_ROOT", $roles)) {
+            $roles[] = "ROLE_ROOT";
+        }
+
         $this->isConsultant = in_array("ROLE_OPERATOR", $roles);
         $this->roles = $roles;
 
@@ -145,6 +151,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $data;
     }
 
+    #[Ignore]
     public function getRolesDisplay() {
         $result = [];
 
