@@ -16,6 +16,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PushRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
@@ -82,7 +83,7 @@ final class ApiConsultantController extends AbstractController
         $call = $callRepository->getNextCall($user, $channel);
 
         if (!$call) {
-            return $this->json(null);
+            return $this->json(null, 400);
         }
 
         $call->accept($user);
@@ -135,7 +136,7 @@ final class ApiConsultantController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->json(["result"=>"ok"]);
+        return new Response('', 204);
     }
 
     #[Route('/password', methods:['PUT'], name:'api_update_password_consultant')]
@@ -153,6 +154,6 @@ final class ApiConsultantController extends AbstractController
 
         $entityManager->flush();
 
-        return $this->json(["result"=>"ok"]);
+        return new Response('', 204);
     }
 }

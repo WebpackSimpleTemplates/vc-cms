@@ -105,6 +105,6 @@ final class ApiMessagesController extends AbstractController
 
         $pushRepository->push("calls/messages/".$call->getId(), "read-messages", $user ? [ "authorId" => $user->getId() ] : []);
 
-        return new Response(null, 204);
+        return new Response('', 204);
     }
 }

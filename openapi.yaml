@@ -1,0 +1,355 @@
+openapi: 3.0.4
+info:
+  title: Видеоконсультант
+  version: 0.0.1
+servers:
+  - url: /
+  - url: http://192.168.6.147:8000
+  - url: https://cms-vc.wee-bee.ru
+paths:
+    /api/login_check:
+        post:
+            tags: ['Аутентификация']
+            summary: Войти
+            operationId: login
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                username:
+                                    type: string
+                                password:
+                                    type: string
+            responses:
+                200:
+                    description: Токены
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    token:
+                                        type: string
+    /api/consultant/calls/count:
+        get:
+            tags: ['Очередь']
+            summary: Количество активных звонков
+            operationId: getCallsCount
+            responses:
+                200:
+                    description: Количество
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    count:
+                                        type: integer
+    /api/consultant/channels:
+        get:
+            tags: ['Очередь']
+            summary: Каналы с активными звонками
+            operationId: getChannels
+            responses:
+                200:
+                    description: Список каналов с количеством звонков, средним и максимальным временем ожидания
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        id:
+                                            type: integer
+                                        title:
+                                            type: string
+                                        prefix:
+                                            type: string
+                                        count:
+                                            type: integer
+                                        avg:
+                                            type: string
+                                        max:
+                                            type: string
+    /api/consultant/accept-next:
+        post:
+            tags: ['Очередь']
+            summary: Принять следующий звонок
+            operationId: acceptNext
+            responses:
+                400:
+                    description: Очередь пуста
+                200:
+                    description: Информация о звонке
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: integer
+                                    num:
+                                        type: integer
+                                    prefix:
+                                        type: string
+                                    waitStart:
+                                        type: string
+                                    acceptedAt:
+                                        type: string
+                                    closedAt:
+                                        type: string
+                                    channel:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: integer
+                                            title:
+                                                type: string
+                                            prefix:
+                                                type: string
+                                    consultant:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: integer
+                                            email:
+                                                type: string
+                                            displayName:
+                                                type: string
+    /api/consultant/accept-next/{id}:
+        post:
+            tags: ['Очередь']
+            summary: Принять следующий звонок по каналу
+            operationId: acceptNextByChannel
+            parameters:
+              - name: id
+                in: path
+                required: true
+                schema:
+                    type: integer
+            responses:
+                400:
+                    description: Очередь пуста
+                200:
+                    description: Информация о звонке
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        type: integer
+                                    num:
+                                        type: integer
+                                    prefix:
+                                        type: string
+                                    waitStart:
+                                        type: string
+                                    acceptedAt:
+                                        type: string
+                                    closedAt:
+                                        type: string
+                                    channel:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: integer
+                                            title:
+                                                type: string
+                                            prefix:
+                                                type: string
+                                    consultant:
+                                        type: object
+                                        properties:
+                                            id:
+                                                type: integer
+                                            email:
+                                                type: string
+                                            displayName:
+                                                type: string
+    /api/consultant/status:
+        put:
+            tags: ['Очередь']
+            summary: Обновить свой статус
+            operationId: updateStatus
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                              - status
+                            properties:
+                                status:
+                                    type: string
+                                    enum:
+                                        - pause
+                                        - wait
+                                        - serve
+                                callId:
+                                    type: string
+                                increment:
+                                    type: integer
+            responses:
+                204:
+                    description: Статус обновлён
+    /api/consultant/password:
+        put:
+            tags: ['Профиль']
+            summary: Обновить пароль
+            operationId: updatePassword
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                password:
+                                    type: string
+            responses:
+                204:
+                    description: Пароль обновлён
+    /api/messages/{callId}/:
+        get:
+            tags: ['Чат']
+            summary: Список сообщний
+            operationId: getMessages
+            parameters:
+              - name: callId
+                in: path
+                required: true
+                schema:
+                    type: string
+            responses:
+                200:
+                    description: Список сообщений
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        id:
+                                            readOnly: true
+                                            type: integer
+                                        name:
+                                            type: string
+                                        message:
+                                            type: string
+                                        fileSize:
+                                            type: integer
+                                        filePath:
+                                            type: string
+                                        fileName:
+                                            type: string
+                                        imageUrl:
+                                            type: string
+                                        timeStamp:
+                                            readOnly: true
+                                            type: string
+                                        authorId:
+                                            type: integer
+                                        status:
+                                            readOnly: true
+                                            type: integer
+                                            enum: [0, 1, 2]
+        post:
+            tags: ['Чат']
+            summary: Отправить сообщение
+            operationId: sendMessage
+            parameters:
+              - name: callId
+                in: path
+                required: true
+                schema:
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                    fileSize:
+                                        type: integer
+                                    filePath:
+                                        type: string
+                                    fileName:
+                                        type: string
+                                    imageUrl:
+                                        type: string
+            responses:
+                200:
+                    description: Список сообщений
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    id:
+                                        readOnly: true
+                                        type: integer
+                                    name:
+                                        type: string
+                                    message:
+                                        type: string
+                                    fileSize:
+                                        type: integer
+                                    filePath:
+                                        type: string
+                                    fileName:
+                                        type: string
+                                    imageUrl:
+                                        type: string
+                                    timeStamp:
+                                        readOnly: true
+                                        type: string
+                                    authorId:
+                                        type: integer
+                                    status:
+                                        readOnly: true
+                                        type: integer
+                                        enum: [0, 1, 2]
+    /api/messages/{callId}/count:
+        get:
+            tags: ['Чат']
+            summary: Количество сообщний
+            operationId: getMessagesCount
+            parameters:
+              - name: callId
+                in: path
+                required: true
+                schema:
+                    type: string
+            responses:
+                200:
+                    description: Количество
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    count:
+                                        readOnly: true
+                                        type: integer
+    /api/messages/{callId}/read:
+        post:
+            tags: ['Чат']
+            summary: Прочитать сообщения
+            operationId: readMessages
+            parameters:
+              - name: callId
+                in: path
+                required: true
+                schema:
+                    type: string
+            responses:
+                204:
+                    description: Выполнено
