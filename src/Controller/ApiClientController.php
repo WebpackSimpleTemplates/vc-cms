@@ -10,7 +10,6 @@ use App\Repository\HistoryRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PushRepository;
-use DateInterval;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,6 +19,14 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/client')]
 final class ApiClientController extends AbstractController
 {
+    #[Route('/avg-wait-time', name: 'avg_wait_time')]
+    public function avgWaitTime(CallRepository $repository)
+    {
+        return $this->json([
+            "time" => $repository->getAvgWaitTime(),
+        ]);
+    }
+
     #[Route('/start/{channel}', name: 'api_start_call', methods:['POST'])]
     public function index(
         #[MapRequestPayload] StartCallPayload $payload,

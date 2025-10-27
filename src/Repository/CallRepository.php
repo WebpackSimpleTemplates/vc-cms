@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Call;
 use App\Entity\Channel;
 use App\Entity\User;
+use DateInterval;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
@@ -207,5 +208,26 @@ class CallRepository extends ServiceEntityRepository
 
 
         return ($qb->getQuery()->getSingleColumnResult()[0] ?? 0) + 1;
+    }
+
+    public function getAvgWaitTime() {
+        $datetime = DateTime::createFromFormat("Y-m-d H:i:s", date("Y-m-d")." 00:00:00");
+
+        $datetime->add(DateInterval::createFromDateString("-7 day"));
+
+        $qb = $this->createQueryBuilder('c');
+
+        $qb->where("c.acceptedAt IS NOT NULL");
+        // $qb->andWhere("c.channel = :channel");
+        $qb->andWhere("c.waitStart > :datetime");
+        $qb->setParameter("datetime", $datetime);
+
+        $qb->select(["AVG(c.acceptedAt - c.waitStart) as time"]);
+
+        $interval = ($qb->getQuery()->getSingleColumnResult()[0] ?? 0);
+
+        $comps = explode(":", $interval);
+
+        return ((int) $comps[0]) * 60 * 60 + ((int) $comps[1]) * 60 + ((int) $comps[2]);
     }
 }

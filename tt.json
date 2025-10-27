@@ -1,16 +1,16 @@
 {
-    "message": "Uncaught PHP Exception RuntimeException: \"Unable to create the cache directory (/app/var/cache/prod/twig/ba).\" at FilesystemCache.php line 53",
+    "message": "Uncaught PHP Exception RuntimeException: \"Controller \"App\\Controller\\ReportsController::channels\" requires the \"$paginator\" argument that could not be resolved. Either the argument is nullable and no null value has been provided, no default value has been provided or there is a non-optional argument after this one.\" at ArgumentResolver.php line 122",
     "context": {
         "exception": {
             "class": "RuntimeException",
-            "message": "Unable to create the cache directory (/app/var/cache/prod/twig/ba).",
+            "message": "Controller \"App\\Controller\\ReportsController::channels\" requires the \"$paginator\" argument that could not be resolved. Either the argument is nullable and no null value has been provided, no default value has been provided or there is a non-optional argument after this one.",
             "code": 0,
-            "file": "/app/vendor/twig/twig/src/Cache/FilesystemCache.php:53"
+            "file": "/app/vendor/symfony/http-kernel/Controller/ArgumentResolver.php:122"
         }
     },
     "level": 500,
     "level_name": "CRITICAL",
     "channel": "request",
-    "datetime": "2025-10-23T13:21:31.765829+00:00",
+    "datetime": "2025-10-24T16:46:02.978612+00:00",
     "extra": {}
 }

@@ -27,6 +27,13 @@ final class ApiMessagesController extends AbstractController
 
         return $this->json($messages);
     }
+    #[Route('/count', name: 'api_messages_count', methods:["GET"])]
+    public function count(Call $call, MessageRepository $messageRepository): JsonResponse
+    {
+        $count = $messageRepository->count(["call" => $call]);
+
+        return $this->json(["count" => $count]);
+    }
 
 
     #[Route('/', name:'api_send_message', methods:['POST'])]
@@ -65,10 +72,10 @@ final class ApiMessagesController extends AbstractController
         $entityManager->persist($message);
         $entityManager->flush();
 
-        return new Response(null, 204);
+        return $this->json($message);
     }
 
-    #[Route('/read', name:'api_read_messages', methods:['PUT'])]
+    #[Route('/read', name:'api_read_messages', methods:['PUT', 'POST'])]
     public function read(
         Call $call,
         MessageRepository $messageRepository,

@@ -55,12 +55,13 @@ security:
         - { path: ^/api/files, roles: PUBLIC_ACCESS }
         - { path: ^/api/client, roles: PUBLIC_ACCESS }
         - { path: ^/api/messages, roles: PUBLIC_ACCESS }
+        - { path: ^/api/test, roles: PUBLIC_ACCESS }
+        - { path: ^/api/consultant, roles: ROLE_OPERATOR }
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/user/profile, roles: ROLE_USER }
         - { path: ^/monitoring, roles: ROLE_READER }
         - { path: ^/user, roles: ROLE_ADMIN }
         - { path: ^/channel, roles: ROLE_ADMIN }
-        - { path: ^/api/consultant, roles: ROLE_OPERATOR }
         - { path: ^/, roles: ROLE_USER }
 
 when@test:
