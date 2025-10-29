@@ -2,8 +2,10 @@
     <div class="join">
         {% if first is defined and current != first %}
             <a class="join-item btn" href="{{ path(route, knp_pagination_query(query, first, options)) }}"><<</a>
+            <a class="join-item btn" href="{{ path(route, knp_pagination_query(query, current - 1, options)) }}"><</a>
         {% else %}
             <a class="join-item btn btn-disabled"><<</a>
+            <a class="join-item btn btn-disabled"><</a>
         {% endif %}
         {% for page in pagesInRange %}
             {% if page != current %}
@@ -15,8 +17,10 @@
             {% endif %}
         {% endfor %}
         {% if last is defined and current != last %}
+            <a class="join-item btn" href="{{ path(route, knp_pagination_query(query, current + 1, options)) }}">></a>
             <a class="join-item btn" href="{{ path(route, knp_pagination_query(query, last, options)) }}">>></a>
         {% else %}
+            <a class="join-item btn btn-disabled">></a>
             <a class="join-item btn btn-disabled">>></a>
         {% endif %}
     </div>

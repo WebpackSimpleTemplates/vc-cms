@@ -45,7 +45,7 @@ class CallReportsRepository extends ServiceEntityRepository
             return "00:00:00";
         }
 
-        return explode(",", $val)[0];
+        return explode(".", explode(",", $val)[0])[0];
     }
 
     function fNum(null|int|string $val)

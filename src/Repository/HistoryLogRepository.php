@@ -75,6 +75,8 @@ class HistoryLogRepository extends ServiceEntityRepository
             ;
         }
 
+        $qb->orderBy("l.datetime", "DESC");
+
         return $qb;
     }
 }

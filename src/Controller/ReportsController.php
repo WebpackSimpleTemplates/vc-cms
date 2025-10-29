@@ -94,17 +94,17 @@ final class ReportsController extends AbstractController
 
         foreach ($this->repository->getRejectedCallsForChannels($filter, $channels) as $rows) {
             $result[$rows['channel']]["rejected"] = $rows['rejected'];
-            $result[$rows['channel']]["avgWaitRe"] = $rows['avgWaitRe'];
+            $result[$rows['channel']]["avgWaitRe"] = $this->repository->fInter($rows['avgWaitRe']);
             $result[$rows['channel']]["maxWaitRe"] = $rows['maxWaitRe'];
             $result[$rows['channel']]["minWaitRe"] = $rows['minWaitRe'];
         }
 
         foreach ($this->repository->getAcceptedCallsForChannels($filter, $channels) as $rows) {
             $result[$rows['channel']]["accepted"] = $rows['accepted'];
-            $result[$rows['channel']]["avgServ"] = $rows['avgServ'];
+            $result[$rows['channel']]["avgServ"] = $this->repository->fInter($rows['avgServ']);
             $result[$rows['channel']]["maxServ"] = $rows['maxServ'];
             $result[$rows['channel']]["minServ"] = $rows['minServ'];
-            $result[$rows['channel']]["avgWaitAc"] = $rows['avgWaitAc'];
+            $result[$rows['channel']]["avgWaitAc"] = $this->repository->fInter($rows['avgWaitAc']);
             $result[$rows['channel']]["maxWaitAc"] = $rows['maxWaitAc'];
             $result[$rows['channel']]["minWaitAc"] = $rows['minWaitAc'];
         }
