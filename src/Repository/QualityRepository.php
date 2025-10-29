@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Call;
 use App\Entity\Channel;
 use App\Entity\Quality;
 use App\Entity\User;
@@ -60,5 +61,25 @@ class QualityRepository extends ServiceEntityRepository
         $qb->setParameter("uid", $user->getId());
 
         return $qb;
+    }
+
+    public function getQualitiesForCall(Call $call) {
+        $qb = $this->getMany();
+
+        $qb->where("q.isMain = true");
+
+        $qb
+            ->leftJoin("q.channels", "ch")
+            ->orWhere("ch.id = :channel")
+            ->setParameter("channel", $call->getChannel());
+
+        if ($call->getConsultant()) {
+            $qb
+                ->leftJoin("q.consultants", "c")
+                ->orWhere("c.id = :consultant")
+                ->setParameter("consultant", $call->getConsultant());
+        }
+
+        return $qb->getQuery()->getResult();
     }
 }

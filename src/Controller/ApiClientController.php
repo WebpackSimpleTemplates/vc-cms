@@ -10,6 +10,7 @@ use App\Repository\HistoryRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PushRepository;
+use App\Repository\QualityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -80,5 +81,11 @@ final class ApiClientController extends AbstractController
         }
 
         return new Response(null, 204);
+    }
+
+    #[Route('/{call}/qualities', name:'api_get_qualities')]
+    public function getQualities(Call $call, QualityRepository $qualityRepository)
+    {
+        return $this->json($qualityRepository->getQualitiesForCall($call));
     }
 }
