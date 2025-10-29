@@ -1,0 +1,43 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Подключенные консультанты{% endblock %}
+
+{% block content %}
+    {{ include('quality/_header.html.twig') }}
+    <div class="card shadow bg-base-100 p-3">
+        {{ include('quality/_users_header.html.twig') }}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>ФИО</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in pagination %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.fullname }}</td>
+                        <td>
+                            <form
+                                method="post"
+                                action="{{ path('app_quality_users_disconnect', { 'id': quality.id, 'user': user.id }) }}"
+                                onsubmit="return confirm('Вы уверены, что хотите отключить канал от данного пользователя?');"
+                            >
+                                <button type="submit" class="btn btn-sm">
+                                    Отключить
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5">Пусто</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {{ knp_pagination_render(pagination) }}
+    </div>
+{% endblock %}

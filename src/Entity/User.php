@@ -66,10 +66,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(options:['default'=> false])]
     private ?bool $isConsultant = null;
 
+    /**
+     * @var Collection<int, Quality>
+     */
+    #[ORM\ManyToMany(targetEntity: Quality::class, mappedBy: 'consultants')]
+    private Collection $qualities;
+
     public function __construct()
     {
         $this->channels = new ArrayCollection();
         $this->calls = new ArrayCollection();
+        $this->qualities = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -290,5 +297,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function isRoot()
     {
         return in_array("ROLE_ROOT", $this->roles);
+    }
+
+    /**
+     * @return Collection<int, Quality>
+     */
+    public function getQualitites(): Collection
+    {
+        return $this->qualities;
+    }
+
+    public function addQuality(Quality $quality): static
+    {
+        if (!$this->qualities->contains($quality)) {
+            $this->qualities->add($quality);
+        }
+
+        return $this;
+    }
+
+    public function removeQuality(Quality $quality): static
+    {
+        $this->qualities->removeElement($quality);
+
+        return $this;
     }
 }

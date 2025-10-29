@@ -1,0 +1,20 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Редактирование оценки качества{% endblock %}
+
+{% block content %}
+{{ include('quality/_header.html.twig') }}
+<div class="card shadow bg-base-100 p-3 max-w-md mx-auto">
+    <div class="text-xl mb-4">Редактирование оценки качества</div>
+
+    {{ include('quality/_form.html.twig') }}
+
+    <div class="h-3" ></div>
+    <form class="ml-auto w-max" method="post" action="{{ path('app_quality_delete', {'id': quality.id}) }}" onsubmit="return confirm('Вы уверны что хотите удалить данную оценку качества?');">
+        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ quality.id) }}">
+        <button class="btn btn-error btn-outline">
+            Удалить
+        </button>
+    </form>
+</div>
+{% endblock %}

@@ -7,17 +7,17 @@
 
 {%- block widget_attributes -%}
     {% set type = type|default('text') %}
-    
+
     {% if type == 'file' %}
         {%- set attr = attr|merge({
-            class: 
+            class:
                 attr.class|default(widget_class|default('file-input w-full'))
                 ~ (errors|length ? ' ' ~ widget_errors_class|default('file-input-error'))
             })
         -%}
-    {% else %} 
+    {% else %}
         {%- set attr = attr|merge({
-            class: 
+            class:
                 attr.class|default(widget_class|default('input w-full '))
                 ~ (errors|length ? ' ' ~ widget_errors_class|default('input-error'))
             })
@@ -59,7 +59,7 @@
 {%- endblock choice_widget_expanded -%}
 
 {%- block checkbox_row -%}
-    {%- set row_attr = row_attr|merge({class: row_attr.class|default(row_class|default('mb-6'))}) -%}
+    {%- set row_attr = row_attr|merge({class: row_attr.class|default(row_class|default('mb-2'))}) -%}
     {%- set widget_attr = {} -%}
     {%- if help -%}
         {%- set widget_attr = {attr: {'aria-describedby': id ~ '_help'}} -%}
@@ -75,7 +75,7 @@
 {%- endblock checkbox_row -%}
 
 {%- block checkbox_widget -%}
-    {%- set widget_class = widget_class|default('checkbox') -%}
+    {%- set widget_class = widget_class|default('checkbox mr-2') -%}
     {{- parent() -}}
 {%- endblock checkbox_widget -%}
 

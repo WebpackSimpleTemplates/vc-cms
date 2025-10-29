@@ -1,0 +1,16 @@
+<div role="tablist" class="tabs tabs-border">
+  <a
+    role="tab"
+    href="{{ path('app_channel_qualities', { 'id': channel.id }) }}"
+    class="tab{% if app.request.attributes.get('_route') == 'app_channel_qualities' %} tab-active{% endif %}"
+  >
+    Подключенные
+  </a>
+  <a
+    role="tab"
+    href="{{ path('app_channel_qualities_all', { 'id': channel.id }) }}"
+    class="tab{% if app.request.attributes.get('_route') == 'app_channel_qualities_all' %} tab-active{% endif %}"
+  >
+    Все
+  </a>
+</div>

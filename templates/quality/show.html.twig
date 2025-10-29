@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Quality{% endblock %}
+
+{% block body %}
+    <h1>Quality</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ quality.id }}</td>
+            </tr>
+            <tr>
+                <th>IsMain</th>
+                <td>{{ quality.isMain ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>IsConsultant</th>
+                <td>{{ quality.isConsultant ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Title</th>
+                <td>{{ quality.title }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ quality.description }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_quality_index') }}">back to list</a>
+
+    <a href="{{ path('app_quality_edit', {'id': quality.id}) }}">edit</a>
+
+    {{ include('quality/_delete_form.html.twig') }}
+{% endblock %}

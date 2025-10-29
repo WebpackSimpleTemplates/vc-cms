@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Channel;
+use App\Entity\Quality;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -62,6 +63,21 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $qb->where("c.id = :cid");
 
         $qb->setParameter("cid", $channel->getId());
+
+        return $qb;
+    }
+
+    public function getQualityUsersQuery(Quality $quality)
+    {
+        $qb = $this->createQueryBuilder('u');
+
+        $qb->orderBy('u.id', 'desc');
+
+        $qb->join("u.qualities", 'q');
+
+        $qb->where("q.id = :qid");
+
+        $qb->setParameter("qid", $quality->getId());
 
         return $qb;
     }

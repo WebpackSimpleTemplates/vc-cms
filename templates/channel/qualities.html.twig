@@ -1,0 +1,43 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Подключенные оценки качества{% endblock %}
+
+{% block content %}
+    {{ include('channel/_header.html.twig') }}
+    <div class="card shadow bg-base-100 p-3">
+        {{ include('channel/_qualities_header.html.twig') }}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Название</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for quality in pagination %}
+                    <tr>
+                        <td>{{ quality.id }}</td>
+                        <td>{{ quality.title }}</td>
+                        <td>
+                            <form
+                                method="post"
+                                action="{{ path('app_channel_qualities_disconnect', { 'id': channel.id, 'quality': quality.id }) }}"
+                                onsubmit="return confirm('Вы уверены, что хотите отключить канал от данного пользователя?');"
+                            >
+                                <button type="submit" class="btn btn-sm">
+                                    Отключить
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5">Пусто</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {{ knp_pagination_render(pagination) }}
+    </div>
+{% endblock %}

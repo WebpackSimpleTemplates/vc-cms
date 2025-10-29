@@ -23,6 +23,13 @@
       >
         Каналы
       </a>
+      <a
+        role="tab"
+        href="{{ path('app_user_qualities', { 'id': user.id }) }}"
+        class="tab{% if app.request.attributes.get('_route') == 'app_user_qualities' or app.request.attributes.get('_route') == 'app_user_qualities_all' %} tab-active{% endif %}"
+      >
+        Оценки качества
+      </a>
     </div>
   {% endif %}
 </div>

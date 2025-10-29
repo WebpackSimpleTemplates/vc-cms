@@ -33,9 +33,17 @@ class Channel
     #[Ignore]
     private Collection $users;
 
+    /**
+     * @var Collection<int, Quality>
+     */
+    #[ORM\ManyToMany(targetEntity: Quality::class, mappedBy: 'channels')]
+    #[Ignore]
+    private Collection $qualities;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->qualities = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -102,6 +110,30 @@ class Channel
         if ($this->users->removeElement($user)) {
             $user->removeChannel($this);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Quality>
+     */
+    public function getQualities(): Collection
+    {
+        return $this->qualities;
+    }
+
+    public function addQuality(Quality $quality): static
+    {
+        if (!$this->qualities->contains($quality)) {
+            $this->qualities->add($quality);
+        }
+
+        return $this;
+    }
+
+    public function removeQuality(Quality $quality): static
+    {
+        $this->qualities->removeElement($quality);
 
         return $this;
     }

@@ -21,5 +21,12 @@
     >
       Консультанты
     </a>
+    <a
+      role="tab"
+      href="{{ path('app_channel_qualities', { 'id': channel.id }) }}"
+      class="tab{% if app.request.attributes.get('_route') == 'app_channel_qualities' or app.request.attributes.get('_route') == 'app_channel_qualities_all' %} tab-active{% endif %}"
+    >
+      Оценки качества
+    </a>
   </div>
 </div>

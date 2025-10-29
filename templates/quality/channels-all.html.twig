@@ -1,0 +1,49 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Все каналы{% endblock %}
+
+{% block content %}
+    {{ include('quality/_header.html.twig') }}
+    <div class="card shadow bg-base-100 p-3">
+        {{ include('quality/_channels_header.html.twig') }}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Префикс</th>
+                    <th>Название</th>
+                    <th>Описание</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for channel in pagination %}
+                    <tr>
+                        <td>{{ channel.id }}</td>
+                        <td>{{ channel.prefix }}</td>
+                        <td>{{ channel.title }}</td>
+                        <td>{{ channel.description }}</td>
+                        <td>
+                            {% if channel.id in connectedIds %}
+                                <button disabled class="btn btn-sm">
+                                    Подключен
+                                </button>
+                            {% else %}
+                                <form method="post" action="{{ path('app_quality_channels_connect', { 'id': quality.id, 'channel': channel.id }) }}">
+                                    <button type="submit" class="btn btn-sm">
+                                        Подключить
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5">Пусто</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {{ knp_pagination_render(pagination) }}
+    </div>
+{% endblock %}

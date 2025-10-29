@@ -1,0 +1,15 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Новая оценка качества{% endblock %}
+
+{% block content %}
+<a class="btn btn-sm mb-2" href="{{ path('app_quality_index') }}">
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0V0z"></path><path d="M15.41 16.59 10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"></path></svg>
+    Оценки качества
+</a>
+<div class="card shadow bg-base-100 p-3 max-w-md mx-auto">
+    <div class="text-xl mb-4">Новая оценка качества</div>
+
+    {{ include('quality/_form.html.twig', {"button_label": "Добавить"}) }}
+</div>
+{% endblock %}

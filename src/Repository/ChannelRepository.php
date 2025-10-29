@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Call;
 use App\Entity\Channel;
+use App\Entity\Quality;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -58,6 +59,21 @@ class ChannelRepository extends ServiceEntityRepository
         $qb->where("u.id = :uid");
 
         $qb->setParameter("uid", $user->getId());
+
+        return $qb;
+    }
+
+    public function getQualityChannelsQuery(Quality $quality)
+    {
+        $qb = $this->createQueryBuilder('c');
+
+        $qb->orderBy('c.id', 'desc');
+
+        $qb->join('c.qualities', 'q');
+
+        $qb->where("q.id = :qid");
+
+        $qb->setParameter("qid", $quality);
 
         return $qb;
     }
