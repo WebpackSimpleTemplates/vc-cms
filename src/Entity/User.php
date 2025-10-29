@@ -72,11 +72,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Quality::class, mappedBy: 'consultants')]
     private Collection $qualities;
 
+    /**
+     * @var Collection<int, QualityResponse>
+     */
+    #[ORM\OneToMany(targetEntity: QualityResponse::class, mappedBy: 'consultant')]
+    private Collection $qualityResponses;
+
     public function __construct()
     {
         $this->channels = new ArrayCollection();
         $this->calls = new ArrayCollection();
         $this->qualities = new ArrayCollection();
+        $this->qualityResponses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -319,6 +326,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function removeQuality(Quality $quality): static
     {
         $this->qualities->removeElement($quality);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, QualityResponse>
+     */
+    public function getQualityResponses(): Collection
+    {
+        return $this->qualityResponses;
+    }
+
+    public function addQualityResponse(QualityResponse $qualityResponse): static
+    {
+        if (!$this->qualityResponses->contains($qualityResponse)) {
+            $this->qualityResponses->add($qualityResponse);
+            $qualityResponse->setConsultant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQualityResponse(QualityResponse $qualityResponse): static
+    {
+        if ($this->qualityResponses->removeElement($qualityResponse)) {
+            // set the owning side to null (unless already changed)
+            if ($qualityResponse->getConsultant() === $this) {
+                $qualityResponse->setConsultant(null);
+            }
+        }
 
         return $this;
     }

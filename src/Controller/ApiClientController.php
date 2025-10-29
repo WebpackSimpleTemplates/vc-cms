@@ -4,6 +4,9 @@ namespace App\Controller;
 
 use App\Entity\Call;
 use App\Entity\Channel;
+use App\Entity\Quality;
+use App\Entity\QualityResponse;
+use App\Payload\QualityPayload;
 use App\Payload\StartCallPayload;
 use App\Repository\CallRepository;
 use App\Repository\HistoryRepository;
@@ -11,6 +14,7 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PushRepository;
 use App\Repository\QualityRepository;
+use App\Repository\QualityResponseRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -87,5 +91,35 @@ final class ApiClientController extends AbstractController
     public function getQualities(Call $call, QualityRepository $qualityRepository)
     {
         return $this->json($qualityRepository->getQualitiesForCall($call));
+    }
+
+    #[Route('/{call}/quality/{quality}', name:'api_add_quality_response', methods:['POST'])]
+    public function addQualityResponse(
+        #[MapRequestPayload()] QualityPayload $payload,
+        Call $call,
+        Quality $quality,
+        EntityManagerInterface $entityManager,
+        QualityResponseRepository $repository
+    )
+    {
+        $old = $repository->findOneBy(["call" => $call, "quality" => $quality]);
+
+        if ($old) {
+            $entityManager->remove($old);
+        }
+
+        $response = new QualityResponse();
+
+        $response->setValue($payload->quality);
+        $response->setQuality($quality);
+        $response->setCall($call);
+        $response->setChannel($call->getChannel());
+        $response->setConsultant($call->getConsultant());
+
+        $entityManager->persist($response);
+
+        $entityManager->flush();
+
+        return new Response('', 204);
     }
 }

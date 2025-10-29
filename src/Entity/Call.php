@@ -59,9 +59,16 @@ class Call
     #[ORM\Column(type: Types::SMALLINT)]
     private ?int $weekday = null;
 
+    /**
+     * @var Collection<int, QualityResponse>
+     */
+    #[ORM\OneToMany(targetEntity: QualityResponse::class, mappedBy: 'call', orphanRemoval: true)]
+    private Collection $qualityResponses;
+
     public function __construct()
     {
         $this->messages = new ArrayCollection();
+        $this->qualityResponses = new ArrayCollection();
     }
 
     public function getId(): ?UuidInterface
@@ -294,5 +301,35 @@ class Call
     public function formatClosedAt(): string
     {
         return $this->closedAt ? $this->closedAt->format("d.m.Y H:i:s") : "-";
+    }
+
+    /**
+     * @return Collection<int, QualityResponse>
+     */
+    public function getQualityResponses(): Collection
+    {
+        return $this->qualityResponses;
+    }
+
+    public function addQualityResponse(QualityResponse $qualityResponse): static
+    {
+        if (!$this->qualityResponses->contains($qualityResponse)) {
+            $this->qualityResponses->add($qualityResponse);
+            $qualityResponse->setCall($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQualityResponse(QualityResponse $qualityResponse): static
+    {
+        if ($this->qualityResponses->removeElement($qualityResponse)) {
+            // set the owning side to null (unless already changed)
+            if ($qualityResponse->getCall() === $this) {
+                $qualityResponse->setCall(null);
+            }
+        }
+
+        return $this;
     }
 }

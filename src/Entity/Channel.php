@@ -40,10 +40,18 @@ class Channel
     #[Ignore]
     private Collection $qualities;
 
+    /**
+     * @var Collection<int, QualityResponse>
+     */
+    #[ORM\OneToMany(targetEntity: QualityResponse::class, mappedBy: 'channel', orphanRemoval: true)]
+    #[Ignore]
+    private Collection $qualityResponses;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->qualities = new ArrayCollection();
+        $this->qualityResponses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -134,6 +142,36 @@ class Channel
     public function removeQuality(Quality $quality): static
     {
         $this->qualities->removeElement($quality);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, QualityResponse>
+     */
+    public function getQualityResponses(): Collection
+    {
+        return $this->qualityResponses;
+    }
+
+    public function addQualityResponse(QualityResponse $qualityResponse): static
+    {
+        if (!$this->qualityResponses->contains($qualityResponse)) {
+            $this->qualityResponses->add($qualityResponse);
+            $qualityResponse->setChannel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQualityResponse(QualityResponse $qualityResponse): static
+    {
+        if ($this->qualityResponses->removeElement($qualityResponse)) {
+            // set the owning side to null (unless already changed)
+            if ($qualityResponse->getChannel() === $this) {
+                $qualityResponse->setChannel(null);
+            }
+        }
 
         return $this;
     }

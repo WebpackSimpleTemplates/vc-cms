@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Attribute\Ignore;
 
 #[ORM\Entity(repositoryClass: QualityRepository::class)]
 class Quality
@@ -20,30 +21,43 @@ class Quality
      * @var Collection<int, Channel>
      */
     #[ORM\ManyToMany(targetEntity: Channel::class, inversedBy: 'qualities')]
+    #[Ignore]
     private Collection $channels;
 
     /**
      * @var Collection<int, User>
      */
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'qualities')]
+    #[Ignore]
     private Collection $consultants;
 
     #[ORM\Column]
+    #[Ignore]
     private ?bool $isMain = null;
 
     #[ORM\Column]
+    #[Ignore]
     private ?bool $isConsultant = null;
 
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Ignore]
     private ?string $description = null;
+
+    /**
+     * @var Collection<int, QualityResponse>
+     */
+    #[ORM\OneToMany(targetEntity: QualityResponse::class, mappedBy: 'quality', orphanRemoval: true)]
+    #[Ignore]
+    private Collection $responses;
 
     public function __construct()
     {
         $this->channels = new ArrayCollection();
         $this->consultants = new ArrayCollection();
+        $this->responses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -143,6 +157,36 @@ class Quality
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, QualityResponse>
+     */
+    public function getResponses(): Collection
+    {
+        return $this->responses;
+    }
+
+    public function addResponse(QualityResponse $response): static
+    {
+        if (!$this->responses->contains($response)) {
+            $this->responses->add($response);
+            $response->setQuality($this);
+        }
+
+        return $this;
+    }
+
+    public function removeResponse(QualityResponse $response): static
+    {
+        if ($this->responses->removeElement($response)) {
+            // set the owning side to null (unless already changed)
+            if ($response->getQuality() === $this) {
+                $response->setQuality(null);
+            }
+        }
 
         return $this;
     }
