@@ -4,5 +4,31 @@
 
 {% block content %}
 {% include "reports/_header.html.twig" %}
-По оценкам качества
+<div class="card p-3 bg-base-100 shadow overflow-auto">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Дата/Время</th>
+                <th>Название</th>
+                <th>Звонок</th>
+                <th>Консультант</th>
+                <th>Канал</th>
+                <th>Оценка</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for res in pagination %}
+                <tr>
+                    <td>{{ res.call.formatWaitStart }}</td>
+                    <td>{{ res.quality.title }}</td>
+                    <td>{{ res.call.prefix }} {{ res.call.num }}</td>
+                    <td>{{ res.consultant ? res.consultant.displayName : '-' }}</td>
+                    <td>{{ res.channel.title }}</td>
+                    <td>{{ res.value }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {{ knp_pagination_render(pagination) }}
+</div>
 {% endblock %}

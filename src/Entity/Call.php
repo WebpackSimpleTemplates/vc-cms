@@ -33,7 +33,7 @@ class Call
     #[ORM\Column]
     private ?\DateTime $waitStart = null;
 
-    #[ORM\ManyToOne(inversedBy: 'calls')]
+    #[ORM\ManyToOne(inversedBy: 'calls', fetch:'EAGER')]
     private ?User $consultant = null;
 
     #[ORM\Column(nullable: true)]
@@ -42,7 +42,7 @@ class Call
     #[ORM\Column(nullable: true)]
     private ?\DateTime $closedAt = null;
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(fetch:'EAGER')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Channel $channel = null;
 
@@ -178,16 +178,29 @@ class Call
         $this->acceptedAt = new DateTime();
     }
 
+    public function getDuration()
+    {
+        $endWait = new DateTime();
+
+        if ($this->closedAt) {
+            $endWait = $this->closedAt;
+        }
+
+        $timestamp = $endWait->getTimestamp() - $this->waitStart->getTimestamp();
+
+        return date("H:i:s", $timestamp);
+    }
+
     public function getIntervalWait()
     {
         $endWait = new DateTime();
 
-        if ($this->acceptedAt) {
-            $endWait = $this->acceptedAt;
-        }
-
         if ($this->closedAt) {
             $endWait = $this->closedAt;
+        }
+
+        if ($this->acceptedAt) {
+            $endWait = $this->acceptedAt;
         }
 
         $timestamp = $endWait->getTimestamp() - $this->waitStart->getTimestamp();

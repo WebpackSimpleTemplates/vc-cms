@@ -19,13 +19,13 @@ class GraphRepository
         return $value;
     }
 
-    public function createGraph($width, $height, $vertical = false): Graph
+    public function createGraph($width, $height, $vertical = false, $left = 45): Graph
     {
         $graph = new Graph($width,$height,'auto');
         $graph->SetScale("textlin");
 
         if ($vertical) {
-            $graph->Set90AndMargin(45,20,30,10);
+            $graph->Set90AndMargin($left,20,30,10);
         }
         $graph->SetBox(false);
 

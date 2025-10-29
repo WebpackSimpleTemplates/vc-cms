@@ -8,54 +8,52 @@
     <table class="table">
         <thead>
             <tr>
+                <th>Время</th>
                 <th>Номер</th>
                 <th>Статус</th>
                 <th>Канал</th>
                 <th>Консультант</th>
-                <th>Начало звонка</th>
-                <th>Принятие звонка</th>
-                <th>Конец звонка</th>
-                <th>Время ожидания</th>
-                <th>Время обслуживания</th>
+                <th>Длительность</th>
+                <th>Средняя оценка</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
-            {% for call in pagination %}
-                <tr {% if not call.acceptedAt %}class="bg-error/15"{% endif %}>
+            {% for call in result %}
+                <tr {% if not call.accepted %}class="bg-error/15"{% endif %}>
                     <td>
-                        {{ call.prefix }} {{ call.num }}
+                        {{ call.formatWaitStart }}
                     </td>
-                    {% if call.acceptedAt %}
-                        <td class="text-success flex flex-row items-center gap-2">
+                    <td>
+                        {{ call.num }}
+                    </td>
+                    {% if call.accepted %}
+                        <td class="text-success flex flex-row h-max items-center gap-2">
                             <img class="w-3 h-3" src="/images/call-received.svg">
                             Принят
                         </td>
                     {% else %}
-                        <td class="text-error flex flex-row items-center gap-2">
+                        <td class="text-error flex flex-row h-max items-center gap-2">
                             <img class="w-3 h-3" src="/images/call-missed.svg">
                             Пропущен
                         </td>
                     {% endif %}
                     <td>
-                        {{ call.channel.title }}
+                        {{ call.channel }}
                     </td>
                     <td>
-                        {{ call.consultantName }}
+                        {{ call.consultant }}
                     </td>
                     <td>
-                        {{ call.formatWaitStart }}
+                        {{ call.duration }}
                     </td>
                     <td>
-                        {{ call.formatAcceptedAt }}
+                        {{ call.quality ? call.quality|round : '-' }}
                     </td>
                     <td>
-                        {{ call.formatClosedAt }}
-                    </td>
-                    <td>
-                        {{ call.intervalWait }}
-                    </td>
-                    <td>
-                        {{ call.intervalProcess }}
+                        <a href="{{ path('app_call_report', {'call' : call.id}) }}" class="btn btn-xs">
+                            Подробнее
+                        </a>
                     </td>
                 </tr>
             {% endfor %}

@@ -4,6 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Call;
 use App\Entity\Channel;
+use App\Entity\Quality;
+use App\Entity\QualityResponse;
 use App\Entity\User;
 use App\Payload\ReportFilterPayload;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -263,6 +265,65 @@ class CallReportsRepository extends ServiceEntityRepository
         $this->mapQueryCalls($qb, $filter);
 
         return $qb;
+    }
+
+    public function getQualities(ReportFilterPayload $filter)
+    {
+        $qb = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->from(Quality::class, "q")
+            ->leftJoin("q.responses", "qr")
+            ->leftJoin("qr.call", "c")
+        ;
+
+        $this->mapQueryCalls($qb, $filter);
+
+        return $qb;
+    }
+
+    public function getQualitiesResults(ReportFilterPayload $filter)
+    {
+        $qb = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->from(QualityResponse::class, "qr")
+            ->join("qr.call", "c")
+            ->where("1 = 1");
+
+        $this->mapQueryCalls($qb, $filter);
+
+        return $qb;
+    }
+
+    public function getRatesForConsultants(array $userIds, ReportFilterPayload $filter)
+    {
+        $qb = $this->getQualitiesResults($filter)
+            ->leftJoin("qr.quality", "q")
+            ->andWhere("qr.consultant IN (:userIds)")
+            ->andWhere("q.isConsultant = true")
+            ->setParameter("userIds", $userIds)
+            ->groupBy('qr.consultant')
+            ->select([
+                'IDENTITY(qr.consultant) as id',
+                'AVG(qr.value) as quality'
+            ]);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getRatesForCalls(array $callIds)
+    {
+        $qb = $this->getEntityManager()
+            ->createQueryBuilder()
+            ->from(QualityResponse::class, "qr")
+            ->where("qr.call IN (:callIds)")
+            ->setParameter("callIds", $callIds)
+            ->groupBy('qr.call')
+            ->select([
+                'IDENTITY(qr.call) as id',
+                'AVG(qr.value) as quality'
+            ]);
+
+        return $qb->getQuery()->getResult();
     }
 
     public function getChannelsForClosedCalls(ReportFilterPayload $filter) {

@@ -156,5 +156,16 @@
             </div>
         </div>
     </div>
+    <div>
+        <div class="font-semibold mb-2">
+            Оценки качества
+        </div>
+        <div class="card max-w-full w-auto p-3 bg-base-100 shadow mb-4 text-xs">
+            <img
+                class="w-[750px] h-[600px]"
+                src="{{ path('app_reports_graph_qualities') }}{{ filter }}"
+            >
+        </div>
+    </div>
 </div>
 {% endblock %}

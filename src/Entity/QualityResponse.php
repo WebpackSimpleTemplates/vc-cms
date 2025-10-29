@@ -13,19 +13,19 @@ class QualityResponse
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'qualityResponses')]
+    #[ORM\ManyToOne(inversedBy: 'qualityResponses', fetch:'EAGER')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Call $call = null;
 
-    #[ORM\ManyToOne(inversedBy: 'responses')]
+    #[ORM\ManyToOne(inversedBy: 'responses', fetch:'EAGER')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Quality $quality = null;
 
-    #[ORM\ManyToOne(inversedBy: 'qualityResponses')]
+    #[ORM\ManyToOne(inversedBy: 'qualityResponses', fetch:'EAGER')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Channel $channel = null;
 
-    #[ORM\ManyToOne(inversedBy: 'qualityResponses')]
+    #[ORM\ManyToOne(inversedBy: 'qualityResponses', fetch:'EAGER')]
     private ?User $consultant = null;
 
     #[ORM\Column]

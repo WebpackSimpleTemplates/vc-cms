@@ -12,13 +12,14 @@
                 <th>Консультант</th>
                 <th>Email</th>
                 <th>Обслужено звонков</th>
-                <th>Макс. время обсл.</th>
-                <th>Средн. время обсл.</th>
-                <th>Мин. время обсл.</th>
+                <th>Макс. обсл.</th>
+                <th>Средн. обсл.</th>
+                <th>Мин. обсл.</th>
+                <th>Общая оценка</th>
             </tr>
         </thead>
         <tbody>
-            {% for user in pagination %}
+            {% for user in result %}
                 <tr>
                     <td>
                         {{ user.id }}
@@ -40,6 +41,9 @@
                     </td>
                     <td>
                         {{ user.min }}
+                    </td>
+                    <td>
+                        {{ user.quality ? user.quality|round : '-' }}
                     </td>
                 </tr>
             {% endfor %}

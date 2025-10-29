@@ -171,4 +171,9 @@ class Message
 
         return $this;
     }
+
+    public function formatTime()
+    {
+        return $this->timeStamp->format("Y-m-d H:i:s");
+    }
 }

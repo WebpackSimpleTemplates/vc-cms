@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
+use Amenadiel\JpGraph\Graph\Graph;
 use Amenadiel\JpGraph\Plot\GroupBarPlot;
-use App\Entity\Channel;
-use App\Entity\User;
+use App\Entity\Call;
 use App\Payload\ReportFilterPayload;
 use App\Repository\CallReportsRepository;
-use App\Repository\ChannelRepository;
 use App\Repository\GraphRepository;
+use Knp\Component\Pager\Paginator;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,8 +22,17 @@ final class ReportsController extends AbstractController
     )
     {}
 
+    #[Route('/reports/call/{call}', name:'app_call_report')]
+    public function call(Call $call)
+    {
+        return $this->render('reports/call.html.twig', [
+            'time' => date('d.m.Y H:i:s'),
+            'call' => $call,
+        ]);
+    }
+
     #[Route('/reports', name: 'app_reports')]
-    public function index(Request $request): Response
+    public function index(Request $request, PaginatorInterface $paginator): Response
     {
         $filter = ReportFilterPayload::createFromRequest($request);
 
@@ -41,14 +50,47 @@ final class ReportsController extends AbstractController
     {
         $filter = ReportFilterPayload::createFromRequest($request);
 
+        $pagination = $paginator->paginate(
+            $this->repository
+                ->getClosed($filter)
+                ->orderBy("c.waitStart", "DESC"),
+            $request->query->getInt('page', 1),
+        );
+
+        $calls = $pagination->getItems();
+
+        $result = [];
+
+        $rates = $this->repository->getRatesForCalls(array_map(fn(Call $raw) => $raw->getId(), $calls));
+
+        foreach ($calls as $call) {
+            /** @var Call $call */
+
+            $raw = [
+                'id' => $call->getId(),
+                'formatWaitStart' => $call->formatWaitStart(),
+                'accepted' => !!$call->getAcceptedAt(),
+                'channel' => $call->getChannel()->getTitle(),
+                'consultant' => $call->getConsultantName(),
+                'duration' => $call->getDuration(),
+                'quality' => null,
+                'num' => $call->getPrefix().' '.$call->getNum(),
+            ];
+
+            foreach ($rates as $rate) {
+                if ($raw['id'] == $rate['id']) {
+                    $raw['quality'] = $rate['quality'];
+                    break;
+                }
+            }
+
+            $result[] = $raw;
+        }
+
         return $this->render('reports/calls.html.twig', [
             'filter' => $filter,
-            'pagination' => $paginator->paginate(
-                $this->repository
-                    ->getClosed($filter)
-                    ->orderBy("c.waitStart", "DESC"),
-                $request->query->getInt('page', 1),
-            ),
+            'pagination' => $pagination,
+            'result' => $result,
         ]);
     }
 
@@ -57,12 +99,29 @@ final class ReportsController extends AbstractController
     {
         $filter = ReportFilterPayload::createFromRequest($request);
 
+        $pagination = $paginator->paginate(
+            $this->repository->getConsultants($filter),
+            $request->query->getInt('page', 1),
+        );
+
+        $result = $pagination->getItems();
+
+        $rates = $this->repository->getRatesForConsultants(array_map(fn(array $raw) => $raw['id'], $result), $filter);
+
+        for ($i=0; $i < count($result); $i++) {
+            $result[$i]['quality'] = null;
+            foreach ($rates as $rate) {
+                if ($result[$i]['id'] == $rate['id']) {
+                    $result[$i]['quality'] = $rate['quality'];
+                    break;
+                }
+            }
+        }
+
         return $this->render('reports/consultants.html.twig', [
             'filter' => $filter,
-            'pagination' => $paginator->paginate(
-                $this->repository->getConsultants($filter),
-                $request->query->getInt('page', 1),
-            ),
+            'pagination' => $pagination,
+            'result' => $result,
         ]);
     }
 
@@ -117,12 +176,16 @@ final class ReportsController extends AbstractController
     }
 
     #[Route('/reports/qualities', name: 'app_reports_qualities')]
-    public function qualities(Request $request): Response
+    public function qualities(PaginatorInterface $paginator, Request $request): Response
     {
         $filter = ReportFilterPayload::createFromRequest($request);
 
         return $this->render('reports/qualities.html.twig', [
             'filter' => $filter,
+            'pagination' => $paginator->paginate(
+                $this->repository->getQualitiesResults($filter)->select('qr'),
+                $request->query->getInt('page', 1),
+            ),
         ]);
     }
 
@@ -197,6 +260,48 @@ final class ReportsController extends AbstractController
             $graphRepository->createBarPlot("#ff6266", $rejected),
             $graphRepository->createBarPlot("#00a43b", $accepted),
         ]));
+
+        return new Response($graph->Stroke(), 200, ['Content-Type' => 'image/jpeg']);
+    }
+
+    #[Route('/reports/graph/qualities', name: 'app_reports_graph_qualities')]
+    public function graphQualities(
+        Request $request,
+        GraphRepository $graphRepository,
+    ): Response
+    {
+        $filter = ReportFilterPayload::createFromRequest($request);
+
+        $qualities =$this->repository->getQualities($filter)
+            ->select([
+                "q.title as title",
+                "AVG(qr.value) as avg",
+            ])
+            ->groupBy("q.id", "q.title")
+            ->getQuery()
+            ->getResult()
+        ;
+
+        $data = [];
+
+        foreach ($qualities as $quality) {
+            $data[$quality['title']] = (float) $quality['avg'];
+        }
+
+        $graph = new Graph(750,600,'auto');
+        $graph->SetScale("textlin", 0, 10);
+
+        $graph->Set90AndMargin(150,20,30,10);
+        $graph->SetBox(false);
+
+        $graph->ygrid->SetFill(false);
+
+        $graph->yaxis->HideLine(false);
+        $graph->yaxis->HideTicks(false,false);
+
+        $graph->xaxis->SetTickLabels($graphRepository->getLables($data));
+
+        $graph->Add($graphRepository->createBarPlot("#05588f", $data));
 
         return new Response($graph->Stroke(), 200, ['Content-Type' => 'image/jpeg']);
     }

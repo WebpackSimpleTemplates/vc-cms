@@ -19,7 +19,8 @@ class QualityType extends AbstractType
                 "label" => "Название"
             ])
             ->add('description', TextareaType::class, [
-                "label" => "Описание"
+                "label" => "Описание",
+                'required' => false
             ])
             ->add('isMain', CheckboxType::class, [
                 "label" => "Общая для всех",

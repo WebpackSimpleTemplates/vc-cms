@@ -8,8 +8,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-use Amenadiel\JpGraph\Graph;
-use Amenadiel\JpGraph\Plot\BarPlot;
 use App\Repository\ChannelRepository;
 use App\Repository\GraphRepository;
 use Knp\Component\Pager\Paginator;

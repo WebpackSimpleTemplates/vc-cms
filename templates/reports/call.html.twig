@@ -1,0 +1,190 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Звонок {{ call.prefix }} {{ call.num }}{% endblock %}
+
+{% block content %}
+<button class="btn btn-sm mb-2" onclick="history.back()">
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0z"></path><path d="M11.67 3.87 9.9 2.1 0 12l9.9 9.9 1.77-1.77L3.54 12z"></path></svg>
+    Назад
+</button>
+<div class="card p-3 bg-base-100 shadow overflow-auto">
+    <div class="flex flex-row gap-2 items-start w-full">
+        <div class="text-2xl font-semibold">
+            Информация о звонке
+        </div>
+        <div class="text-sm text-secondary">
+            Время на сервере: {{ time }}
+        </div>
+    </div>
+    <table class="table mt-3">
+        <tbody>
+            <tr>
+                <td class="w-max bg-base-200">
+                    Номер
+                </td>
+                <td class="w-full">
+                    {{ call.prefix }} {{ call.num }}
+                </td>
+            </tr>
+            <tr>
+                <td class="w-max bg-base-200">
+                    Канал
+                </td>
+                <td class="w-full">
+                    {{ call.channel.title }}
+                </td>
+            </tr>
+            <tr>
+                <td class="w-max bg-base-200">
+                    Статус
+                </td>
+                {% if call.acceptedAt %}
+                    <td class="text-success flex flex-row w-full items-center gap-2">
+                        <img class="w-3 h-3" src="/images/call-received.svg">
+                        Принят
+                    </td>
+                {% else %}
+                    <td class="text-error flex flex-row w-full items-center gap-2">
+                        <img class="w-3 h-3" src="/images/call-missed.svg">
+                        Пропущен
+                    </td>
+                {% endif %}
+            </tr>
+            <tr>
+                <td class="w-max bg-base-200">
+                    Консультант
+                </td>
+                <td class="w-full">
+                    {{ call.consultantName }}
+                </td>
+            </tr>
+            <tr>
+                <td class="w-max bg-base-200">
+                    Длительность
+                </td>
+                <td class="w-full">
+                    {{ call.duration }}
+                </td>
+            </tr>
+            <tr>
+                <td class="w-max bg-base-200">
+                    Ожидание
+                </td>
+                <td class="w-full">
+                    {{ call.intervalWait }}
+                </td>
+            </tr>
+            <tr>
+                <td class="w-max bg-base-200">
+                    Обслуживание
+                </td>
+                <td class="w-full">
+                    {{ call.intervalProcess }}
+                </td>
+            </tr>
+            <tr>
+                <td class="w-max bg-base-200">
+                    Начат
+                </td>
+                <td class="w-full">
+                    {{ call.formatWaitStart }}
+                </td>
+            </tr>
+            <tr>
+                <td class="w-max bg-base-200">
+                    Принят
+                </td>
+                <td class="w-full">
+                    {{ call.formatAcceptedAt }}
+                </td>
+            </tr>
+            <tr>
+                <td class="w-max bg-base-200">
+                    Закончен
+                </td>
+                <td class="w-full">
+                    {{ call.formatClosedAt }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<div class="card p-3 bg-base-100 shadow overflow-auto">
+    <div class="flex flex-row gap-2 items-start w-full">
+        <div class="text-2xl font-semibold">
+            Чат
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr class="bg-base-200">
+                <th>Время</th>
+                <th>Отправитель</th>
+                <th>Сообщение</th>
+                <th>Файл</th>
+                <th>Статус</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for msg in call.messages %}
+                <tr>
+                    <td class="w-max">
+                        {{ msg.formatTime }}
+                    </td>
+                    <td class="w-max">
+                        {{ msg.name }}
+                    </td>
+                    <td class="w-max">
+                        {{ msg.message }}
+                    </td>
+                    <td class="w-max">
+                        {% if msg.filePath %}
+                            <a href="{{ msg.filePath }}" download="{{ msg.fileName }}">
+                                {{ msg.fileName }}
+                            </a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if msg.status == 1 %}
+                            Отправлено
+                        {% endif %}
+                        {% if msg.status == 2 %}
+                            Прочитано
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="card p-3 bg-base-100 shadow overflow-auto">
+    <div class="flex flex-row gap-2 items-start w-full">
+        <div class="text-2xl font-semibold">
+            Оценка качества
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr class="bg-base-200">
+                <th class="w-max min-w-xs">Вопрос</th>
+                <th class="w-full">Оценка</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for res in call.qualityResponses %}
+                <tr>
+                    <td class="w-max">
+                        {{ res.quality.title }}
+                    </td>
+                    <td class="w-full">
+                        {{ res.value }}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
