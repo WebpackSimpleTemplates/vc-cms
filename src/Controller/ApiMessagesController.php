@@ -20,7 +20,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/messages/{call}')]
 final class ApiMessagesController extends AbstractController
 {
-    #[Route('/', name: 'api_messages', methods:["GET"])]
+    #[Route('', name: 'api_messages', methods:["GET"])]
     public function index(Call $call, MessageRepository $messageRepository): JsonResponse
     {
         $messages = $messageRepository->findBy(["call" => $call]);
@@ -36,7 +36,7 @@ final class ApiMessagesController extends AbstractController
     }
 
 
-    #[Route('/', name:'api_send_message', methods:['POST'])]
+    #[Route('', name:'api_send_message', methods:['POST'])]
     public function post(
         #[MapRequestPayload] MessagePayload $payload,
         Call $call,

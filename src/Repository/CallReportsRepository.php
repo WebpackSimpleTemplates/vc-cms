@@ -274,8 +274,8 @@ class CallReportsRepository extends ServiceEntityRepository
             ->select([
                 "ch.id AS id",
                 "ch.title AS title",
-                "COUNT(ac) as accepted",
-                "COUNT(re) as rejected",
+                "COUNT(DISTINCT ac) as accepted",
+                "COUNT(DISTINCT re) as rejected",
                 "AVG(ac.closedAt - ac.acceptedAt) as avgServ",
                 "MAX(ac.closedAt - ac.acceptedAt) as maxServ",
                 "MIN(ac.closedAt - ac.acceptedAt) as minServ",

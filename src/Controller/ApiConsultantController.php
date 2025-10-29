@@ -7,7 +7,7 @@ use App\Entity\Channel;
 use App\Entity\ConsultantStatus;
 use App\Entity\User;
 use App\Payload\ConsultantStatusPayload;
-use App\Payload\UpdatePassswordPayload;
+use App\Payload\UpdatePasswordPayload;
 use App\Repository\CallRepository;
 use App\Repository\ConsultantStatusRepository;
 use App\Repository\HistoryRepository;
@@ -141,11 +141,11 @@ final class ApiConsultantController extends AbstractController
 
     #[Route('/password', methods:['PUT'], name:'api_update_password_consultant')]
     public function updatePassword(
+        #[MapRequestPayload] UpdatePasswordPayload $payload,
         UserPasswordHasherInterface $userPasswordHasher,
         Security $security,
         EntityManagerInterface $entityManager,
-        #[MapRequestPayload] UpdatePassswordPayload $payload,
-    )
+    ): Response
     {
         /** @var User $user */
         $user = $security->getUser();

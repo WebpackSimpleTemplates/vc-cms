@@ -5,11 +5,11 @@ namespace App\Payload;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Type;
 
-class UpdatePassswordPayload
+class UpdatePasswordPayload
 {
     public function __construct(
         #[NotBlank()]
-        #[Type('string')]
+        #[Type("string")]
         public readonly string $password,
     )
     {}
