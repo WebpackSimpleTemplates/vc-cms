@@ -156,4 +156,16 @@ final class ApiConsultantController extends AbstractController
 
         return new Response('', 204);
     }
+
+    #[Route('/defer', name:'api_defer_calls')]
+    public function getDeferCalls(
+        Security $security,
+        CallRepository $callRepository
+    )
+    {
+        /** @var User $user */
+        $user = $security->getUser();
+
+        return $this->json($callRepository->getDeferCalls($user));
+    }
 }

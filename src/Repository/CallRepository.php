@@ -22,10 +22,11 @@ class CallRepository extends ServiceEntityRepository
         parent::__construct($registry, Call::class);
     }
 
-    public function getMany() {
+    public function getMany()
+    {
         $qb = $this->createQueryBuilder('c');
 
-        $qb->orderBy('c.id', 'desc');
+        $qb->orderBy('c.waitStart', 'ASC');
 
         return $qb;
     }
@@ -122,7 +123,8 @@ class CallRepository extends ServiceEntityRepository
             ->where("c.acceptedAt IS NULL")
             ->andWhere("c.closedAt IS NULL");
 
-        if (count($channels)) {
+        if (count($channels))
+            {
             $qb = $qb
                 ->andWhere("c.channel IN(:ids)")
                 ->setParameter("ids", $channels)
@@ -153,7 +155,8 @@ class CallRepository extends ServiceEntityRepository
             ->setParameter("now", $onlineTime)
         ;
 
-        if (count($channels)) {
+        if (count($channels))
+            {
             $qb = $qb
                 ->andWhere("ch.id IN(:ids)")
                 ->setParameter("ids", array_map(fn ($ch) => $ch->getId(), $channels))
@@ -173,12 +176,14 @@ class CallRepository extends ServiceEntityRepository
             ->andWhere("c.acceptedAt IS NULL")
         ;
 
-        if ($channel) {
+        if ($channel)
+            {
             $qb = $qb
                 ->andWhere("c.channel = :channel")
                 ->setParameter("channel", $channel->getId())
             ;
-        } else if ($channels) {
+        } else if ($channels)
+        {
             $qb = $qb
                 ->andWhere("c.channel IN(:ids)")
                 ->setParameter("ids", array_map(fn ($ch) => $ch->getId(), $channels))
@@ -210,7 +215,8 @@ class CallRepository extends ServiceEntityRepository
         return ($qb->getQuery()->getSingleColumnResult()[0] ?? 0) + 1;
     }
 
-    public function getAvgWaitTime() {
+    public function getAvgWaitTime()
+    {
         $datetime = DateTime::createFromFormat("Y-m-d H:i:s", date("Y-m-d")." 00:00:00");
 
         $datetime->add(DateInterval::createFromDateString("-7 day"));
@@ -229,5 +235,15 @@ class CallRepository extends ServiceEntityRepository
         $comps = explode(":", $interval);
 
         return ((int) $comps[0]) * 60 * 60 + ((int) $comps[1]) * 60 + ((int) $comps[2]);
+    }
+
+    public function getDeferCalls(User $user)
+    {
+        $qb = $this->getActiveMany();
+
+        $qb->andWhere("c.consultant = :user");
+        $qb->setParameter("user", $user);
+
+        return $qb->getQuery()->getResult();
     }
 }

@@ -43,7 +43,9 @@ final class ReportsController extends AbstractController
         return $this->render('reports/calls.html.twig', [
             'filter' => $filter,
             'pagination' => $paginator->paginate(
-                $this->repository->getClosed($filter),
+                $this->repository
+                    ->getClosed($filter)
+                    ->orderBy("waitStart", "DESC"),
                 $request->query->getInt('page', 1),
             ),
         ]);

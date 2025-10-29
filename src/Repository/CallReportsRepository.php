@@ -7,7 +7,6 @@ use App\Entity\Channel;
 use App\Entity\User;
 use App\Payload\ReportFilterPayload;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Query\AST\Join;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
