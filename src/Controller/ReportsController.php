@@ -7,6 +7,7 @@ use App\Entity\Channel;
 use App\Entity\User;
 use App\Payload\ReportFilterPayload;
 use App\Repository\CallReportsRepository;
+use App\Repository\ChannelRepository;
 use App\Repository\GraphRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -45,7 +46,7 @@ final class ReportsController extends AbstractController
             'pagination' => $paginator->paginate(
                 $this->repository
                     ->getClosed($filter)
-                    ->orderBy("waitStart", "DESC"),
+                    ->orderBy("c.waitStart", "DESC"),
                 $request->query->getInt('page', 1),
             ),
         ]);
@@ -66,16 +67,52 @@ final class ReportsController extends AbstractController
     }
 
     #[Route('/reports/channels', name: 'app_reports_channels')]
-    public function channels(Request $request, PaginatorInterface $paginator): Response
+    public function channels(
+        Request $request,
+        PaginatorInterface $paginator,
+    ): Response
     {
         $filter = ReportFilterPayload::createFromRequest($request);
 
+        $pagination = $paginator->paginate(
+            $this->repository->getChannelsForClosedCalls($filter)
+                ->select("ch")
+                ->distinct(),
+            $request->query->getInt('page', 1),
+        );
+
+        $channels = $pagination->getItems();
+
+        $result = [];
+
+        foreach ($channels as $channel) {
+            $result[$channel->getId()] = [
+                'id' => $channel->getId(),
+                'title' => $channel->getTitle(),
+            ];
+        }
+
+        foreach ($this->repository->getRejectedCallsForChannels($filter, $channels) as $rows) {
+            $result[$rows['channel']]["rejected"] = $rows['rejected'];
+            $result[$rows['channel']]["avgWaitRe"] = $rows['avgWaitRe'];
+            $result[$rows['channel']]["maxWaitRe"] = $rows['maxWaitRe'];
+            $result[$rows['channel']]["minWaitRe"] = $rows['minWaitRe'];
+        }
+
+        foreach ($this->repository->getAcceptedCallsForChannels($filter, $channels) as $rows) {
+            $result[$rows['channel']]["accepted"] = $rows['accepted'];
+            $result[$rows['channel']]["avgServ"] = $rows['avgServ'];
+            $result[$rows['channel']]["maxServ"] = $rows['maxServ'];
+            $result[$rows['channel']]["minServ"] = $rows['minServ'];
+            $result[$rows['channel']]["avgWaitAc"] = $rows['avgWaitAc'];
+            $result[$rows['channel']]["maxWaitAc"] = $rows['maxWaitAc'];
+            $result[$rows['channel']]["minWaitAc"] = $rows['minWaitAc'];
+        }
+
         return $this->render('reports/channels.html.twig', [
             'filter' => $filter,
-            'pagination' => $paginator->paginate(
-                $this->repository->getChannelsTable($filter),
-                $request->query->getInt('page', 1),
-            ),
+            'result' => $result,
+            'pagination' => $pagination,
         ]);
     }
 

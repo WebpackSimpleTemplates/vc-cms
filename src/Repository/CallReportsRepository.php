@@ -265,37 +265,56 @@ class CallReportsRepository extends ServiceEntityRepository
         return $qb;
     }
 
-    public function getChannelsTable(ReportFilterPayload $filter)
-    {
+    public function getChannelsForClosedCalls(ReportFilterPayload $filter) {
         $qb = $this->getEntityManager()
             ->createQueryBuilder()
             ->from(Channel::class, "ch")
-            ->select([
-                "ch.id AS id",
-                "ch.title AS title",
-                "COUNT(DISTINCT ac) as accepted",
-                "COUNT(DISTINCT re) as rejected",
-                "AVG(ac.closedAt - ac.acceptedAt) as avgServ",
-                "MAX(ac.closedAt - ac.acceptedAt) as maxServ",
-                "MIN(ac.closedAt - ac.acceptedAt) as minServ",
-                "AVG(ac.acceptedAt - ac.waitStart) as avgWaitAc",
-                "MAX(ac.acceptedAt - ac.waitStart) as maxWaitAc",
-                "MIN(ac.acceptedAt - ac.waitStart) as minWaitAc",
-                "AVG(re.closedAt - re.waitStart) as avgWaitRe",
-                "MAX(re.closedAt - re.waitStart) as maxWaitRe",
-                "MIN(re.closedAt - re.waitStart) as minWaitRe",
-            ])
-            ->where("1 = 1")
-            ->join(Call::class, "ac", \Doctrine\ORM\Query\Expr\Join::WITH, "ac.channel = ch")
-            ->andWhere("ac.acceptedAt IS NOT NULL")
-            ->join(Call::class, "re", \Doctrine\ORM\Query\Expr\Join::WITH, "re.channel = ch")
-            ->andWhere("re.acceptedAt IS NULL")
-            ->groupBy("ch.id", "ch.title")
-        ;
+            ->join(Call::class, "c", \Doctrine\ORM\Query\Expr\Join::WITH, "c.channel = ch")
+            ->orderBy("ch.id", "DESC");
 
-        $this->mapQueryCalls($qb, $filter, "ac");
-        $this->mapQueryCalls($qb, $filter, "re");
+        $this->mapQueryCalls($qb, $filter);
 
         return $qb;
+    }
+
+    public function getRejectedCallsForChannels(ReportFilterPayload $filter, array $channels)
+    {
+        return $this->getChannelsForClosedCalls($filter)
+            ->andWhere("ch IN(:channels)")
+            ->setParameter("channels", $channels)
+            ->andWhere("c IS NULL OR c.acceptedAt IS NULL")
+            ->select([
+                "ch.id as channel",
+                "COUNT(c) as rejected",
+                "AVG(c.closedAt - c.waitStart) as avgWaitRe",
+                "MAX(c.closedAt - c.waitStart) as maxWaitRe",
+                "MIN(c.closedAt - c.waitStart) as minWaitRe",
+            ])
+            ->groupBy("ch.id")
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function getAcceptedCallsForChannels(ReportFilterPayload $filter, array $channels)
+    {
+        return $this->getChannelsForClosedCalls($filter)
+            ->andWhere("ch IN(:channels)")
+            ->setParameter("channels", $channels)
+            ->andWhere("c IS NULL OR c.acceptedAt IS NOT NULL")
+            ->select([
+                "ch.id as channel",
+                "COUNT(c) as accepted",
+                "AVG(c.closedAt - c.acceptedAt) as avgServ",
+                "MAX(c.closedAt - c.acceptedAt) as maxServ",
+                "MIN(c.closedAt - c.acceptedAt) as minServ",
+                "AVG(c.acceptedAt - c.waitStart) as avgWaitAc",
+                "MAX(c.acceptedAt - c.waitStart) as maxWaitAc",
+                "MIN(c.acceptedAt - c.waitStart) as minWaitAc",
+            ])
+            ->groupBy("ch.id")
+            ->getQuery()
+            ->getResult()
+        ;
     }
 }
