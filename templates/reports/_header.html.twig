@@ -1,10 +1,11 @@
 <div class="card p-3 bg-base-100 shadow">
-    <div class="text-2xl font-semibold mb-4">
-        Отчёты
-        <span class="text-sm text-secondary font-normal">
-            Время на сервере:
-            {{ filter.now }}
-        </span>
+    <div class="flex flex-row gap-2 items-start w-full">
+        <div class="text-2xl font-semibold">
+            Отчёты
+        </div>
+        <div class="text-sm text-secondary">
+            Время на сервере: {{ filter.now }}
+        </div>
     </div>
     <form method="get" class="flex flex-row items-end gap-2">
         <fieldset class="fieldset">

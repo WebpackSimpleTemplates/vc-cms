@@ -28,6 +28,7 @@ final class HistoryController extends AbstractController
         $action = $request->query->get("action", "");
 
         return $this->render('history/index.html.twig', [
+            'time' => date('d.m.Y H:i:s'),
             'start' => $start,
             'end' => $end,
             'user' => $user,

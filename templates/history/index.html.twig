@@ -4,7 +4,14 @@
 
 {% block content %}
 <div class="card p-3 shadow w-full bg-base-100">
-    <div class="text-2xl font-semibold mb-4">История</div>
+    <div class="flex flex-row gap-2 items-start w-full">
+        <div class="text-2xl font-semibold">
+            История
+        </div>
+        <div class="text-sm text-secondary">
+            Время на сервере: {{ time }}
+        </div>
+    </div>
     <form method="get" class="flex flex-row items-end gap-3">
         <fieldset class="fieldset">
             <legend class="fieldset-legend">Период</legend>
