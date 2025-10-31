@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\IpBlock;
 use App\Entity\Call;
 use App\Entity\Channel;
 use App\Entity\Quality;
@@ -18,7 +19,6 @@ use App\Repository\QualityRepository;
 use App\Repository\QualityResponseRepository;
 use App\Repository\ScheduleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
@@ -34,6 +34,14 @@ final class ApiClientController extends AbstractController
         ]);
     }
 
+    #[Route('/schedule/{channel}')]
+    public function test(Channel $channel, ScheduleRepository $scheduleRepository)
+    {
+        $schedule = $channel->getSchedule() ?? $scheduleRepository->getGeneral();
+
+        return $this->json($schedule->isActive());
+    }
+
     #[Route('/start/{channel}', name: 'api_start_call', methods:['POST'])]
     public function index(
         #[MapRequestPayload] StartCallPayload $payload,
@@ -43,18 +51,21 @@ final class ApiClientController extends AbstractController
         PushRepository $pushRepository,
         IpBlockRepository $ipBlockRepository,
         ScheduleRepository $scheduleRepository
-    ): JsonResponse
+    ): Response
     {
         $ip = $this->getIp();
 
-        if ($ipBlockRepository->count(["ip" => $ip]) > 0) {
-            return new Response('Your ip in black list', 403);
+        /** @var IpBlock $block */
+        $block = $ipBlockRepository->findOneBy(["ip" => $ip]);
+
+        if ($block) {
+            return new Response($block->getPublicReason(), 403);
         }
 
         $schedule = $channel->getSchedule() ?? $scheduleRepository->getGeneral();
 
         if (!$schedule->isActive()) {
-            return new Response('Schedule error', 410);
+            return $this->json($schedule->getTimes(), 410);
         }
 
         $call = new Call();

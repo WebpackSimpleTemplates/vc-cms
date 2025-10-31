@@ -232,6 +232,10 @@ class CallRepository extends ServiceEntityRepository
 
         $interval = ($qb->getQuery()->getSingleColumnResult()[0] ?? 0);
 
+        if ($interval == 0) {
+            return null;
+        }
+
         $comps = explode(":", $interval);
 
         return ((int) $comps[0]) * 60 * 60 + ((int) $comps[1]) * 60 + ((int) $comps[2]);

@@ -54,7 +54,7 @@ class Channel
     #[Ignore]
     private Collection $calls;
 
-    #[ORM\OneToOne(mappedBy: 'channel', cascade: ['persist'], fetch:'EAGER')]
+    #[ORM\OneToOne(mappedBy: 'channel', cascade: ['persist'], fetch:'EAGER', orphanRemoval: true)]
     #[Ignore]
     private ?Schedule $schedule = null;
 

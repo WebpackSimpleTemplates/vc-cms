@@ -59,7 +59,7 @@ class Schedule
         $minutes = ((int) date('H')) * 60 + ((int) date('i'));
 
         foreach ($this->times[$dayWeek] as $range) {
-            if ($range[0] >= $minutes && $range[1] <= $minutes) {
+            if ($range[0] <= $minutes && $range[1] >= $minutes) {
                 return true;
             }
         }
