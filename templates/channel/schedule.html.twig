@@ -16,13 +16,16 @@
 {{ form_start(form) }}
     {{ form_widget(form) }}
     {% if channel.schedule %}
-        <div class="flex flex-row items-center gap-2">
-            <button class="btn btn-primary my-8">
+        <div class="flex flex-row items-center gap-2 mt-8 mb-4">
+            <button class="btn btn-primary">
                 Сохранить
             </button>
             <a href="{{ path('app_channel_schedule_to_general', { 'id': channel.id }) }}" class="btn">
                 Вернуть к общему расписанию
             </a>
+        </div>
+        <div class="text-sm text-secondary mb-4">
+            Время на сервере: {{ time }}
         </div>
     {% else %}
         <button class="btn btn-primary my-8">
