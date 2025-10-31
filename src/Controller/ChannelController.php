@@ -103,6 +103,7 @@ final class ChannelController extends AbstractController
             $channel->setSchedule($schedule);
             $entityManager->persist($schedule);
             $entityManager->flush();
+            return $this->redirectToRoute('app_channel_schedule', ['id' => $channel->getId()]);
         }
 
         return $this->render('channel/schedule.html.twig', [

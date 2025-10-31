@@ -1,0 +1,46 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Чёрный список{% endblock %}
+
+{% block content %}
+    <div class="card p-3 shadow bg-base-100">
+        <div class="flex flex-row items-center justify-between">
+            <div class="text-xl">Чёрный список</div>
+            <a class="btn" href="{{ path('app_ip_block_new') }}">
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 448 512" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"></path></svg>
+                Добавить
+            </a>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>IP адрес</th>
+                    <th>Отображаемая причина</th>
+                    <th>Закрытая причина</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for ip_block in pagination %}
+                <tr>
+                    <td>{{ ip_block.ip }}</td>
+                    <td>{{ ip_block.publicReason }}</td>
+                    <td>{{ ip_block.privateReason }}</td>
+                    <td>
+                        <a class="btn btn-sm" href="{{ path('app_ip_block_edit', {'id': ip_block.id}) }}">
+                            <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M7.24264 17.9967H3V13.754L14.435 2.319C14.8256 1.92848 15.4587 1.92848 15.8492 2.319L18.6777 5.14743C19.0682 5.53795 19.0682 6.17112 18.6777 6.56164L7.24264 17.9967ZM3 19.9967H21V21.9967H3V19.9967Z"></path></svg>
+                            Изменить
+                        </a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">Пусто</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {{ knp_pagination_render(pagination) }}
+    </div>
+{% endblock %}
