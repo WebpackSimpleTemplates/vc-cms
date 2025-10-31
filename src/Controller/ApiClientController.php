@@ -10,11 +10,13 @@ use App\Payload\QualityPayload;
 use App\Payload\StartCallPayload;
 use App\Repository\CallRepository;
 use App\Repository\HistoryRepository;
+use App\Repository\IpBlockRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PushRepository;
 use App\Repository\QualityRepository;
 use App\Repository\QualityResponseRepository;
+use App\Repository\ScheduleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -39,8 +41,22 @@ final class ApiClientController extends AbstractController
         EntityManagerInterface $entityManager,
         Channel $channel,
         PushRepository $pushRepository,
+        IpBlockRepository $ipBlockRepository,
+        ScheduleRepository $scheduleRepository
     ): JsonResponse
     {
+        $ip = $this->getIp();
+
+        if ($ipBlockRepository->count(["ip" => $ip]) > 0) {
+            return new Response('Your ip in black list', 403);
+        }
+
+        $schedule = $channel->getSchedule() ?? $scheduleRepository->getGeneral();
+
+        if (!$schedule->isActive()) {
+            return new Response('Schedule error', 410);
+        }
+
         $call = new Call();
 
         $call->setNum($callRepository->getNextNum($channel->getPrefix()));
@@ -50,7 +66,7 @@ final class ApiClientController extends AbstractController
         $call->setWaitStart(new DateTime());
         $call->setHour((int) date("H"));
         $call->setWeekday((int) date("w"));
-        $call->setIp($this->getIp());
+        $call->setIp($ip);
 
         $entityManager->persist($call);
         $entityManager->flush();
