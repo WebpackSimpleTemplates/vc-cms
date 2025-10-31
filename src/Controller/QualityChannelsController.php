@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Channel;
 use App\Entity\Quality;
 use App\Repository\ChannelRepository;
+use App\Repository\HistoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -56,21 +57,23 @@ final class QualityChannelsController extends AbstractController
     }
 
     #[Route("/connect/{channel}", name: 'app_quality_channels_connect', methods:['POST'])]
-    public function connect(Quality $quality, Channel $channel): Response
+    public function connect(Quality $quality, Channel $channel, HistoryRepository $history): Response
     {
         $quality->addChannel($channel);
 
         $this->entityManager->flush();
+        $history->writeConnecting($channel, $quality);
 
         return $this->redirectToRoute("app_quality_channels_all", ['id' => $quality->getId()]);
     }
 
     #[Route("/disconnect/{channel}", name: 'app_quality_channels_disconnect', methods:['POST'])]
-    public function disconnect(Quality $quality, Channel $channel): Response
+    public function disconnect(Quality $quality, Channel $channel, HistoryRepository $history): Response
     {
         $quality->removeChannel($channel);
 
         $this->entityManager->flush();
+        $history->writeDisconnecting($channel, $quality);
 
         return $this->redirectToRoute("app_quality_channels", ['id' => $quality->getId()]);
     }

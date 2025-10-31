@@ -50,9 +50,7 @@ class ChannelRepository extends ServiceEntityRepository
 
     public function getUserChannelsQuery(User $user)
     {
-        $qb = $this->createQueryBuilder('c');
-
-        $qb->orderBy('c.id', 'desc');
+        $qb = $this->getMany();
 
         $qb->join('c.users', 'u');
 
@@ -65,9 +63,7 @@ class ChannelRepository extends ServiceEntityRepository
 
     public function getQualityChannelsQuery(Quality $quality)
     {
-        $qb = $this->createQueryBuilder('c');
-
-        $qb->orderBy('c.id', 'desc');
+        $qb = $this->getMany();
 
         $qb->join('c.qualities', 'q');
 

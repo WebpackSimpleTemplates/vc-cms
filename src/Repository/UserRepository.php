@@ -54,9 +54,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     public function getChannelUsersQuery(Channel $channel)
     {
-        $qb = $this->createQueryBuilder('u');
-
-        $qb->orderBy('u.id', 'desc');
+        $qb = $this->getMany();
 
         $qb->join('u.channels', 'c');
 
@@ -69,9 +67,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
     public function getQualityUsersQuery(Quality $quality)
     {
-        $qb = $this->createQueryBuilder('u');
-
-        $qb->orderBy('u.id', 'desc');
+        $qb = $this->getMany();
 
         $qb->join("u.qualities", 'q');
 

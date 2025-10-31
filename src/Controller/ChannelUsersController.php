@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Channel;
 use App\Entity\User;
+use App\Repository\HistoryRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -56,21 +57,23 @@ final class ChannelUsersController extends AbstractController
     }
 
     #[Route("/connect/{user}", name: 'app_channel_users_connect', methods:['POST'])]
-    public function connect(Channel $channel, User $user): Response
+    public function connect(Channel $channel, User $user, HistoryRepository $history): Response
     {
         $channel->addUser($user);
 
         $this->entityManager->flush();
+        $history->writeConnecting($user, $channel);
 
         return $this->redirectToRoute("app_channel_users_all", ['id' => $channel->getId()]);
     }
 
     #[Route("/disconnect/{user}", name: 'app_channel_users_disconnect', methods:['POST'])]
-    public function disconnect(Channel $channel, User $user): Response
+    public function disconnect(Channel $channel, User $user, HistoryRepository $history): Response
     {
         $channel->removeUser($user);
 
         $this->entityManager->flush();
+        $history->writeDisconnecting($user, $channel);
 
         return $this->redirectToRoute("app_channel_users", ['id' => $channel->getId()]);
     }

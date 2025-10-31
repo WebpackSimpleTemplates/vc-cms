@@ -359,4 +359,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    #[Ignore]
+    public function getTitle()
+    {
+        return $this->getDisplayName();
+    }
 }

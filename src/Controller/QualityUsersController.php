@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Quality;
 use App\Entity\User;
+use App\Repository\HistoryRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -56,21 +57,23 @@ final class QualityUsersController extends AbstractController
     }
 
     #[Route("/connect/{user}", name: 'app_quality_users_connect', methods:['POST'])]
-    public function connect(Quality $quality, User $user): Response
+    public function connect(Quality $quality, User $user, HistoryRepository $history): Response
     {
         $quality->addConsultant($user);
 
         $this->entityManager->flush();
+        $history->writeConnecting($user, $quality);
 
         return $this->redirectToRoute("app_quality_users_all", ['id' => $quality->getId()]);
     }
 
     #[Route("/disconnect/{user}", name: 'app_quality_users_disconnect', methods:['POST'])]
-    public function disconnect(Quality $quality, User $user): Response
+    public function disconnect(Quality $quality, User $user, HistoryRepository $history): Response
     {
         $quality->removeConsultant($user);
 
         $this->entityManager->flush();
+        $history->writeDisconnecting($user, $quality);
 
         return $this->redirectToRoute("app_quality_users", ['id' => $quality->getId()]);
     }

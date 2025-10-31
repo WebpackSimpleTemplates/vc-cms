@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Quality;
 use App\Form\QualityType;
+use App\Repository\HistoryRepository;
 use App\Repository\QualityRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -28,7 +29,7 @@ final class QualityController extends AbstractController
     }
 
     #[Route('/new', name: 'app_quality_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, HistoryRepository $history): Response
     {
         $quality = new Quality();
         $form = $this->createForm(QualityType::class, $quality);
@@ -37,6 +38,8 @@ final class QualityController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($quality);
             $entityManager->flush();
+
+            $history->write("Создание оценки качества", $quality->getTitle());
 
             return $this->redirectToRoute('app_quality_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -47,22 +50,16 @@ final class QualityController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_quality_show', methods: ['GET'])]
-    public function show(Quality $quality): Response
-    {
-        return $this->render('quality/show.html.twig', [
-            'quality' => $quality,
-        ]);
-    }
-
     #[Route('/{id}/edit', name: 'app_quality_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Quality $quality, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, Quality $quality, EntityManagerInterface $entityManager, HistoryRepository $history): Response
     {
+        $oldTitle = $quality->getTitle();
         $form = $this->createForm(QualityType::class, $quality);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+            $history->write("Редактирование оценки качества", $oldTitle." -> ".$quality->getTitle());
 
             return $this->redirectToRoute('app_quality_index', [], Response::HTTP_SEE_OTHER);
         }
@@ -74,11 +71,12 @@ final class QualityController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_quality_delete', methods: ['POST'])]
-    public function delete(Request $request, Quality $quality, EntityManagerInterface $entityManager): Response
+    public function delete(Request $request, Quality $quality, EntityManagerInterface $entityManager, HistoryRepository $history): Response
     {
         if ($this->isCsrfTokenValid('delete'.$quality->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($quality);
             $entityManager->flush();
+            $history->write("Удаление оценки качества", $quality->getTitle());
         }
 
         return $this->redirectToRoute('app_quality_index', [], Response::HTTP_SEE_OTHER);
