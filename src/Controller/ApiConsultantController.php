@@ -51,13 +51,7 @@ final class ApiConsultantController extends AbstractController
         /** @var User $user */
         $user = $security->getUser();
 
-        $channels = $user->getChannels();
-
-        if (!count($channels)) {
-            return $this->acceptNext($callRepository, $security, $entityManager, $pushRepository, $history);
-        }
-
-        foreach ($channels as $item) {
+        foreach ($user->getChannels() as $item) {
             if ($item->getId() === $channel->getId()) {
                 return $this->acceptNext($callRepository, $security, $entityManager, $pushRepository, $history, $channel);
             }

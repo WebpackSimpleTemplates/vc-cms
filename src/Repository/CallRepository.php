@@ -116,20 +116,19 @@ class CallRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('c');
         $channels = $user->getChannels()->toArray();
 
+        if (!count($channels)) {
+            return 0;
+        }
+
         $qb
             ->select([
                 'COUNT(c) as count'
             ])
             ->where("c.acceptedAt IS NULL")
-            ->andWhere("c.closedAt IS NULL");
-
-        if (count($channels))
-            {
-            $qb = $qb
-                ->andWhere("c.channel IN(:ids)")
-                ->setParameter("ids", $channels)
-            ;
-        }
+            ->andWhere("c.closedAt IS NULL")
+            ->andWhere("c.channel IN(:ids)")
+            ->setParameter("ids", $channels)
+        ;
 
         return $qb->getQuery()->getSingleColumnResult()[0];
     }
@@ -138,6 +137,10 @@ class CallRepository extends ServiceEntityRepository
     {
         $channels = $user->getChannels()->toArray();
         $onlineTime = new DateTime()->format(DateTime::ATOM);
+
+        if (!count($channels)) {
+            return [];
+        }
 
         $qb = $this->createQueryBuilder("c")
             ->select([
@@ -153,23 +156,15 @@ class CallRepository extends ServiceEntityRepository
             ->andWhere("c.closedAt IS NULL")
             ->groupBy("ch")
             ->setParameter("now", $onlineTime)
+            ->andWhere("ch.id IN(:ids)")
+            ->setParameter("ids", array_map(fn ($ch) => $ch->getId(), $channels))
         ;
-
-        if (count($channels))
-            {
-            $qb = $qb
-                ->andWhere("ch.id IN(:ids)")
-                ->setParameter("ids", array_map(fn ($ch) => $ch->getId(), $channels))
-            ;
-        }
 
         return $qb->getQuery()->getResult();
     }
 
     public function getNextCall(User $user, ?Channel $channel = null)
     {
-        $channels = $user->getChannels()->toArray();
-
         $qb = $this->createQueryBuilder("c")
             ->orderBy("c.waitStart", "asc")
             ->where("c.closedAt IS NULL")
@@ -182,11 +177,11 @@ class CallRepository extends ServiceEntityRepository
                 ->andWhere("c.channel = :channel")
                 ->setParameter("channel", $channel->getId())
             ;
-        } else if ($channels)
+        } else
         {
             $qb = $qb
-                ->andWhere("c.channel IN(:ids)")
-                ->setParameter("ids", array_map(fn ($ch) => $ch->getId(), $channels))
+                ->andWhere("c.channel IN(:channels)")
+                ->setParameter("channels", $user->getChannels())
             ;
         }
 

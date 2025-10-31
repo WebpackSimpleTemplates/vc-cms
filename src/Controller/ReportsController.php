@@ -209,8 +209,8 @@ final class ReportsController extends AbstractController
 
         $graph->Add(new GroupBarPlot([
             $graphRepository->createBarPlot("#05588f", $closed),
-            $graphRepository->createBarPlot("#ff6266", $rejected),
             $graphRepository->createBarPlot("#00a43b", $accepted),
+            $graphRepository->createBarPlot("#ff6266", $rejected),
         ]));
 
         return new Response($graph->Stroke(), 200, ['Content-Type' => 'image/jpeg']);
@@ -234,8 +234,8 @@ final class ReportsController extends AbstractController
 
         $graph->Add(new GroupBarPlot([
             $graphRepository->createBarPlot("#05588f", $closed),
-            $graphRepository->createBarPlot("#ff6266", $rejected),
             $graphRepository->createBarPlot("#00a43b", $accepted),
+            $graphRepository->createBarPlot("#ff6266", $rejected),
         ]));
 
         return new Response($graph->Stroke(), 200, ['Content-Type' => 'image/jpeg']);
@@ -259,8 +259,8 @@ final class ReportsController extends AbstractController
 
         $graph->Add(new GroupBarPlot([
             $graphRepository->createBarPlot("#05588f", $closed),
-            $graphRepository->createBarPlot("#ff6266", $rejected),
             $graphRepository->createBarPlot("#00a43b", $accepted),
+            $graphRepository->createBarPlot("#ff6266", $rejected),
         ]));
 
         return new Response($graph->Stroke(), 200, ['Content-Type' => 'image/jpeg']);
