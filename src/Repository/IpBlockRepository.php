@@ -18,9 +18,9 @@ class IpBlockRepository extends ServiceEntityRepository
 
     public function getMany()
     {
-        $qb = $this->createQueryBuilder('q');
+        $qb = $this->createQueryBuilder('ib');
 
-        $qb->orderBy('q.ip', 'ASC');
+        $qb->orderBy('ib.ip', 'ASC');
 
         return $qb;
     }

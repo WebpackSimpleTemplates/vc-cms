@@ -12,6 +12,13 @@
             </a>
         </div>
 
+        {% if ip %}
+            <div class="flex flex-row items-center gap-2 text-xs">
+                Поиск по IP - {{ ip }}
+                <a class="btn btn-xs" href="{{ path('app_ip_block_index') }}">Отмена</a>
+            </div>
+        {% endif %}
+
         <table class="table">
             <thead>
                 <tr>

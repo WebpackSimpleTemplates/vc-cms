@@ -65,6 +65,10 @@ class Call
     #[ORM\OneToMany(targetEntity: QualityResponse::class, mappedBy: 'call', orphanRemoval: true)]
     private Collection $qualityResponses;
 
+    #[Ignore]
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $ip = null;
+
     public function __construct()
     {
         $this->messages = new ArrayCollection();
@@ -342,6 +346,18 @@ class Call
                 $qualityResponse->setCall(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getIp(): ?string
+    {
+        return $this->ip;
+    }
+
+    public function setIp(?string $ip): static
+    {
+        $this->ip = $ip;
 
         return $this;
     }

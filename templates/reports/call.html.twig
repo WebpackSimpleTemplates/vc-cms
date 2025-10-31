@@ -28,6 +28,24 @@
             </tr>
             <tr>
                 <td class="w-max bg-base-200">
+                    IP
+                </td>
+                <td class="w-full flex flex-row items-center gap-2">
+                    {{ call.ip ?? '-' }}
+                    {% if call.ip and not ipIsBlocked %}
+                        <a href="{{ path('app_ip_block_new') }}?ip={{ call.ip }}" class="btn btn-xs">
+                            Заблокировать
+                        </a>
+                    {% endif %}
+                    {% if ipIsBlocked %}
+                        <a href="{{ path('app_ip_block_index') }}?ip={{ call.ip }}" class="btn btn-xs">
+                            Уже заблокирован
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td class="w-max bg-base-200">
                     Канал
                 </td>
                 <td class="w-full">

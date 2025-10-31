@@ -18,9 +18,18 @@ final class IpBlockController extends AbstractController
     #[Route(name: 'app_ip_block_index', methods: ['GET'])]
     public function index(IpBlockRepository $ipBlockRepository, PaginatorInterface $paginator, Request $request): Response
     {
+        $ip = $request->query->get('ip');
+        $qb = $ipBlockRepository->getMany();
+
+        if ($ip) {
+            $qb->where("ib.ip = :ip");
+            $qb->setParameter("ip", $ip);
+        }
+
         return $this->render('ip_block/index.html.twig', [
+            'ip' => $ip,
             'pagination' => $paginator->paginate(
-                $ipBlockRepository->getMany(),
+                $qb,
                 $request->query->getInt("page", 1),
                 10,
             ),
@@ -31,6 +40,11 @@ final class IpBlockController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $ipBlock = new IpBlock();
+
+        if ($request->query->get('ip')) {
+            $ipBlock->setIp($request->query->get('ip'));
+        }
+
         $form = $this->createForm(IpBlockType::class, $ipBlock);
         $form->handleRequest($request);
 

@@ -50,6 +50,7 @@ final class ApiClientController extends AbstractController
         $call->setWaitStart(new DateTime());
         $call->setHour((int) date("H"));
         $call->setWeekday((int) date("w"));
+        $call->setIp($this->getIp());
 
         $entityManager->persist($call);
         $entityManager->flush();
@@ -121,5 +122,22 @@ final class ApiClientController extends AbstractController
         $entityManager->flush();
 
         return new Response('', 204);
+    }
+
+    private function getIp()
+    {
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+            return $_SERVER['HTTP_CLIENT_IP'];
+        }
+
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            return $_SERVER['HTTP_X_FORWARDED_FOR'];
+        }
+
+        if (!empty($_SERVER['REMOTE_ADDR'])) {
+            return $_SERVER['REMOTE_ADDR'];
+        }
+
+        return '';
     }
 }

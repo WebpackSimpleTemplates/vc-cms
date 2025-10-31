@@ -8,6 +8,7 @@ use App\Entity\Call;
 use App\Payload\ReportFilterPayload;
 use App\Repository\CallReportsRepository;
 use App\Repository\GraphRepository;
+use App\Repository\IpBlockRepository;
 use Knp\Component\Pager\Paginator;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,16 +24,17 @@ final class ReportsController extends AbstractController
     {}
 
     #[Route('/reports/call/{call}', name:'app_call_report')]
-    public function call(Call $call)
+    public function call(Call $call, IpBlockRepository $ipBlockRepository)
     {
         return $this->render('reports/call.html.twig', [
             'time' => date('d.m.Y H:i:s'),
             'call' => $call,
+            'ipIsBlocked' => $ipBlockRepository->findOneBy(["ip" => $call->getIp()])
         ]);
     }
 
     #[Route('/reports', name: 'app_reports')]
-    public function index(Request $request, PaginatorInterface $paginator): Response
+    public function index(Request $request): Response
     {
         $filter = ReportFilterPayload::createFromRequest($request);
 
