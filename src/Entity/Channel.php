@@ -47,11 +47,19 @@ class Channel
     #[Ignore]
     private Collection $qualityResponses;
 
+    /**
+     * @var Collection<int, Call>
+     */
+    #[ORM\OneToMany(targetEntity: Call::class, mappedBy: 'channel', orphanRemoval: true)]
+    #[Ignore]
+    private Collection $calls;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
         $this->qualities = new ArrayCollection();
         $this->qualityResponses = new ArrayCollection();
+        $this->calls = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -170,6 +178,36 @@ class Channel
             // set the owning side to null (unless already changed)
             if ($qualityResponse->getChannel() === $this) {
                 $qualityResponse->setChannel(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Call>
+     */
+    public function getCalls(): Collection
+    {
+        return $this->calls;
+    }
+
+    public function addCall(Call $call): static
+    {
+        if (!$this->calls->contains($call)) {
+            $this->calls->add($call);
+            $call->setChannel($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCall(Call $call): static
+    {
+        if ($this->calls->removeElement($call)) {
+            // set the owning side to null (unless already changed)
+            if ($call->getChannel() === $this) {
+                $call->setChannel(null);
             }
         }
 

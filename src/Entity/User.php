@@ -60,7 +60,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Call>
      */
-    #[ORM\OneToMany(targetEntity: Call::class, mappedBy: 'consultant')]
+    #[ORM\OneToMany(targetEntity: Call::class, mappedBy: 'consultant', orphanRemoval:true)]
     private Collection $calls;
 
     #[ORM\Column(options:['default'=> false])]
@@ -75,7 +75,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, QualityResponse>
      */
-    #[ORM\OneToMany(targetEntity: QualityResponse::class, mappedBy: 'consultant')]
+    #[ORM\OneToMany(targetEntity: QualityResponse::class, mappedBy: 'consultant', orphanRemoval:true)]
     private Collection $qualityResponses;
 
     public function __construct()
