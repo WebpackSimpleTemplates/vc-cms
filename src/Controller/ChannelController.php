@@ -4,8 +4,10 @@ namespace App\Controller;
 
 use App\Entity\Channel;
 use App\Form\ChannelType;
+use App\Form\ScheduleType;
 use App\Repository\ChannelRepository;
 use App\Repository\HistoryRepository;
+use App\Repository\ScheduleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -87,5 +89,35 @@ final class ChannelController extends AbstractController
         }
 
         return $this->redirectToRoute('app_channel_index', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/{id}/schedule', name: 'app_channel_schedule', methods:['GET', 'POST'])]
+    public function schedule(Request $request, Channel $channel, ScheduleRepository $repository, EntityManagerInterface $entityManager): Response
+    {
+        $schedule = $channel->getSchedule() ?? $repository->getGeneral();
+        $form = $this->createForm(ScheduleType::class, $schedule);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $schedule->setChannel($channel);
+            $channel->setSchedule($schedule);
+            $entityManager->persist($schedule);
+            $entityManager->flush();
+        }
+
+        return $this->render('channel/schedule.html.twig', [
+            'channel' => $channel,
+            'time' => date('d.m.Y H:i:s'),
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}/schedule-to-general', name: 'app_channel_schedule_to_general', methods:['GET', 'POST'])]
+    public function scheduleToMain(Channel $channel, EntityManagerInterface $entityManager): Response
+    {
+        $entityManager->remove($channel->getSchedule());
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_channel_schedule', ['id' => $channel->getId()]);
     }
 }

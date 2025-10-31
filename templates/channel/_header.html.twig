@@ -28,5 +28,17 @@
     >
       Оценки качества
     </a>
+    <a
+        role="tab"
+        href="{{ path('app_channel_schedule', { 'id': channel.id }) }}"
+        class="tab{% if app.request.attributes.get('_route') == 'app_channel_schedule' %} tab-active{% endif %}"
+    >
+        Расписание
+        {% if not channel.schedule %}
+            (Общее)
+        {% else %}
+            (Индивидуальное)
+        {% endif %}
+    </a>
   </div>
 </div>

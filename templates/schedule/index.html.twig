@@ -1,0 +1,30 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Общее расписание{% endblock %}
+
+{% block stylesheets %}
+    {{ vite_entry_link_tags('appcss') }}
+    {{ vite_entry_link_tags('schedulecss') }}
+{% endblock %}
+{% block javascripts %}
+    {{ vite_entry_script_tags('appjs') }}
+    {{ vite_entry_script_tags('schedulejs') }}
+{% endblock %}
+
+{% block content %}
+<div class="flex flex-row gap-2 items-start w-full">
+    <div class="text-2xl font-semibold">
+        Общее расписание работы сервиса
+    </div>
+    <div class="text-sm text-secondary">
+        Время на сервере: {{ time }}
+    </div>
+</div>
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button class="btn btn-primary my-8">
+        Сохранить
+    </button>
+    <div id="times"></div>
+{{ form_end(form) }}
+{% endblock %}

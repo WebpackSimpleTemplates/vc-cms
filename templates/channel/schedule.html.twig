@@ -1,0 +1,34 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Расписание работы канала{% endblock %}
+
+{% block stylesheets %}
+    {{ vite_entry_link_tags('appcss') }}
+    {{ vite_entry_link_tags('schedulecss') }}
+{% endblock %}
+{% block javascripts %}
+    {{ vite_entry_script_tags('appjs') }}
+    {{ vite_entry_script_tags('schedulejs') }}
+{% endblock %}
+
+{% block content %}
+{{ include('channel/_header.html.twig') }}
+{{ form_start(form) }}
+    {{ form_widget(form) }}
+    {% if channel.schedule %}
+        <div class="flex flex-row items-center gap-2">
+            <button class="btn btn-primary my-8">
+                Сохранить
+            </button>
+            <a href="{{ path('app_channel_schedule_to_general', { 'id': channel.id }) }}" class="btn">
+                Вернуть к общему расписанию
+            </a>
+        </div>
+    {% else %}
+        <button class="btn btn-primary my-8">
+            Сохранить как индивидуальное
+        </button>
+    {% endif %}
+    <div id="times"></div>
+{{ form_end(form) }}
+{% endblock %}

@@ -54,6 +54,10 @@ class Channel
     #[Ignore]
     private Collection $calls;
 
+    #[ORM\OneToOne(mappedBy: 'channel', cascade: ['persist'], fetch:'EAGER')]
+    #[Ignore]
+    private ?Schedule $schedule = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -210,6 +214,28 @@ class Channel
                 $call->setChannel(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSchedule(): ?Schedule
+    {
+        return $this->schedule;
+    }
+
+    public function setSchedule(?Schedule $schedule): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($schedule === null && $this->schedule !== null) {
+            $this->schedule->setChannel(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($schedule !== null && $schedule->getChannel() !== $this) {
+            $schedule->setChannel($this);
+        }
+
+        $this->schedule = $schedule;
 
         return $this;
     }
