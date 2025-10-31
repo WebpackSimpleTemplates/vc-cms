@@ -69,12 +69,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var Collection<int, Quality>
      */
+    #[Ignore]
     #[ORM\ManyToMany(targetEntity: Quality::class, mappedBy: 'consultants')]
     private Collection $qualities;
 
     /**
      * @var Collection<int, QualityResponse>
      */
+    #[Ignore]
     #[ORM\OneToMany(targetEntity: QualityResponse::class, mappedBy: 'consultant', orphanRemoval:true)]
     private Collection $qualityResponses;
 
