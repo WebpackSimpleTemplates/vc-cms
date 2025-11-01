@@ -17,7 +17,7 @@ final class ClientController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_client')]
+    #[Route('/call/{id}', name: 'app_client')]
     public function channel(ChannelRepository $repository, ?string $id = null): Response
     {
         $channel = null;

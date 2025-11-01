@@ -14,7 +14,7 @@
     </div>
     <div class="mt-5 flex flex-row flex-wrap gap-2 items-start justify-center">
         {% for channel in channels %}
-            <a href="{{ path('app_client', { 'id': channel.id }) }}" class="card shadow p-3 bg-base-100 transition-all hover:bg-base-200">
+            <a href="{{ path('app_client', { 'id': channel.id }) }}" class="card shadow p-3 bg-base-100 transition-all hover:bg-base-200 w-xs">
                 <div class="text-xl font-semibold">
                     {{ channel.title }}
                 </div>
