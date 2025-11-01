@@ -12,7 +12,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class ScheduleController extends AbstractController
 {
-    #[Route('/schedule', name: 'app_schedule', methods:['GET', 'POST'])]
+    #[Route('/manage/schedule', name: 'app_schedule', methods:['GET', 'POST'])]
     public function index(Request $request, ScheduleRepository $repository, EntityManagerInterface $entityManager): Response
     {
         $schedule = $repository->getGeneral();

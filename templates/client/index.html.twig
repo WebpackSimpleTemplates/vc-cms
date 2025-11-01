@@ -1,0 +1,29 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Онлайн консультация{% endblock %}
+
+{% block html_class %}bg-[#f5f5f5]{% endblock %}
+
+{% block body %}
+<div class="container mx-auto">
+    <div class="text-center text-xl font-semibold mt-3">
+        Добро пожаловать!
+    </div>
+    <div class="text-center text-lg my-2">
+        Выберите по какому Вы вопросу хотели бы получить консультацию
+    </div>
+    <div class="mt-5 flex flex-row flex-wrap gap-2 items-start justify-center">
+        {% for channel in channels %}
+            <a href="{{ path('app_client', { 'id': channel.id }) }}" class="card shadow p-3 bg-base-100 transition-all hover:bg-base-200">
+                <div class="text-xl font-semibold">
+                    {{ channel.title }}
+                </div>
+                {% if channel.description %}
+                    <div class="text-sm text-secondary">
+                        {{ channel.description }}
+                    </div>
+                {% endif %}
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}

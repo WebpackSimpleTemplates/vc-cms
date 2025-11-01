@@ -13,12 +13,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/channel/{id}/qualities')]
+#[Route('/manage/channel/{id}/qualities')]
 final class ChannelQualitiesController extends AbstractController
 {
     public function __construct(private EntityManagerInterface $entityManager) {}
 
-    #[Route("/connected", name: 'app_channel_qualities')]
+    #[Route("/manage/connected", name: 'app_channel_qualities')]
     public function index(Channel $channel, QualityRepository $qualityRepository, PaginatorInterface $paginator, Request $request): Response
     {
         return $this->render('channel/qualities.html.twig', [
@@ -31,7 +31,7 @@ final class ChannelQualitiesController extends AbstractController
         ]);
     }
 
-    #[Route("/all", name: 'app_channel_qualities_all')]
+    #[Route("/manage/all", name: 'app_channel_qualities_all')]
     public function all(Channel $channel, QualityRepository $qualityRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $pagination = $paginator->paginate(
@@ -56,7 +56,7 @@ final class ChannelQualitiesController extends AbstractController
         ]);
     }
 
-    #[Route("/connect/{quality}", name: 'app_channel_qualities_connect', methods:['POST'])]
+    #[Route("/manage/connect/{quality}", name: 'app_channel_qualities_connect', methods:['POST'])]
     public function connect(Channel $channel, Quality $quality, HistoryRepository $history): Response
     {
         $quality->addChannel($channel);
@@ -67,7 +67,7 @@ final class ChannelQualitiesController extends AbstractController
         return $this->redirectToRoute("app_channel_qualities_all", ['id' => $channel->getId()]);
     }
 
-    #[Route("/disconnect/{quality}", name: 'app_channel_qualities_disconnect', methods:['POST'])]
+    #[Route("/manage/disconnect/{quality}", name: 'app_channel_qualities_disconnect', methods:['POST'])]
     public function disconnect(Channel $channel, Quality $quality, HistoryRepository $history): Response
     {
         $quality->removeChannel($channel);

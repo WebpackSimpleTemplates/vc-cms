@@ -13,12 +13,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/user/{id}/channels')]
+#[Route('/manage/user/{id}/channels')]
 final class UserChannelsController extends AbstractController
 {
     public function __construct(private EntityManagerInterface $entityManager) {}
 
-    #[Route("/connected", name: 'app_user_channels')]
+    #[Route("/manage/connected", name: 'app_user_channels')]
     public function index(User $user, ChannelRepository $channelRepository, PaginatorInterface $paginator, Request $request): Response
     {
         return $this->render('user/channels.html.twig', [
@@ -31,7 +31,7 @@ final class UserChannelsController extends AbstractController
         ]);
     }
 
-    #[Route("/all", name: 'app_user_channels_all')]
+    #[Route("/manage/all", name: 'app_user_channels_all')]
     public function all(User $user, ChannelRepository $channelRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $pagination = $paginator->paginate(
@@ -56,7 +56,7 @@ final class UserChannelsController extends AbstractController
         ]);
     }
 
-    #[Route("/connect/{channel}", name: 'app_user_channels_connect', methods:['POST'])]
+    #[Route("/manage/connect/{channel}", name: 'app_user_channels_connect', methods:['POST'])]
     public function connect(User $user, Channel $channel, HistoryRepository $history): Response
     {
         $user->addChannel($channel);
@@ -67,7 +67,7 @@ final class UserChannelsController extends AbstractController
         return $this->redirectToRoute("app_user_channels_all", ['id' => $user->getId()]);
     }
 
-    #[Route("/disconnect/{channel}", name: 'app_user_channels_disconnect', methods:['POST'])]
+    #[Route("/manage/disconnect/{channel}", name: 'app_user_channels_disconnect', methods:['POST'])]
     public function disconnect(User $user, Channel $channel, HistoryRepository $history): Response
     {
         $user->removeChannel($channel);

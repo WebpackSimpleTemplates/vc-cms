@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/quality')]
+#[Route('/manage/quality')]
 final class QualityController extends AbstractController
 {
     #[Route(name: 'app_quality_index', methods: ['GET'])]
@@ -28,7 +28,7 @@ final class QualityController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_quality_new', methods: ['GET', 'POST'])]
+    #[Route('/manage/new', name: 'app_quality_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, HistoryRepository $history): Response
     {
         $quality = new Quality();
@@ -50,7 +50,7 @@ final class QualityController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/edit', name: 'app_quality_edit', methods: ['GET', 'POST'])]
+    #[Route('/manage/{id}/edit', name: 'app_quality_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Quality $quality, EntityManagerInterface $entityManager, HistoryRepository $history): Response
     {
         $oldTitle = $quality->getTitle();
@@ -70,7 +70,7 @@ final class QualityController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_quality_delete', methods: ['POST'])]
+    #[Route('/manage/{id}', name: 'app_quality_delete', methods: ['POST'])]
     public function delete(Request $request, Quality $quality, EntityManagerInterface $entityManager, HistoryRepository $history): Response
     {
         if ($this->isCsrfTokenValid('delete'.$quality->getId(), $request->getPayload()->getString('_token'))) {

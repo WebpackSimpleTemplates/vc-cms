@@ -23,7 +23,7 @@ final class ReportsController extends AbstractController
     )
     {}
 
-    #[Route('/reports/call/{call}', name:'app_call_report')]
+    #[Route('/manage/reports/call/{call}', name:'app_call_report')]
     public function call(Call $call, IpBlockRepository $ipBlockRepository)
     {
         return $this->render('reports/call.html.twig', [
@@ -33,7 +33,7 @@ final class ReportsController extends AbstractController
         ]);
     }
 
-    #[Route('/reports', name: 'app_reports')]
+    #[Route('/manage/reports', name: 'app_reports')]
     public function index(Request $request): Response
     {
         $filter = ReportFilterPayload::createFromRequest($request);
@@ -47,7 +47,7 @@ final class ReportsController extends AbstractController
         ]);
     }
 
-    #[Route('/reports/calls', name: 'app_reports_calls')]
+    #[Route('/manage/reports/calls', name: 'app_reports_calls')]
     public function calls(Request $request, PaginatorInterface $paginator): Response
     {
         $filter = ReportFilterPayload::createFromRequest($request);
@@ -96,7 +96,7 @@ final class ReportsController extends AbstractController
         ]);
     }
 
-    #[Route('/reports/consultants', name: 'app_reports_consultants')]
+    #[Route('/manage/reports/consultants', name: 'app_reports_consultants')]
     public function consultants(Request $request, PaginatorInterface $paginator): Response
     {
         $filter = ReportFilterPayload::createFromRequest($request);
@@ -127,7 +127,7 @@ final class ReportsController extends AbstractController
         ]);
     }
 
-    #[Route('/reports/channels', name: 'app_reports_channels')]
+    #[Route('/manage/reports/channels', name: 'app_reports_channels')]
     public function channels(
         Request $request,
         PaginatorInterface $paginator,
@@ -177,7 +177,7 @@ final class ReportsController extends AbstractController
         ]);
     }
 
-    #[Route('/reports/qualities', name: 'app_reports_qualities')]
+    #[Route('/manage/reports/qualities', name: 'app_reports_qualities')]
     public function qualities(PaginatorInterface $paginator, Request $request): Response
     {
         $filter = ReportFilterPayload::createFromRequest($request);
@@ -191,7 +191,7 @@ final class ReportsController extends AbstractController
         ]);
     }
 
-    #[Route('/reports/graph/hours', name: 'app_reports_graph_hours')]
+    #[Route('/manage/reports/graph/hours', name: 'app_reports_graph_hours')]
     public function graphHours(
         Request $request,
         GraphRepository $graphRepository,
@@ -216,7 +216,7 @@ final class ReportsController extends AbstractController
         return new Response($graph->Stroke(), 200, ['Content-Type' => 'image/jpeg']);
     }
 
-    #[Route('/reports/graph/weekdays', name: 'app_reports_graph_weekdays')]
+    #[Route('/manage/reports/graph/weekdays', name: 'app_reports_graph_weekdays')]
     public function graphWeekdays(
         Request $request,
         GraphRepository $graphRepository,
@@ -241,7 +241,7 @@ final class ReportsController extends AbstractController
         return new Response($graph->Stroke(), 200, ['Content-Type' => 'image/jpeg']);
     }
 
-    #[Route('/reports/graph/channels', name: 'app_reports_graph_channels')]
+    #[Route('/manage/reports/graph/channels', name: 'app_reports_graph_channels')]
     public function graphChannels(
         Request $request,
         GraphRepository $graphRepository,
@@ -266,7 +266,7 @@ final class ReportsController extends AbstractController
         return new Response($graph->Stroke(), 200, ['Content-Type' => 'image/jpeg']);
     }
 
-    #[Route('/reports/graph/qualities', name: 'app_reports_graph_qualities')]
+    #[Route('/manage/reports/graph/qualities', name: 'app_reports_graph_qualities')]
     public function graphQualities(
         Request $request,
         GraphRepository $graphRepository,

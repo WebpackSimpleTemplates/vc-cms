@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/channel')]
+#[Route('/manage/channel')]
 final class ChannelController extends AbstractController
 {
     #[Route(name: 'app_channel_index', methods: ['GET'])]
@@ -30,7 +30,7 @@ final class ChannelController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_channel_new', methods: ['GET', 'POST'])]
+    #[Route('/manage/new', name: 'app_channel_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -56,7 +56,7 @@ final class ChannelController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_channel_edit', methods: ['GET', 'POST'])]
+    #[Route('/manage/{id}', name: 'app_channel_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Channel $channel, HistoryRepository $history, EntityManagerInterface $entityManager): Response
     {
         $oldtitle = $channel->getTitle();
@@ -78,7 +78,7 @@ final class ChannelController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'app_channel_delete', methods: ['POST'])]
+    #[Route('/manage/{id}/delete', name: 'app_channel_delete', methods: ['POST'])]
     public function delete(Request $request, Channel $channel, HistoryRepository $history, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$channel->getId(), $request->getPayload()->getString('_token'))) {
@@ -91,7 +91,7 @@ final class ChannelController extends AbstractController
         return $this->redirectToRoute('app_channel_index', [], Response::HTTP_SEE_OTHER);
     }
 
-    #[Route('/{id}/schedule', name: 'app_channel_schedule', methods:['GET', 'POST'])]
+    #[Route('/manage/{id}/schedule', name: 'app_channel_schedule', methods:['GET', 'POST'])]
     public function schedule(Request $request, Channel $channel, ScheduleRepository $repository, EntityManagerInterface $entityManager): Response
     {
         $schedule = $channel->getSchedule() ?? $repository->copyGeneral();
@@ -113,7 +113,7 @@ final class ChannelController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/schedule-to-general', name: 'app_channel_schedule_to_general', methods:['GET', 'POST'])]
+    #[Route('/manage/{id}/schedule-to-general', name: 'app_channel_schedule_to_general', methods:['GET', 'POST'])]
     public function scheduleToMain(Channel $channel, EntityManagerInterface $entityManager): Response
     {
         $entityManager->remove($channel->getSchedule());

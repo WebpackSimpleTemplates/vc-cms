@@ -17,7 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class MonitoringController extends AbstractController
 {
-    #[Route('/monitoring', name: 'app_monitoring')]
+    #[Route('/manage/monitoring', name: 'app_monitoring')]
     public function index(
         CallRepository $callRepository,
         ConsultantStatusRepository $consultantStatusRepository,
@@ -51,7 +51,7 @@ final class MonitoringController extends AbstractController
         ]);
     }
 
-    #[Route('/monitoring/channels', name: 'app_monitoring_channels')]
+    #[Route('/manage/monitoring/channels', name: 'app_monitoring_channels')]
     public function barsChannels(
         Request $request,
         CallRepository $callRepository,

@@ -19,7 +19,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/user')]
+#[Route('/manage/user')]
 final class UserController extends AbstractController
 {
     public function __construct(
@@ -57,7 +57,7 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
+    #[Route('/manage/new', name: 'app_user_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -85,7 +85,7 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/profile', name: 'app_user_profile', methods: ['GET', 'POST'])]
+    #[Route('/manage/profile', name: 'app_user_profile', methods: ['GET', 'POST'])]
     public function profile(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -114,7 +114,7 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_user_edit', methods: ['GET', 'POST'])]
+    #[Route('/manage/{id}', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -151,7 +151,7 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'app_user_delete', methods: ['POST'])]
+    #[Route('/manage/{id}/delete', name: 'app_user_delete', methods: ['POST'])]
     public function delete(
         Request $request,
         User $user,

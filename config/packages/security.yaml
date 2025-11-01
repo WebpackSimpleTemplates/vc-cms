@@ -57,12 +57,13 @@ security:
         - { path: ^/api/messages, roles: PUBLIC_ACCESS }
         - { path: ^/api/test, roles: PUBLIC_ACCESS }
         - { path: ^/api/consultant, roles: ROLE_OPERATOR }
-        - { path: ^/login, roles: PUBLIC_ACCESS }
-        - { path: ^/user/profile, roles: ROLE_USER }
-        - { path: ^/monitoring, roles: ROLE_READER }
-        - { path: ^/user, roles: ROLE_ADMIN }
-        - { path: ^/channel, roles: ROLE_ADMIN }
-        - { path: ^/, roles: ROLE_USER }
+        - { path: ^/manage/login, roles: PUBLIC_ACCESS }
+        - { path: ^/manage/user/profile, roles: ROLE_USER }
+        - { path: ^/manage/monitoring, roles: ROLE_READER }
+        - { path: ^/manage/user, roles: ROLE_ADMIN }
+        - { path: ^/manage/channel, roles: ROLE_ADMIN }
+        - { path: ^/manage/, roles: ROLE_USER }
+        - { path: ^/, roles: PUBLIC_ACCESS }
 
 when@test:
     security:

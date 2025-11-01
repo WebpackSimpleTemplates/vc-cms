@@ -16,7 +16,7 @@ final class MainController extends AbstractController
         private AccessDecisionManagerInterface $accessDecisionManager,
     ){}
 
-    #[Route('/', name: 'app_main')]
+    #[Route('/manage/', name: 'app_main')]
     public function index(): Response
     {
         if ($this->accessDecisionManager->decide($this->security->getToken(), ["ROLE_READER"])) {

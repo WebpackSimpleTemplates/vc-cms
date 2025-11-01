@@ -13,12 +13,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/user/{id}/qualities')]
+#[Route('/manage/user/{id}/qualities')]
 final class UserQualitiesController extends AbstractController
 {
     public function __construct(private EntityManagerInterface $entityManager) {}
 
-    #[Route("/connected", name: 'app_user_qualities')]
+    #[Route("/manage/connected", name: 'app_user_qualities')]
     public function index(User $user, QualityRepository $qualityRepository, PaginatorInterface $paginator, Request $request): Response
     {
         return $this->render('user/qualities.html.twig', [
@@ -31,7 +31,7 @@ final class UserQualitiesController extends AbstractController
         ]);
     }
 
-    #[Route("/all", name: 'app_user_qualities_all')]
+    #[Route("/manage/all", name: 'app_user_qualities_all')]
     public function all(User $user, QualityRepository $qualityRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $pagination = $paginator->paginate(
@@ -56,7 +56,7 @@ final class UserQualitiesController extends AbstractController
         ]);
     }
 
-    #[Route("/connect/{quality}", name: 'app_user_qualities_connect', methods:['POST'])]
+    #[Route("/manage/connect/{quality}", name: 'app_user_qualities_connect', methods:['POST'])]
     public function connect(User $user, Quality $quality, HistoryRepository $history): Response
     {
         $quality->addConsultant($user);
@@ -67,7 +67,7 @@ final class UserQualitiesController extends AbstractController
         return $this->redirectToRoute("app_user_qualities_all", ['id' => $user->getId()]);
     }
 
-    #[Route("/disconnect/{quality}", name: 'app_user_qualities_disconnect', methods:['POST'])]
+    #[Route("/manage/disconnect/{quality}", name: 'app_user_qualities_disconnect', methods:['POST'])]
     public function disconnect(User $user, Quality $quality, HistoryRepository $history): Response
     {
         $quality->removeConsultant($user);
