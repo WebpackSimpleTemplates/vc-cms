@@ -6,9 +6,7 @@ framework:
     session:
         cookie_secure: auto
 
-    trusted_proxies: 'videocons.wee-bee.ru, 82.202.165.20' # Замените на IP-адреса ваших прокси
-    # Или, если вы используете переменные окружения (Symfony 7.2+):
-    # trusted_proxies: '%env(SYMFONY_TRUSTED_PROXIES)%'
+    trusted_proxies: 'videocons.wee-bee.ru, 82.202.165.20'
     trusted_headers: ['X-Forwarded-For', 'X-Forwarded-Proto', 'X-Forwarded-Host', 'X-Forwarded-Port', 'X-Forwarded-Prefix']
 
     #esi: true
