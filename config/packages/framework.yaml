@@ -3,7 +3,13 @@ framework:
     secret: '%env(APP_SECRET)%'
 
     # Note that the session will be started ONLY if you read or write from it.
-    session: true
+    session:
+        cookie_secure: auto
+
+    trusted_proxies: 'videocons.wee-bee.ru, 82.202.165.20' # Замените на IP-адреса ваших прокси
+    # Или, если вы используете переменные окружения (Symfony 7.2+):
+    # trusted_proxies: '%env(SYMFONY_TRUSTED_PROXIES)%'
+    trusted_headers: ['X-Forwarded-For', 'X-Forwarded-Proto', 'X-Forwarded-Host', 'X-Forwarded-Port', 'X-Forwarded-Prefix']
 
     #esi: true
     #fragments: true
