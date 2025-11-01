@@ -94,7 +94,7 @@ final class ChannelController extends AbstractController
     #[Route('/{id}/schedule', name: 'app_channel_schedule', methods:['GET', 'POST'])]
     public function schedule(Request $request, Channel $channel, ScheduleRepository $repository, EntityManagerInterface $entityManager): Response
     {
-        $schedule = $channel->getSchedule() ?? $repository->getGeneral();
+        $schedule = $channel->getSchedule() ?? $repository->copyGeneral();
         $form = $this->createForm(ScheduleType::class, $schedule);
         $form->handleRequest($request);
 

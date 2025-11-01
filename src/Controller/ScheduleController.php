@@ -19,8 +19,11 @@ final class ScheduleController extends AbstractController
         $form = $this->createForm(ScheduleType::class, $schedule);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if (!$schedule->getId()) {
             $entityManager->persist($schedule);
+        }
+
+        if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
         }
 

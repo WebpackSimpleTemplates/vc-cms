@@ -24,14 +24,14 @@
                 Вернуть к общему расписанию
             </a>
         </div>
-        <div class="text-sm text-secondary mb-4">
-            Время на сервере: {{ time }}
-        </div>
     {% else %}
-        <button class="btn btn-primary my-8">
+        <button class="btn btn-primary mt-8 mb-4">
             Сохранить как индивидуальное
         </button>
     {% endif %}
+    <div class="text-sm text-secondary mb-4">
+        Время на сервере: {{ time }}
+    </div>
     <div id="times"></div>
 {{ form_end(form) }}
 {% endblock %}

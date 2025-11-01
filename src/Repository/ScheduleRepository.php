@@ -16,15 +16,23 @@ class ScheduleRepository extends ServiceEntityRepository
         parent::__construct($registry, Schedule::class);
     }
 
-    public function getGeneral(): Schedule
+    public function copyGeneral(): Schedule
     {
-        $general = $this->findOneBy(["channel" => null]);
+        $general = $this->getGeneral();
+
 
         $schedule = new Schedule();
+        $schedule->setTimes($general->getTimes());
 
-        if ($general) {
-            $schedule->setTimes($general->getTimes());
-        } else {
+        return $schedule;
+    }
+
+    public function getGeneral(): Schedule
+    {
+        $schedule = $this->findOneBy(["channel" => null]);
+
+        if (!$schedule) {
+            $schedule = new Schedule();
             $schedule->setTimes([
                 [[0, 1440]],
                 [[0, 1440]],
