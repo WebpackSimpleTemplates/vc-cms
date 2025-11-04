@@ -26,7 +26,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/api/client')]
 final class ApiClientController extends AbstractController
 {
-    #[Route('/avg-wait-time', name: 'avg_wait_time')]
+    #[Route('/avg-wait-time', name: 'avg_wait_time', stateless:true)]
     public function avgWaitTime(CallRepository $repository)
     {
         return $this->json([
@@ -34,7 +34,7 @@ final class ApiClientController extends AbstractController
         ]);
     }
 
-    #[Route('/schedule/{channel}')]
+    #[Route('/schedule/{channel}', name:'app_start_call')]
     public function test(Channel $channel, ScheduleRepository $scheduleRepository)
     {
         $schedule = $channel->getSchedule() ?? $scheduleRepository->getGeneral();
