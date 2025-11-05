@@ -26,7 +26,6 @@ final class Version20251105114859 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE custom_content ALTER logo SET NOT NULL');
     }
 }

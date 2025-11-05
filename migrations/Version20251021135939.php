@@ -28,7 +28,6 @@ final class Version20251021135939 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('ALTER TABLE history_log DROP CONSTRAINT FK_6190350AC69D3FB');
         $this->addSql('DROP TABLE history_log');
     }
