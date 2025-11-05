@@ -18,6 +18,7 @@ class CreateUserType extends UserType
                     "accept" => "image/*",
                 ],
                 "label" => "Аватар",
+                "required" => false,
             ]);
         $this-> _buildForm($builder, $options);
         $builder

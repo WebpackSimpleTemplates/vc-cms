@@ -46,7 +46,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable:true)]
     private ?string $fullname = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable:true)]
+    #[ORM\Column(type: Types::TEXT, options:['default'=> "/default-avatar.jpg"])]
     private ?string $avatar = null;
 
     #[Ignore]

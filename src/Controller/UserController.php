@@ -43,6 +43,10 @@ final class UserController extends AbstractController
 
             $avatarFile->move($this->kernel->getProjectDir()."/public/uploads/", $filename);
         }
+
+        if (!$avatarFile && !$user->getAvatar()) {
+            $user->setAvatar("/default-avatar.jpg");
+        }
     }
 
     #[Route(name: 'app_user_index', methods: ['GET'])]
