@@ -34,14 +34,6 @@ final class ApiClientController extends AbstractController
         ]);
     }
 
-    #[Route('/schedule/{channel}', name:'app_start_call')]
-    public function test(Channel $channel, ScheduleRepository $scheduleRepository)
-    {
-        $schedule = $channel->getSchedule() ?? $scheduleRepository->getGeneral();
-
-        return $this->json($schedule->isActive());
-    }
-
     #[Route('/start/{channel}', name: 'api_start_call', methods:['POST'])]
     public function index(
         #[MapRequestPayload] StartCallPayload $payload,
