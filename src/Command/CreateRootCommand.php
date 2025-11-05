@@ -49,6 +49,7 @@ class CreateRootCommand extends Command
 
         $user = new User();
         $user->setEmail($email);
+        $user->setAvatar("/default-avatar.jpg");
         $user->setPassword($this->userPasswordHasher->hashPassword($user, $password));
         $user->setRoles(["ROLE_ROOT"]);
 
