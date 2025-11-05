@@ -162,4 +162,52 @@ final class ApiConsultantController extends AbstractController
 
         return $this->json($callRepository->getDeferCalls($user));
     }
+
+    #[Route('/redirected', name:'api_defer_calls')]
+    public function getRedirectedCalls(
+        Security $security,
+        CallRepository $callRepository
+    )
+    {
+        /** @var User $user */
+        $user = $security->getUser();
+
+        return $this->json($callRepository->getRedirectedCalls($user));
+    }
+
+    #[Route('/call/{call}/redirect/channel/{channel}')]
+    public function redirectToChannel(
+        Call $call,
+        Channel $channel,
+        EntityManagerInterface $entityManager,
+        PushRepository $pushRepository,
+        HistoryRepository $history,
+    )
+    {
+        $call->setRedirectedToChannel($channel);
+        $call->setClosedAt(new DateTime());
+
+        $entityManager->flush();
+
+        $pushRepository->push("calls/".$call->getId(), "redirected", $call);
+        $history->write("Перевод звонка", $call->getPrefix()." ".$call->getNum()." -> Канал ".$channel->getTitle());
+    }
+
+    #[Route('/call/{call}/redirect/consultant/{consultant}')]
+    public function redirectToConsultant(
+        Call $call,
+        User $consultant,
+        EntityManagerInterface $entityManager,
+        PushRepository $pushRepository,
+        HistoryRepository $history,
+    )
+    {
+        $call->setRedirectedToConsultant($consultant);
+        $call->setClosedAt(new DateTime());
+
+        $entityManager->flush();
+
+        $pushRepository->push("calls/".$call->getId(), "redirected", $call);
+        $history->write("Перевод звонка", $call->getPrefix()." ".$call->getNum()." -> Консультант ".$consultant->getDisplayName());
+    }
 }

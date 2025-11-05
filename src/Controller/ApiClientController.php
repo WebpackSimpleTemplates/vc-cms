@@ -7,6 +7,7 @@ use App\Entity\Call;
 use App\Entity\Channel;
 use App\Entity\Quality;
 use App\Entity\QualityResponse;
+use App\Entity\User;
 use App\Payload\QualityPayload;
 use App\Payload\StartCallPayload;
 use App\Repository\CallRepository;
@@ -20,6 +21,7 @@ use App\Repository\QualityResponseRepository;
 use App\Repository\ScheduleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -42,7 +44,9 @@ final class ApiClientController extends AbstractController
         Channel $channel,
         PushRepository $pushRepository,
         IpBlockRepository $ipBlockRepository,
-        ScheduleRepository $scheduleRepository
+        ScheduleRepository $scheduleRepository,
+        #[MapQueryParameter('from')] ?Call $from = null,
+        #[MapQueryParameter('consultant')] ?User $consultant = null,
     ): Response
     {
         $ip = $this->getIp();
@@ -62,19 +66,24 @@ final class ApiClientController extends AbstractController
 
         $call = new Call();
 
-        $call->setNum($callRepository->getNextNum($channel->getPrefix()));
-        $call->setPrefix($channel->getPrefix());
+        $call->setNum($from?->getNum() ?? $callRepository->getNextNum($channel->getPrefix()));
+        $call->setPrefix($from?->getPrefix() ?? $channel->getPrefix());
         $call->setChannel($channel);
         $call->setType($payload->type);
         $call->setWaitStart(new DateTime());
         $call->setHour((int) date("H"));
         $call->setWeekday((int) date("w"));
         $call->setIp($ip);
+        $call->setConsultant($consultant);
 
         $entityManager->persist($call);
         $entityManager->flush();
 
-        $pushRepository->push("", "call-created", $call);
+        if ($consultant) {
+            $pushRepository->push("/consultants/".$consultant->getId(), "redirect", $call);
+        } else {
+            $pushRepository->push("", "call-created", $call);
+        }
 
         return $this->json($call);
     }

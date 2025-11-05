@@ -69,6 +69,15 @@ class Call
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $ip = null;
 
+    #[ORM\OneToOne(targetEntity: self::class, cascade: ['persist', 'remove'])]
+    private ?self $redirectedFrom = null;
+
+    #[ORM\ManyToOne]
+    private ?Channel $redirectedToChannel = null;
+
+    #[ORM\ManyToOne]
+    private ?User $redirectedToConsultant = null;
+
     public function __construct()
     {
         $this->messages = new ArrayCollection();
@@ -358,6 +367,42 @@ class Call
     public function setIp(?string $ip): static
     {
         $this->ip = $ip;
+
+        return $this;
+    }
+
+    public function getRedirectedFrom(): ?self
+    {
+        return $this->redirectedFrom;
+    }
+
+    public function setRedirectedFrom(?self $redirectedFrom): static
+    {
+        $this->redirectedFrom = $redirectedFrom;
+
+        return $this;
+    }
+
+    public function getRedirectedToChannel(): ?Channel
+    {
+        return $this->redirectedToChannel;
+    }
+
+    public function setRedirectedToChannel(?Channel $redirectedToChannel): static
+    {
+        $this->redirectedToChannel = $redirectedToChannel;
+
+        return $this;
+    }
+
+    public function getRedirectedToConsultant(): ?User
+    {
+        return $this->redirectedToConsultant;
+    }
+
+    public function setRedirectedToConsultant(?User $redirectedToConsultant): static
+    {
+        $this->redirectedToConsultant = $redirectedToConsultant;
 
         return $this;
     }

@@ -152,7 +152,7 @@ class CallRepository extends ServiceEntityRepository
                 "MAX(:now - c.waitStart) as max",
             ])
             ->leftJoin(Channel::class, "ch", Join::WITH, "ch.id = c.channel")
-            ->where("c.acceptedAt IS NULL")
+            ->where("c.consultant IS NULL")
             ->andWhere("c.closedAt IS NULL")
             ->groupBy("ch")
             ->setParameter("now", $onlineTime)
@@ -168,7 +168,7 @@ class CallRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder("c")
             ->orderBy("c.waitStart", "asc")
             ->where("c.closedAt IS NULL")
-            ->andWhere("c.acceptedAt IS NULL")
+            ->andWhere("c.consultant IS NULL")
         ;
 
         if ($channel)
@@ -240,6 +240,18 @@ class CallRepository extends ServiceEntityRepository
     {
         $qb = $this->getActiveMany();
 
+        $qb->andWhere("c.acceptedAt IS NOT NULL");
+        $qb->andWhere("c.consultant = :user");
+        $qb->setParameter("user", $user);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getRedirectedCalls(User $user)
+    {
+        $qb = $this->getActiveMany();
+
+        $qb->andWhere("c.acceptedAt IS NULL");
         $qb->andWhere("c.consultant = :user");
         $qb->setParameter("user", $user);
 
