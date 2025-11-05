@@ -8,8 +8,8 @@ class MessagePayload {
     public function __construct(
         #[Type("string")]
         public readonly ?string $message,
-        #[Type("string")]
-        public readonly ?string $fileSize,
+        #[Type("int")]
+        public readonly ?int $fileSize,
         #[Type("string")]
         public readonly ?string $filePath,
         #[Type("string")]
