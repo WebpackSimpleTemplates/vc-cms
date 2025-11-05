@@ -36,14 +36,6 @@ final class UserController extends AbstractController
 
         $avatarFile = ($form->get("avatar")->getData());
 
-        if ($avatarFile) {
-            /** @var UploadedFile $avatarFile */
-            $filename = uniqid()."-".$avatarFile->getClientOriginalName();
-            $user->setAvatar("/uploads"."/".$filename);
-
-            $avatarFile->move($this->kernel->getProjectDir()."/public/uploads/", $filename);
-        }
-
         if (!$avatarFile && !$user->getAvatar()) {
             $user->setAvatar("/default-avatar.jpg");
         }

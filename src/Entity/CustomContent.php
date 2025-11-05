@@ -17,7 +17,7 @@ class CustomContent
     #[ORM\Column(length: 255)]
     private ?string $theme = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $logo = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -50,7 +50,9 @@ class CustomContent
 
     public function setLogo(string $logo): static
     {
-        $this->logo = $logo;
+        if ($logo) {
+            $this->logo = $logo;
+        }
 
         return $this;
     }
@@ -62,7 +64,9 @@ class CustomContent
 
     public function setLogoDark(?string $logoDark): static
     {
-        $this->logoDark = $logoDark;
+        if ($logoDark) {
+            $this->logoDark = $logoDark;
+        }
 
         return $this;
     }

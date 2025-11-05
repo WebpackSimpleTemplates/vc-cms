@@ -14,24 +14,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserProfileType extends AbstractType
 {
-    protected function _buildForm(FormBuilderInterface $builder, array $options) {
-        $builder
-            ->add('email', EmailType::class, [ "label" => "Электронная почта" ])
-            ->add('fullname', TextType::class, [ "label" => "ФИО" ])
-            ->add('displayName', TextType::class, [ "label" => "Отображаемое имя" ])
-            ->add('roles', ChoiceType::class, [
-                "choices" => [
-                    "Администратор" => "ROLE_ADMIN",
-                    "Читатель" => "ROLE_READER",
-                    "Консультант" => "ROLE_OPERATOR",
-                ],
-                "label" => "Роли-доступы",
-                'expanded' => true,
-                'multiple' => true,
-            ])
-        ;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder

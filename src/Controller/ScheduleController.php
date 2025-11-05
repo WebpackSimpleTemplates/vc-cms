@@ -25,6 +25,8 @@ final class ScheduleController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
+
+            return $this->redirectToRoute('app_schedule');
         }
 
         return $this->render('schedule/index.html.twig', [

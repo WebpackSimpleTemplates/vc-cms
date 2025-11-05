@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\User;
+use App\Transformer\UploadFileTransformer;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -14,8 +15,19 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class UserType extends AbstractType
 {
+    public function __construct(
+        private UploadFileTransformer $uploadFileTransformer
+    ) {}
+
     protected function _buildForm(FormBuilderInterface $builder, array $options) {
          $builder
+            ->add('avatar', FileType::class, [
+                "attr" => [
+                    "accept" => "image/*",
+                ],
+                "label" => "Аватар",
+                "required" => false,
+            ])
             ->add('email', EmailType::class, [ "label" => "Электронная почта" ])
             ->add('fullname', TextType::class, [ "label" => "ФИО" ])
             ->add('displayName', TextType::class, [ "label" => "Отображаемое имя" ])
@@ -30,20 +42,14 @@ class UserType extends AbstractType
                 'multiple' => true,
             ])
         ;
+
+        $builder->get('avatar')->addViewTransformer($this->uploadFileTransformer);
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('avatar', FileType::class, [
-                'mapped' => false,
-                "attr" => [
-                    "accept" => "image/*",
-                ],
-                "label" => "Аватар",
-                "required" => false,
-            ]);
         $this-> _buildForm($builder, $options);
+
         $builder
             ->add('plainPassword', PasswordType::class, [
                 "required" => false,

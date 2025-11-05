@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\User;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -12,14 +11,6 @@ class CreateUserType extends UserType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('avatar', FileType::class, [
-                "attr" => [
-                    "accept" => "image/*",
-                ],
-                "label" => "Аватар",
-                "required" => false,
-            ]);
         $this-> _buildForm($builder, $options);
         $builder
             ->add('plainPassword', PasswordType::class, [

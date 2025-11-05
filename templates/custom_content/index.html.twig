@@ -3,18 +3,27 @@
 {% block title %}Кастомизация{% endblock %}
 
 {% block content %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+<div class="card shadow bg-base-100 p-3 max-w-md mx-auto">
+    <div class="text-xl mb-4">Редактирование контента</div>
+    {{ form_start(form) }}
+        {{ form_row(form.theme) }}
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/home/savva/projects/videoconsultant/vc-cms/src/Controller/CustomContentController.php</code></li>
-        <li>Your template at <code>/home/savva/projects/videoconsultant/vc-cms/templates/custom_content/index.html.twig</code></li>
-    </ul>
+        {% if customContent.logo %}
+            <label class="label">
+                Текущий логотип
+            </label>
+            <img src="{{ customContent.logo }}" class="h-5 max-w-full object-cover object-center mb-4">
+        {% endif %}
+        {{ form_row(form.logo) }}
+        {% if customContent.logoDark %}
+            <label class="label">
+                Текущий логотип для тёмной темы
+            </label>
+            <img src="{{ customContent.logoDark }}" class="h-5 max-w-full object-cover object-center mb-4">
+        {% endif %}
+        {{ form_row(form.logoDark) }}
+        {{ form_row(form.marquee) }}
+        <button class="btn btn-primary ml-auto block">Сохранить</button>
+    {{ form_end(form) }}
 </div>
 {% endblock %}
