@@ -25,15 +25,15 @@ class ConsultantStatus
     #[ORM\Column]
     private ?int $serveTime = null;
 
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $userLink = null;
-
-    #[ORM\OneToOne(cascade: ['persist', 'remove'])]
-    private ?Call $call = null;
-
     #[ORM\Column]
     private ?\DateTime $lastOnline = null;
+
+    #[ORM\ManyToOne(inversedBy: 'consultantStatuses')]
+    private ?Call $call = null;
+
+    #[ORM\OneToOne(inversedBy: 'consultantStatus', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $userLink = null;
 
     public function getId(): ?int
     {
@@ -84,30 +84,6 @@ class ConsultantStatus
     public function setServeTime(int $serveTime): static
     {
         $this->serveTime = $serveTime;
-
-        return $this;
-    }
-
-    public function getUserLink(): ?User
-    {
-        return $this->userLink;
-    }
-
-    public function setUserLink(User $userLink): static
-    {
-        $this->userLink = $userLink;
-
-        return $this;
-    }
-
-    public function getCall(): ?Call
-    {
-        return $this->call;
-    }
-
-    public function setCall(?Call $call): static
-    {
-        $this->call = $call;
 
         return $this;
     }
@@ -178,5 +154,29 @@ class ConsultantStatus
         }
 
         return $call->getPrefix()." ".$call->getNum();
+    }
+
+    public function getCall(): ?Call
+    {
+        return $this->call;
+    }
+
+    public function setCall(?Call $call): static
+    {
+        $this->call = $call;
+
+        return $this;
+    }
+
+    public function getUserLink(): ?User
+    {
+        return $this->userLink;
+    }
+
+    public function setUserLink(User $userLink): static
+    {
+        $this->userLink = $userLink;
+
+        return $this;
     }
 }

@@ -78,10 +78,18 @@ class Call
     #[ORM\ManyToOne]
     private ?User $redirectedToConsultant = null;
 
+    /**
+     * @var Collection<int, ConsultantStatus>
+     */
+    #[ORM\OneToMany(targetEntity: ConsultantStatus::class, mappedBy: 'call')]
+    #[Ignore]
+    private Collection $consultantStatuses;
+
     public function __construct()
     {
         $this->messages = new ArrayCollection();
         $this->qualityResponses = new ArrayCollection();
+        $this->consultantStatuses = new ArrayCollection();
     }
 
     public function getId(): ?UuidInterface
@@ -403,6 +411,36 @@ class Call
     public function setRedirectedToConsultant(?User $redirectedToConsultant): static
     {
         $this->redirectedToConsultant = $redirectedToConsultant;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ConsultantStatus>
+     */
+    public function getConsultantStatuses(): Collection
+    {
+        return $this->consultantStatuses;
+    }
+
+    public function addConsultantStatus(ConsultantStatus $consultantStatus): static
+    {
+        if (!$this->consultantStatuses->contains($consultantStatus)) {
+            $this->consultantStatuses->add($consultantStatus);
+            $consultantStatus->setCall($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConsultantStatus(ConsultantStatus $consultantStatus): static
+    {
+        if ($this->consultantStatuses->removeElement($consultantStatus)) {
+            // set the owning side to null (unless already changed)
+            if ($consultantStatus->getCall() === $this) {
+                $consultantStatus->setCall(null);
+            }
+        }
 
         return $this;
     }

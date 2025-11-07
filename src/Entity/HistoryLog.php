@@ -16,10 +16,6 @@ class HistoryLog
     #[ORM\Column]
     private ?\DateTime $datetime = null;
 
-    #[ORM\ManyToOne]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $usr = null;
-
     #[ORM\Column(length: 255)]
     private ?string $action = null;
 
@@ -28,6 +24,10 @@ class HistoryLog
 
     #[ORM\Column]
     private ?bool $isConsultant = null;
+
+    #[ORM\ManyToOne(inversedBy: 'historyLogs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $usr = null;
 
     public function getId(): ?int
     {
@@ -42,18 +42,6 @@ class HistoryLog
     public function setDatetime(\DateTime $datetime): static
     {
         $this->datetime = $datetime;
-
-        return $this;
-    }
-
-    public function getUsr(): ?User
-    {
-        return $this->usr;
-    }
-
-    public function setUsr(?User $usr): static
-    {
-        $this->usr = $usr;
 
         return $this;
     }
@@ -97,5 +85,17 @@ class HistoryLog
     public function labelTime()
     {
         return $this->datetime->format("d.m.Y H:i:s");
+    }
+
+    public function getUsr(): ?User
+    {
+        return $this->usr;
+    }
+
+    public function setUsr(?User $usr): static
+    {
+        $this->usr = $usr;
+
+        return $this;
     }
 }

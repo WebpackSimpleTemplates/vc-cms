@@ -64,7 +64,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $calls;
 
     #[ORM\Column(options:['default'=> false])]
-    private ?bool $isConsultant = null;
+    private ?bool $isConsultant = false;
 
     /**
      * @var Collection<int, Quality>
@@ -80,12 +80,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: QualityResponse::class, mappedBy: 'consultant', orphanRemoval:true)]
     private Collection $qualityResponses;
 
+    #[ORM\OneToOne(mappedBy: 'userLink', cascade: ['persist', 'remove'], orphanRemoval:true)]
+    #[Ignore]
+    private ?ConsultantStatus $consultantStatus = null;
+
+    /**
+     * @var Collection<int, HistoryLog>
+     */
+    #[ORM\OneToMany(targetEntity: HistoryLog::class, mappedBy: 'usr', orphanRemoval: true)]
+    private Collection $historyLogs;
+
     public function __construct()
     {
         $this->channels = new ArrayCollection();
         $this->calls = new ArrayCollection();
         $this->qualities = new ArrayCollection();
         $this->qualityResponses = new ArrayCollection();
+        $this->historyLogs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -368,5 +379,52 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getTitle()
     {
         return $this->getDisplayName();
+    }
+
+    public function getConsultantStatus(): ?ConsultantStatus
+    {
+        return $this->consultantStatus;
+    }
+
+    public function setConsultantStatus(ConsultantStatus $consultantStatus): static
+    {
+        // set the owning side of the relation if necessary
+        if ($consultantStatus->getUserLink() !== $this) {
+            $consultantStatus->setUserLink($this);
+        }
+
+        $this->consultantStatus = $consultantStatus;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, HistoryLog>
+     */
+    public function getHistoryLogs(): Collection
+    {
+        return $this->historyLogs;
+    }
+
+    public function addHistoryLog(HistoryLog $historyLog): static
+    {
+        if (!$this->historyLogs->contains($historyLog)) {
+            $this->historyLogs->add($historyLog);
+            $historyLog->setUsr($this);
+        }
+
+        return $this;
+    }
+
+    public function removeHistoryLog(HistoryLog $historyLog): static
+    {
+        if ($this->historyLogs->removeElement($historyLog)) {
+            // set the owning side to null (unless already changed)
+            if ($historyLog->getUsr() === $this) {
+                $historyLog->setUsr(null);
+            }
+        }
+
+        return $this;
     }
 }
