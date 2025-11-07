@@ -163,7 +163,7 @@ final class ApiConsultantController extends AbstractController
         return $this->json($callRepository->getDeferCalls($user));
     }
 
-    #[Route('/redirected', name:'api_defer_calls')]
+    #[Route('/redirected', name:'api_redirected_calls')]
     public function getRedirectedCalls(
         Security $security,
         CallRepository $callRepository

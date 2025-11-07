@@ -81,7 +81,7 @@ class Call
     /**
      * @var Collection<int, ConsultantStatus>
      */
-    #[ORM\OneToMany(targetEntity: ConsultantStatus::class, mappedBy: 'call')]
+    #[ORM\OneToMany(targetEntity: ConsultantStatus::class, mappedBy: 'call', orphanRemoval: true)]
     #[Ignore]
     private Collection $consultantStatuses;
 
