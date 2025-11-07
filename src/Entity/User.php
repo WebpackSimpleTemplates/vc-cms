@@ -228,7 +228,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setAvatar(?string $avatar): static
     {
-        $this->avatar = $avatar;
+        if ($avatar) {
+            $this->avatar = $avatar;
+        }
 
         return $this;
     }
