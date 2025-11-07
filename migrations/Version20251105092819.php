@@ -21,6 +21,7 @@ final class Version20251105092819 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE "user" ALTER avatar SET DEFAULT \'/default-avatar.jpg\'');
+        $this->addSql('UPDATE "user" SET avatar = \'/default-avatar.jpg\' WHERE avatar IS NULL');
         $this->addSql('ALTER TABLE "user" ALTER avatar SET NOT NULL');
     }
 
