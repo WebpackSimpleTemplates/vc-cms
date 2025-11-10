@@ -18,7 +18,7 @@ final class QualityUsersController extends AbstractController
 {
     public function __construct(private EntityManagerInterface $entityManager) {}
 
-    #[Route("/manage/connected", name: 'app_quality_users')]
+    #[Route("/connected", name: 'app_quality_users')]
     public function index(Quality $quality, UserRepository $userRepository, PaginatorInterface $paginator, Request $request): Response
     {
         return $this->render('quality/users.html.twig', [
@@ -31,7 +31,7 @@ final class QualityUsersController extends AbstractController
         ]);
     }
 
-    #[Route("/manage/all", name: 'app_quality_users_all')]
+    #[Route("/all", name: 'app_quality_users_all')]
     public function all(Quality $quality, UserRepository $userRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $pagination = $paginator->paginate(
@@ -56,7 +56,7 @@ final class QualityUsersController extends AbstractController
         ]);
     }
 
-    #[Route("/manage/connect/{user}", name: 'app_quality_users_connect', methods:['POST'])]
+    #[Route("/connect/{user}", name: 'app_quality_users_connect', methods:['POST'])]
     public function connect(Quality $quality, User $user, HistoryRepository $history): Response
     {
         $quality->addConsultant($user);
@@ -67,7 +67,7 @@ final class QualityUsersController extends AbstractController
         return $this->redirectToRoute("app_quality_users_all", ['id' => $quality->getId()]);
     }
 
-    #[Route("/manage/disconnect/{user}", name: 'app_quality_users_disconnect', methods:['POST'])]
+    #[Route("/disconnect/{user}", name: 'app_quality_users_disconnect', methods:['POST'])]
     public function disconnect(Quality $quality, User $user, HistoryRepository $history): Response
     {
         $quality->removeConsultant($user);

@@ -11,6 +11,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Attribute\Ignore;
+use Symfony\Component\Validator\Constraints\Count;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
@@ -31,6 +32,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[Ignore]
     #[ORM\Column]
+    #[Count(min:1, minMessage:"Требуется указать хотя бы одну роль")]
     private array $roles = [];
 
     /**
@@ -88,7 +90,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var Collection<int, HistoryLog>
      */
     #[ORM\OneToMany(targetEntity: HistoryLog::class, mappedBy: 'usr', orphanRemoval: true)]
+    #[Ignore]
     private Collection $historyLogs;
+
+    #[ORM\Column(nullable: true)]
+    #[Ignore]
+    private ?\DateTime $deletedAt = null;
+
+    #[ORM\ManyToOne(targetEntity: self::class)]
+    #[Ignore]
+    private ?self $deletedBy = null;
 
     public function __construct()
     {
@@ -424,6 +435,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $historyLog->setUsr(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDeletedAt(): ?\DateTime
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(?\DateTime $deletedAt): static
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    public function getDeletedBy(): ?self
+    {
+        return $this->deletedBy;
+    }
+
+    public function setDeletedBy(?self $deletedBy): static
+    {
+        $this->deletedBy = $deletedBy;
 
         return $this;
     }

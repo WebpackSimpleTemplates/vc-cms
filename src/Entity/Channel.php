@@ -58,6 +58,14 @@ class Channel
     #[Ignore]
     private ?Schedule $schedule = null;
 
+    #[ORM\Column(nullable: true)]
+    #[Ignore]
+    private ?\DateTime $deletedAt = null;
+
+    #[ORM\ManyToOne]
+    #[Ignore]
+    private ?User $deletedBy = null;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -236,6 +244,30 @@ class Channel
         }
 
         $this->schedule = $schedule;
+
+        return $this;
+    }
+
+    public function getDeletedAt(): ?\DateTime
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(?\DateTime $deletedAt): static
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    public function getDeletedBy(): ?User
+    {
+        return $this->deletedBy;
+    }
+
+    public function setDeletedBy(?User $deletedBy): static
+    {
+        $this->deletedBy = $deletedBy;
 
         return $this;
     }

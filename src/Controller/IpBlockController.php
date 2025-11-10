@@ -36,7 +36,7 @@ final class IpBlockController extends AbstractController
         ]);
     }
 
-    #[Route('/manage/new', name: 'app_ip_block_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_ip_block_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $ipBlock = new IpBlock();
@@ -61,7 +61,7 @@ final class IpBlockController extends AbstractController
         ]);
     }
 
-    #[Route('/manage/{id}', name: 'app_ip_block_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_ip_block_show', methods: ['GET'])]
     public function show(IpBlock $ipBlock): Response
     {
         return $this->render('ip_block/show.html.twig', [
@@ -69,7 +69,7 @@ final class IpBlockController extends AbstractController
         ]);
     }
 
-    #[Route('/manage/{id}/edit', name: 'app_ip_block_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_ip_block_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, IpBlock $ipBlock, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(IpBlockType::class, $ipBlock);
@@ -87,7 +87,7 @@ final class IpBlockController extends AbstractController
         ]);
     }
 
-    #[Route('/manage/{id}', name: 'app_ip_block_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_ip_block_delete', methods: ['POST'])]
     public function delete(Request $request, IpBlock $ipBlock, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$ipBlock->getId(), $request->getPayload()->getString('_token'))) {

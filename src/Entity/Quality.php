@@ -53,6 +53,14 @@ class Quality
     #[Ignore]
     private Collection $responses;
 
+    #[ORM\Column(nullable: true)]
+    #[Ignore]
+    private ?\DateTime $deletedAt = null;
+
+    #[ORM\ManyToOne]
+    #[Ignore]
+    private ?User $deletedBy = null;
+
     public function __construct()
     {
         $this->channels = new ArrayCollection();
@@ -187,6 +195,30 @@ class Quality
                 $response->setQuality(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getDeletedAt(): ?\DateTime
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(?\DateTime $deletedAt): static
+    {
+        $this->deletedAt = $deletedAt;
+
+        return $this;
+    }
+
+    public function getDeletedBy(): ?User
+    {
+        return $this->deletedBy;
+    }
+
+    public function setDeletedBy(?User $deletedBy): static
+    {
+        $this->deletedBy = $deletedBy;
 
         return $this;
     }

@@ -6,6 +6,7 @@ use App\Entity\Quality;
 use App\Form\QualityType;
 use App\Repository\HistoryRepository;
 use App\Repository\QualityRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,7 +29,7 @@ final class QualityController extends AbstractController
         ]);
     }
 
-    #[Route('/manage/new', name: 'app_quality_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_quality_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager, HistoryRepository $history): Response
     {
         $quality = new Quality();
@@ -50,9 +51,15 @@ final class QualityController extends AbstractController
         ]);
     }
 
-    #[Route('/manage/{id}/edit', name: 'app_quality_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_quality_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Quality $quality, EntityManagerInterface $entityManager, HistoryRepository $history): Response
     {
+        if ($quality->getDeletedAt()) {
+            return $this->render('quality/deleted.html.twig', [
+                'quality' => $quality,
+            ]);
+        }
+
         $oldTitle = $quality->getTitle();
         $form = $this->createForm(QualityType::class, $quality);
         $form->handleRequest($request);
@@ -70,11 +77,12 @@ final class QualityController extends AbstractController
         ]);
     }
 
-    #[Route('/manage/{id}', name: 'app_quality_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'app_quality_delete', methods: ['POST'])]
     public function delete(Request $request, Quality $quality, EntityManagerInterface $entityManager, HistoryRepository $history): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$quality->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($quality);
+        if (!$quality->getDeletedAt() && $this->isCsrfTokenValid('delete'.$quality->getId(), $request->getPayload()->getString('_token'))) {
+            $quality->setDeletedAt(new DateTime());
+            $quality->setDeletedBy($this->getUser());
             $entityManager->flush();
             $history->write("Удаление оценки качества", $quality->getTitle());
         }

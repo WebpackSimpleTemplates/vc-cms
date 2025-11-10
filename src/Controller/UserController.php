@@ -8,6 +8,7 @@ use App\Form\UserProfileType;
 use App\Form\UserType;
 use App\Repository\HistoryRepository;
 use App\Repository\UserRepository;
+use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -53,7 +54,7 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/manage/new', name: 'app_user_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -81,7 +82,7 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/manage/profile', name: 'app_user_profile', methods: ['GET', 'POST'])]
+    #[Route('/profile', name: 'app_user_profile', methods: ['GET', 'POST'])]
     public function profile(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -110,7 +111,7 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/manage/{id}', name: 'app_user_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
         EntityManagerInterface $entityManager,
@@ -118,6 +119,12 @@ final class UserController extends AbstractController
         User $user,
     ): Response
     {
+        if ($user->getDeletedAt()) {
+            return $this->render('user/deleted.html.twig', [
+                'user' => $user,
+            ]);
+        }
+
         /** @var User $currentUser */
         $currentUser = $this->getUser();
 
@@ -147,7 +154,7 @@ final class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/manage/{id}/delete', name: 'app_user_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_user_delete', methods: ['POST'])]
     public function delete(
         Request $request,
         User $user,
@@ -158,12 +165,13 @@ final class UserController extends AbstractController
         /** @var User $currentUser */
         $currentUser = $this->getUser();
 
-        if ($user->isRoot() || $currentUser->getId() === $user->getId()) {
+        if ($user->isRoot() || $currentUser->getId() === $user->getId() || !$this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
             throw $this->createAccessDeniedException();
         }
 
-        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($user);
+        if (!$user->getDeletedAt()) {
+            $user->setDeletedAt(new DateTime());
+            $user->setDeletedBy($this->getUser());
             $entityManager->flush();
 
             $history->write("Удаление пользователя", $user->getEmail());

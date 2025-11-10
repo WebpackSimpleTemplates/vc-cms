@@ -18,7 +18,7 @@ final class ChannelUsersController extends AbstractController
 {
     public function __construct(private EntityManagerInterface $entityManager) {}
 
-    #[Route("/manage/connected", name: 'app_channel_users')]
+    #[Route("/connected", name: 'app_channel_users')]
     public function index(Channel $channel, UserRepository $userRepository, PaginatorInterface $paginator, Request $request): Response
     {
         return $this->render('channel/users.html.twig', [
@@ -31,7 +31,7 @@ final class ChannelUsersController extends AbstractController
         ]);
     }
 
-    #[Route("/manage/all", name: 'app_channel_users_all')]
+    #[Route("/all", name: 'app_channel_users_all')]
     public function all(Channel $channel, UserRepository $userRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $pagination = $paginator->paginate(
@@ -56,7 +56,7 @@ final class ChannelUsersController extends AbstractController
         ]);
     }
 
-    #[Route("/manage/connect/{user}", name: 'app_channel_users_connect', methods:['POST'])]
+    #[Route("/connect/{user}", name: 'app_channel_users_connect', methods:['POST'])]
     public function connect(Channel $channel, User $user, HistoryRepository $history): Response
     {
         $channel->addUser($user);
@@ -67,7 +67,7 @@ final class ChannelUsersController extends AbstractController
         return $this->redirectToRoute("app_channel_users_all", ['id' => $channel->getId()]);
     }
 
-    #[Route("/manage/disconnect/{user}", name: 'app_channel_users_disconnect', methods:['POST'])]
+    #[Route("/disconnect/{user}", name: 'app_channel_users_disconnect', methods:['POST'])]
     public function disconnect(Channel $channel, User $user, HistoryRepository $history): Response
     {
         $channel->removeUser($user);

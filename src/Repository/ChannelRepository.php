@@ -23,6 +23,7 @@ class ChannelRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('c');
 
         $qb->orderBy('c.id', 'desc');
+        $qb->where('c.deletedAt IS NULL');
 
         return $qb;
     }
@@ -54,7 +55,7 @@ class ChannelRepository extends ServiceEntityRepository
 
         $qb->join('c.users', 'u');
 
-        $qb->where("u.id = :uid");
+        $qb->andWhere("u.id = :uid");
 
         $qb->setParameter("uid", $user->getId());
 
@@ -67,7 +68,7 @@ class ChannelRepository extends ServiceEntityRepository
 
         $qb->join('c.qualities', 'q');
 
-        $qb->where("q.id = :qid");
+        $qb->andWhere("q.id = :qid");
 
         $qb->setParameter("qid", $quality);
 

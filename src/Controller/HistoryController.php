@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/manage/history')]
 final class HistoryController extends AbstractController
 {
-    #[Route('/manage/', name: 'app_history')]
+    #[Route('/', name: 'app_history')]
     public function index(
         Request $request,
         PaginatorInterface $paginator,

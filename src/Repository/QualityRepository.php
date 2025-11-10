@@ -24,6 +24,7 @@ class QualityRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('q');
 
         $qb->orderBy('q.id', 'DESC');
+        $qb->where('q.deletedAt IS NULL');
 
         return $qb;
     }
@@ -32,7 +33,7 @@ class QualityRepository extends ServiceEntityRepository
     {
         $qb = $this->getMany();
 
-        $qb->where("q.isMain = false");
+        $qb->andWhere("q.isMain = false");
 
         return $qb;
     }
@@ -66,7 +67,7 @@ class QualityRepository extends ServiceEntityRepository
     public function getQualitiesForCall(Call $call) {
         $qb = $this->getMany();
 
-        $qb->where("q.isMain = true");
+        $qb->andWhere("q.isMain = true");
 
         $qb
             ->leftJoin("q.channels", "ch")

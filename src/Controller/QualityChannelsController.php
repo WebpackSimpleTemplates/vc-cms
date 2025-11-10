@@ -18,7 +18,7 @@ final class QualityChannelsController extends AbstractController
 {
     public function __construct(private EntityManagerInterface $entityManager) {}
 
-    #[Route("/manage/connected", name: 'app_quality_channels')]
+    #[Route("/connected", name: 'app_quality_channels')]
     public function index(Quality $quality, ChannelRepository $channelRepository, PaginatorInterface $paginator, Request $request): Response
     {
         return $this->render('quality/channels.html.twig', [
@@ -31,7 +31,7 @@ final class QualityChannelsController extends AbstractController
         ]);
     }
 
-    #[Route("/manage/all", name: 'app_quality_channels_all')]
+    #[Route("/all", name: 'app_quality_channels_all')]
     public function all(Quality $quality, ChannelRepository $channelRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $pagination = $paginator->paginate(
@@ -56,7 +56,7 @@ final class QualityChannelsController extends AbstractController
         ]);
     }
 
-    #[Route("/manage/connect/{channel}", name: 'app_quality_channels_connect', methods:['POST'])]
+    #[Route("/connect/{channel}", name: 'app_quality_channels_connect', methods:['POST'])]
     public function connect(Quality $quality, Channel $channel, HistoryRepository $history): Response
     {
         $quality->addChannel($channel);
@@ -67,7 +67,7 @@ final class QualityChannelsController extends AbstractController
         return $this->redirectToRoute("app_quality_channels_all", ['id' => $quality->getId()]);
     }
 
-    #[Route("/manage/disconnect/{channel}", name: 'app_quality_channels_disconnect', methods:['POST'])]
+    #[Route("/disconnect/{channel}", name: 'app_quality_channels_disconnect', methods:['POST'])]
     public function disconnect(Quality $quality, Channel $channel, HistoryRepository $history): Response
     {
         $quality->removeChannel($channel);

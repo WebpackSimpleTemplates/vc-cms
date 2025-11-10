@@ -77,7 +77,9 @@ final class ApiConsultantController extends AbstractController
         $call = $callRepository->getNextCall($user, $channel);
 
         if (!$call) {
-            return $this->json(null, 400);
+            return $this->json([
+                "details" => "queue is empty"
+            ], 400);
         }
 
         $call->accept($user);

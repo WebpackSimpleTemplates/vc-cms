@@ -49,6 +49,10 @@ final class ApiClientController extends AbstractController
         #[MapQueryParameter('consultant')] ?User $consultant = null,
     ): Response
     {
+        if ($channel->getDeletedAt()) {
+            return $this->json(["deleted" => $channel->getDeletedAt()], 404);
+        }
+
         $ip = $this->getIp();
 
         /** @var IpBlock $block */

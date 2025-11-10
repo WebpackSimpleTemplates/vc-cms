@@ -25,6 +25,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $qb = $this->createQueryBuilder('u');
 
         $qb->orderBy('u.id', 'desc');
+        $qb->where('u.deletedAt IS NULL');
 
         return $qb;
     }
@@ -44,10 +45,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     public function getOperators() {
-        $qb = $this->createQueryBuilder('u');
+        $qb = $this->getMany();
 
-        $qb->orderBy('u.id', 'desc');
-        $qb->where("u.isConsultant = true");
+        $qb->andWhere("u.isConsultant = true");
 
         return $qb;
     }
@@ -58,7 +58,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         $qb->join('u.channels', 'c');
 
-        $qb->where("c.id = :cid");
+        $qb->andWhere("c.id = :cid");
 
         $qb->setParameter("cid", $channel->getId());
 
@@ -71,7 +71,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
         $qb->join("u.qualities", 'q');
 
-        $qb->where("q.id = :qid");
+        $qb->andWhere("q.id = :qid");
 
         $qb->setParameter("qid", $quality->getId());
 
