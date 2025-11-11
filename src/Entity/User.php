@@ -335,7 +335,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @return Collection<int, Quality>
      */
-    public function getQualitites(): Collection
+    public function getQualities(): Collection
     {
         return $this->qualities;
     }

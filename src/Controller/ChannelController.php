@@ -97,6 +97,15 @@ final class ChannelController extends AbstractController
         if (!$channel->getDeletedAt() && $this->isCsrfTokenValid('delete'.$channel->getId(), $request->getPayload()->getString('_token'))) {
             $channel->setDeletedAt(new DateTime());
             $channel->setDeletedBy($this->getUser());
+
+            foreach ($channel->getUsers() as $user) {
+                $channel->removeUser($user);
+            }
+
+            foreach ($channel->getQualities() as $quality) {
+                $channel->removeQuality($quality);
+            }
+
             $entityManager->flush();
 
             $history->write("Удаление канала", $channel->getTitle());

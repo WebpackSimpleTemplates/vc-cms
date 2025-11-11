@@ -170,8 +170,18 @@ final class UserController extends AbstractController
         }
 
         if (!$user->getDeletedAt()) {
+            $user->setEmail($user->getEmail()."_deleted_".new DateTime()->format("d.m.Y_H:i:s"));
             $user->setDeletedAt(new DateTime());
             $user->setDeletedBy($this->getUser());
+
+            foreach ($user->getChannels() as $channel) {
+                $user->removeChannel($channel);
+            }
+
+            foreach ($user->getQualities() as $quality) {
+                $user->removeQuality($quality);
+            }
+
             $entityManager->flush();
 
             $history->write("Удаление пользователя", $user->getEmail());

@@ -83,6 +83,15 @@ final class QualityController extends AbstractController
         if (!$quality->getDeletedAt() && $this->isCsrfTokenValid('delete'.$quality->getId(), $request->getPayload()->getString('_token'))) {
             $quality->setDeletedAt(new DateTime());
             $quality->setDeletedBy($this->getUser());
+
+            foreach ($quality->getChannels() as $channel) {
+                $quality->removeChannel($channel);
+            }
+
+            foreach ($quality->getConsultants() as $user) {
+                $quality->removeConsultant($user);
+            }
+
             $entityManager->flush();
             $history->write("Удаление оценки качества", $quality->getTitle());
         }
