@@ -48,12 +48,18 @@ class CustomContent
         return $this->logo;
     }
 
-    public function setLogo(string $logo): static
+    public function setLogo(?string $logo): static
     {
         if ($logo) {
             $this->logo = $logo;
         }
 
+        return $this;
+    }
+
+    public function removeLogo(): static
+    {
+        $this->logo = null;
         return $this;
     }
 
@@ -68,6 +74,12 @@ class CustomContent
             $this->logoDark = $logoDark;
         }
 
+        return $this;
+    }
+
+    public function removeLogoDark(): static
+    {
+        $this->logoDark = null;
         return $this;
     }
 

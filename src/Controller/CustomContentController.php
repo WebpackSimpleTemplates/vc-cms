@@ -12,9 +12,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+#[Route('/manage/custom/content')]
 final class CustomContentController extends AbstractController
 {
-    #[Route('/custom/content', name: 'app_custom_content')]
+    #[Route('', name: 'app_custom_content')]
     public function index(
         Request $request,
         CustomContentRepository $customContentRepository,
@@ -31,6 +32,14 @@ final class CustomContentController extends AbstractController
 
             if (!$customContent->getId()) {
                 $entityManager->persist($customContent);
+            }
+
+            if ($form->get("removeLogo")->getData()) {
+                $customContent->removeLogo();
+            }
+
+            if ($form->get("removeLogoDark")->getData()) {
+                $customContent->removeLogoDark();
             }
 
             $entityManager->flush();

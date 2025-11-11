@@ -4,24 +4,38 @@
 
 {% block content %}
 <div class="card shadow bg-base-100 p-3 max-w-md mx-auto">
-    <div class="text-xl mb-4">Редактирование контента</div>
+    <div class="text-xl mb-4">Кастомизация</div>
     {{ form_start(form) }}
         {{ form_row(form.theme) }}
 
-        {% if customContent.logo %}
-            <label class="label">
-                Текущий логотип
-            </label>
-            <img src="{{ customContent.logo }}" class="h-5 max-w-full object-cover object-center mb-4">
-        {% endif %}
-        {{ form_row(form.logo) }}
-        {% if customContent.logoDark %}
-            <label class="label">
-                Текущий логотип для тёмной темы
-            </label>
-            <img src="{{ customContent.logoDark }}" class="h-5 max-w-full object-cover object-center mb-4">
-        {% endif %}
-        {{ form_row(form.logoDark) }}
+        <label class="my-2 block">
+            <span class="label">Логотип</span>
+            {% if customContent.logo %}
+                <div class="flex flex-row items-center gap-4">
+                    <img src="{{ customContent.logo }}" class="h-5 max-w-full object-cover object-center mb-2">
+                    {{ form_row(form.removeLogo) }}
+                </div>
+            {% else %}
+                <div class="hidden">
+                    {{ form_row(form.removeLogo) }}
+                </div>
+            {% endif %}
+            {{ form_widget(form.logo) }}
+        </label>
+        <label class="my-2 block">
+            <span class="label">Логотип для тёмной темы</span>
+            {% if customContent.logoDark %}
+                <div class="flex flex-row items-center gap-4">
+                    <img src="{{ customContent.logoDark }}" class="h-5 max-w-full object-cover object-center mb-2">
+                    {{ form_row(form.removeLogoDark) }}
+                </div>
+            {% else %}
+                <div class="hidden">
+                    {{ form_row(form.removeLogoDark) }}
+                </div>
+            {% endif %}
+            {{ form_widget(form.logoDark) }}
+        </label>
         {{ form_row(form.marquee) }}
         <button class="btn btn-primary ml-auto block">Сохранить</button>
     {{ form_end(form) }}

@@ -5,6 +5,7 @@ namespace App\Form;
 use App\Entity\CustomContent;
 use App\Transformer\UploadFileTransformer;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
@@ -48,6 +49,16 @@ class CustomContentType extends AbstractType
             ])
             ->add('marquee', TextareaType::class, [
                 "label" => "Бегущая строка",
+                "required" => false,
+            ])
+            ->add('removeLogo', CheckboxType::class, [
+                "label" => "Удалить",
+                "mapped" => false,
+                "required" => false,
+            ])
+            ->add('removeLogoDark', CheckboxType::class, [
+                "label" => "Удалить",
+                "mapped" => false,
                 "required" => false,
             ])
         ;
