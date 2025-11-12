@@ -197,6 +197,9 @@
             {% for res in call.qualityResponses %}
                 <tr>
                     <td class="w-max">
+                        {% if res.quality.deletedAt %}
+                            <span class="text-gray-500 text-xs">(Удалён)</span>
+                        {% endif %}
                         {{ res.quality.title }}
                     </td>
                     <td class="w-full">
