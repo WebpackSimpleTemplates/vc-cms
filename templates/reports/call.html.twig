@@ -50,6 +50,9 @@
                 </td>
                 <td class="w-full">
                     {{ call.channel.title }}
+                    {% if call.channel.deletedAt %}
+                        <span class="text-gray-500 text-xs">(Удалён)</span>
+                    {% endif %}
                 </td>
             </tr>
             <tr>

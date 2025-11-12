@@ -130,21 +130,28 @@
         <table class="table">
             <thead>
                 <tr>
+                    <th>Канал</th>
                     <th>Номер</th>
                     <th>Статус</th>
                     <th>Время ожидания</th>
-                    <th>Время обслуживания</th>
                     <th>Консультант</th>
+                    <th>Время обслуживания</th>
                 </tr>
             </thead>
             <tbody>
                 {% for call in calls %}
                     <tr>
+                        <td>
+                            {{ call.channel.title }}
+                            {% if call.channel.deletedAt %}
+                                <span class="text-gray-500 text-xs">(Удалён)</span>
+                            {% endif %}
+                        </td>
                         <td> {{ call.prefix }} {{ call.num }} </td>
                         <td> {{ call.status }} </td>
                         <td> {{ call.intervalWait }} </td>
-                        <td> {{ call.intervalProcess }} </td>
                         <td> {{ call.consultantName }} </td>
+                        <td> {{ call.intervalProcess }} </td>
                     </tr>
                 {% endfor %}
             </tbody>

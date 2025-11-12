@@ -98,10 +98,6 @@ final class ChannelController extends AbstractController
             $channel->setDeletedAt(new DateTime());
             $channel->setDeletedBy($this->getUser());
 
-            foreach ($channel->getUsers() as $user) {
-                $channel->removeUser($user);
-            }
-
             foreach ($channel->getQualities() as $quality) {
                 $channel->removeQuality($quality);
             }

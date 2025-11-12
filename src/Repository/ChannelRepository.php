@@ -35,12 +35,12 @@ class ChannelRepository extends ServiceEntityRepository
         $active = $entityManager->createQueryBuilder()
             ->from(Call::class, "c")
             ->select(['COUNT(DISTINCT IDENTITY(c.channel)) as count'])
-            ->where("c.closedAt IS NULL")
+            ->andWhere("c.closedAt IS NULL")
             ->getQuery()
             ->getSingleColumnResult()[0];
 
 
-        $total = $this->count();
+        $total = $this->count(["deletedAt" => null]);
 
         return [
             "total" => $total,

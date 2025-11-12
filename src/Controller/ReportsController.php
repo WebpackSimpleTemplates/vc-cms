@@ -73,6 +73,7 @@ final class ReportsController extends AbstractController
                 'formatWaitStart' => $call->formatWaitStart(),
                 'accepted' => !!$call->getAcceptedAt(),
                 'channel' => $call->getChannel()->getTitle(),
+                'isChannelDeleted' => !!$call->getChannel()->getDeletedAt(),
                 'consultant' => $call->getConsultantName(),
                 'duration' => $call->getDuration(),
                 'quality' => null,

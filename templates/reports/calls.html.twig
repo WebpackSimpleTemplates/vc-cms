@@ -40,6 +40,9 @@
                     {% endif %}
                     <td>
                         {{ call.channel }}
+                        {% if call.isChannelDeleted %}
+                            <span class="text-gray-500 text-xs">(Удалён)</span>
+                        {% endif %}
                     </td>
                     <td>
                         {{ call.consultant }}
