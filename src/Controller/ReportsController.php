@@ -9,7 +9,6 @@ use App\Payload\ReportFilterPayload;
 use App\Repository\CallReportsRepository;
 use App\Repository\GraphRepository;
 use App\Repository\IpBlockRepository;
-use Knp\Component\Pager\Paginator;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +28,8 @@ final class ReportsController extends AbstractController
         return $this->render('reports/call.html.twig', [
             'time' => date('d.m.Y H:i:s'),
             'call' => $call,
-            'ipIsBlocked' => $ipBlockRepository->findOneBy(["ip" => $call->getIp()])
+            'ipIsBlocked' => $ipBlockRepository->findOneBy(["ip" => $call->getIp()]),
+            'redirectsHistory' => $this->repository->getRedirectsHistory($call),
         ]);
     }
 

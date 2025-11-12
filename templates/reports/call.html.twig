@@ -210,5 +210,64 @@
         </tbody>
     </table>
 </div>
+<div class="card p-3 bg-base-100 shadow overflow-auto">
+    <div class="flex flex-row gap-2 items-start w-full">
+        <div class="text-2xl font-semibold">
+            История сессии
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr class="bg-base-200">
+                <th>Начало</th>
+                <th>Ожидание</th>
+                <th>Принят</th>
+                <th>Консультант</th>
+                <th>Обслуживание</th>
+                <th>Закончен</th>
+                <th>Переведён на</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in redirectsHistory %}
+                <tr {% if item.id == call.id %}class="bg-primary/10"{% endif %}>
+                    <td>{{ item.formatWaitStart }}</td>
+                    <td>{{ item.intervalWait }}</td>
+                    <td>{{ item.formatAcceptedAt }}</td>
+                    <td>{{ item.consultantName }}</td>
+                    <td>{{ item.intervalProcess }}</td>
+                    <td>{{ item.formatClosedAt }}</td>
+                    <td>
+                        {% if item.redirectedToChannel %}
+                            Канал "{{ item.redirectedToChannel.title }}"
+                            {% if item.redirectedToChannel.deletedAt %}
+                                <span class="text-gray-500 text-xs">(Удалён)</span>
+                            {% endif %}
+                        {% endif %}
 
+                        {% if item.redirectedToConsultant %}
+                            Пользователя "{{ item.redirectedToConsultant.displayName }}"
+                            {% if item.redirectedToConsultant.deletedAt %}
+                                <span class="text-gray-500 text-xs">(Удалён)</span>
+                            {% endif %}
+                        {% endif %}
+
+                        {% if not item.redirectedToConsultant and not item.redirectedToChannel %}
+                            -
+                        {% endif %}
+
+                    </td>
+                    <td>
+                        {% if item != call %}
+                            <a class="btn btn-xs" href="{{ path('app_call_report', {'call': item.id}) }}">
+                                Перейти
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}

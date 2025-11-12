@@ -9,6 +9,7 @@ use App\Entity\User;
 use App\Payload\ConsultantStatusPayload;
 use App\Payload\UpdatePasswordPayload;
 use App\Repository\CallRepository;
+use App\Repository\ChannelRepository;
 use App\Repository\ConsultantStatusRepository;
 use App\Repository\HistoryRepository;
 use DateTime;
@@ -16,6 +17,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PushRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -36,6 +38,21 @@ final class ApiConsultantController extends AbstractController
     public function channels(CallRepository $callRepository, Security $security)
     {
         return $this->json($callRepository->getActiveChannelsForUser($security->getUser()));
+    }
+
+    #[Route('/channels/connected', name: 'api_consultant_channels_connected')]
+    public function channelsConnected(Security $security)
+    {
+        /** @var User $user */
+        $user = $security->getUser();
+
+        return $this->json($user->getChannels());
+    }
+
+    #[Route('/channels/all', name: 'api_consultant_channels_all')]
+    public function channelsAll(ChannelRepository $channelRepository)
+    {
+        return $this->json($channelRepository->getMany()->getQuery()->getResult());
     }
 
     #[Route('/accept-next/{id}', name: 'api_consultant_accept_next_by_channel')]

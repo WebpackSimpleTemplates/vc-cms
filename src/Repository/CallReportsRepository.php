@@ -8,6 +8,7 @@ use App\Entity\Quality;
 use App\Entity\QualityResponse;
 use App\Entity\User;
 use App\Payload\ReportFilterPayload;
+use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -374,6 +375,21 @@ class CallReportsRepository extends ServiceEntityRepository
                 "MIN(c.acceptedAt - c.waitStart) as minWaitAc",
             ])
             ->groupBy("ch.id")
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+    public function getRedirectsHistory(Call $call)
+    {
+        return $this->createQueryBuilder("c")
+            ->where("c.prefix = :prefix")
+            ->andWhere("c.num = :num")
+            ->andWhere("c.waitStart > :today")
+            ->setParameter("prefix", $call->getPrefix())
+            ->setParameter("num", $call->getNum())
+            ->setParameter("today", DateTime::createFromFormat("Y-m-d H:i:s", date("Y-m-d")." 00:00:00"))
+            ->orderBy("c.waitStart", "ASC")
             ->getQuery()
             ->getResult()
         ;
