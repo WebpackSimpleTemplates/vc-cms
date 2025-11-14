@@ -85,11 +85,22 @@ class Call
     #[Ignore]
     private Collection $consultantStatuses;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $clientIsConnected = null;
+
+    /**
+     * @var Collection<int, User>
+     */
+    #[ORM\ManyToMany(targetEntity: User::class)]
+    #[Ignore]
+    private Collection $views;
+
     public function __construct()
     {
         $this->messages = new ArrayCollection();
         $this->qualityResponses = new ArrayCollection();
         $this->consultantStatuses = new ArrayCollection();
+        $this->views = new ArrayCollection();
     }
 
     public function getId(): ?UuidInterface
@@ -443,5 +454,56 @@ class Call
         }
 
         return $this;
+    }
+
+    public function isClientIsConnected(): ?bool
+    {
+        return $this->clientIsConnected;
+    }
+
+    public function setClientIsConnected(?bool $clientIsConnected): static
+    {
+        $this->clientIsConnected = $clientIsConnected;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getViews(): Collection
+    {
+        return $this->views;
+    }
+
+    public function addView(User $view): static
+    {
+        if (!$this->views->contains($view)) {
+            $this->views->add($view);
+        }
+
+        return $this;
+    }
+
+    public function removeView(User $view): static
+    {
+        $this->views->removeElement($view);
+
+        return $this;
+    }
+
+    public function isHasViews(): bool
+    {
+        return $this->views->count() > 0;
+    }
+
+    public function isRedirected()
+    {
+        return !!$this->redirectedToChannel or !!$this->redirectedToConsultant;
+    }
+
+    public function isAccepted()
+    {
+        return !!$this->acceptedAt;
     }
 }

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use Amenadiel\JpGraph\Graph\Graph;
 use Amenadiel\JpGraph\Plot\BarPlot;
+use Amenadiel\JpGraph\Plot\LinePlot;
 
 class GraphRepository
 {
@@ -57,6 +58,29 @@ class GraphRepository
             $b1plot->SetColor("white");
             $b1plot->SetFillColor("white");
             $b1plot->SetWidth(1);
+        }
+
+        return $b1plot;
+    }
+
+    public function createLinePlot(string $color, array $values)
+    {
+        $datay=[];
+
+        foreach ($values as $_ => $value) {
+            $datay[] = $this->mapValue($value);
+        }
+
+        if (count($datay)) {
+            $b1plot = new LinePlot($datay);
+
+
+            $b1plot->SetColor($color);
+        } else {
+            $b1plot = new LinePlot([0]);
+
+            $b1plot->SetColor("white");
+            $b1plot->SetFillColor("white");
         }
 
         return $b1plot;

@@ -2,6 +2,9 @@
 
 namespace App\Controller;
 
+use Amenadiel\JpGraph\Plot\GroupBarPlot;
+use App\Payload\ReportFilterPayload;
+use App\Repository\CallReportsRepository;
 use App\Repository\CallRepository;
 use App\Repository\ConsultantStatusRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,7 +26,7 @@ final class MonitoringController extends AbstractController
         ConsultantStatusRepository $consultantStatusRepository,
         ChannelRepository $channelRepository,
         PaginatorInterface $paginator,
-        Request $request
+        Request $request,
     ): Response
     {
         return $this->render('monitoring/index.html.twig', [
@@ -49,6 +52,44 @@ final class MonitoringController extends AbstractController
                 ]
             ),
         ]);
+    }
+    #[Route('/manage/monitoring/hours', name: 'app_monitoring_hours')]
+    public function hours(
+        CallRepository $callRepository,
+        GraphRepository $graphRepository,
+        CallReportsRepository $callsReportsRepository
+    ): Response
+    {
+        $total = $callsReportsRepository->getHours(
+            $callsReportsRepository->mapQueryCalls(
+                $callRepository->createQueryBuilder('c'),
+                new ReportFilterPayload([])->today(),
+            ),
+        );
+        $accepted = $callsReportsRepository->getHours(
+            $callsReportsRepository->mapQueryCalls(
+                $callRepository->createQueryBuilder('c')
+                    ->where("c.acceptedAt IS NOT NULL"),
+                new ReportFilterPayload([])->today(),
+            ),
+        );
+        $rejected = $callsReportsRepository->getHours(
+            $callsReportsRepository->mapQueryCalls(
+                $callRepository->createQueryBuilder('c')
+                    ->where("c.acceptedAt IS NULL"),
+                new ReportFilterPayload([])->today(),
+            ),
+        );
+        
+        $graph = $graphRepository->createGraph(1200, 400);
+
+        $graph->xaxis->SetTickLabels($graphRepository->getLables($total));
+        
+        $graph->Add($graphRepository->createLinePlot("#05588f", $total));
+        $graph->Add($graphRepository->createLinePlot("#00a43b", $accepted));
+        $graph->Add($graphRepository->createLinePlot("#ff6266", $rejected));
+
+        return new Response($graph->Stroke(), 200, ['Content-Type' => 'image/jpeg']);
     }
 
     #[Route('/manage/monitoring/channels', name: 'app_monitoring_channels')]

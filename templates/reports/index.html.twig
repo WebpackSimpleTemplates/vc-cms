@@ -89,12 +89,12 @@
 <div class="flex flex-row flex-wrap gap-4">
     <div>
         <div class="font-semibold mb-2">
-            Распределение по дням недели
+            Распределение по часам
         </div>
-        <div class="card max-w-full w-auto p-3 bg-base-100 shadow mb-4 text-xs">
+        <div class="w-full card p-3 max-w-7xl bg-base-100 shadow mb-4 text-xs">
             <img
-                class="w-[400px] h-[400px]"
-                src="{{ path('app_reports_graph_weekdays') }}{{ filter }}"
+                class="w-[1200px] h-[400px]"
+                src="{{ path('app_reports_graph_hours') }}{{ filter }}"
             >
             <div class="flex flex-row items-center gap-3">
                 <div class="bg-[#05588f] w-15 h-3"></div>
@@ -112,12 +112,12 @@
     </div>
     <div>
         <div class="font-semibold mb-2">
-            Распределение по часам
+            Распределение по дням недели
         </div>
-        <div class="card max-w-full w-auto p-3 bg-base-100 shadow mb-4 text-xs">
+        <div class="card max-w-7xl w-full p-3 bg-base-100 shadow mb-4 text-xs">
             <img
-                class="w-[400px] h-[400px]"
-                src="{{ path('app_reports_graph_hours') }}{{ filter }}"
+                class="w-[1200px] h-[400px]"
+                src="{{ path('app_reports_graph_weekdays') }}{{ filter }}"
             >
             <div class="flex flex-row items-center gap-3">
                 <div class="bg-[#05588f] w-15 h-3"></div>
@@ -137,9 +137,9 @@
         <div class="font-semibold mb-2">
             Распределение по каналам
         </div>
-        <div class="card max-w-full w-auto p-3 bg-base-100 shadow mb-4 text-xs">
+        <div class="w-full card p-3 max-w-7xl bg-base-100 shadow mb-4 text-xs">
             <img
-                class="w-[400px] h-[400px]"
+                class="w-[1200px] h-[400px]"
                 src="{{ path('app_reports_graph_channels') }}{{ filter }}"
             >
             <div class="flex flex-row items-center gap-3">
@@ -160,9 +160,9 @@
         <div class="font-semibold mb-2">
             Оценки качества
         </div>
-        <div class="card max-w-full w-auto p-3 bg-base-100 shadow mb-4 text-xs">
+        <div class="w-full card p-3 max-w-7xl bg-base-100 shadow mb-4 text-xs">
             <img
-                class="w-[750px] h-[600px]"
+                class="w-[1200px] h-[400px]"
                 src="{{ path('app_reports_graph_qualities') }}{{ filter }}"
             >
         </div>

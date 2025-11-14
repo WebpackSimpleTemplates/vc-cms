@@ -40,6 +40,8 @@ class CallReportsRepository extends ServiceEntityRepository
                 ->setParameter("to", $filter->to()."T23:59:59.999Z")
             ;
         }
+
+        return $qb;
     }
 
     function fInter(?string $val)

@@ -76,6 +76,8 @@ final class ReportsController extends AbstractController
                 'isChannelDeleted' => !!$call->getChannel()->getDeletedAt(),
                 'consultant' => $call->getConsultantName(),
                 'duration' => $call->getDuration(),
+                'hasViews' => $call->isHasViews(),
+                'redirected' => $call->isRedirected(),
                 'quality' => null,
                 'num' => $call->getPrefix().' '.$call->getNum(),
             ];
@@ -204,15 +206,13 @@ final class ReportsController extends AbstractController
         $rejected = $this->repository->getHours($this->repository->getRejected($filter));
         $accepted = $this->repository->getHours($this->repository->getAccepted($filter));
 
-        $graph = $graphRepository->createGraph(400, 400, true);
+        $graph = $graphRepository->createGraph(1200, 400);
 
         $graph->xaxis->SetTickLabels($graphRepository->getLables($closed));
 
-        $graph->Add(new GroupBarPlot([
-            $graphRepository->createBarPlot("#05588f", $closed),
-            $graphRepository->createBarPlot("#00a43b", $accepted),
-            $graphRepository->createBarPlot("#ff6266", $rejected),
-        ]));
+        $graph->Add($graphRepository->createLinePlot("#05588f", $closed));
+        $graph->Add($graphRepository->createLinePlot("#00a43b", $accepted));
+        $graph->Add($graphRepository->createLinePlot("#ff6266", $rejected));
 
         return new Response($graph->Stroke(), 200, ['Content-Type' => 'image/jpeg']);
     }
@@ -229,7 +229,7 @@ final class ReportsController extends AbstractController
         $rejected = $this->repository->getWeekdays($this->repository->getRejected($filter));
         $accepted = $this->repository->getWeekdays($this->repository->getAccepted($filter));
 
-        $graph = $graphRepository->createGraph(400, 400);
+        $graph = $graphRepository->createGraph(1200, 400);
 
         $graph->xaxis->SetTickLabels($graphRepository->getLables($closed));
 
@@ -254,7 +254,7 @@ final class ReportsController extends AbstractController
         $rejected = $this->repository->getChannels($this->repository->getRejected($filter));
         $accepted = $this->repository->getChannels($this->repository->getAccepted($filter));
 
-        $graph = $graphRepository->createGraph(400, 400, true);
+        $graph = $graphRepository->createGraph(1200, 400);
 
         $graph->xaxis->SetTickLabels($graphRepository->getLables($closed));
 
@@ -291,10 +291,8 @@ final class ReportsController extends AbstractController
             $data[$quality['title']] = (float) $quality['avg'];
         }
 
-        $graph = new Graph(750,600,'auto');
-        $graph->SetScale("textlin", 0, 10);
-
-        $graph->Set90AndMargin(150,20,30,10);
+        $graph = new Graph(1200,400,'auto');
+        $graph->SetScale("textlin");
         $graph->SetBox(false);
 
         $graph->ygrid->SetFill(false);

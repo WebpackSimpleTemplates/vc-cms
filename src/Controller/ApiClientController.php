@@ -126,6 +126,16 @@ final class ApiClientController extends AbstractController
         return $this->json($qualityRepository->getQualitiesForCall($call));
     }
 
+    #[Route('/{call}/connected', name:'api_get_client_call_connected')]
+    public function clientConnected(Call $call, EntityManagerInterface $entityManager)
+    {
+        $call->setClientIsConnected(true);
+
+        $entityManager->flush();
+
+        return new Response(status:204);
+    }
+
     #[Route('/{call}/quality/{quality}', name:'api_add_quality_response', methods:['POST'])]
     public function addQualityResponse(
         #[MapRequestPayload()] QualityPayload $payload,

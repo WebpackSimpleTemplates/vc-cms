@@ -194,6 +194,23 @@ final class ApiConsultantController extends AbstractController
         return $this->json($callRepository->getRedirectedCalls($user));
     }
 
+    #[Route('/call/{call}/view')]
+    public function viewCall(
+        Security $security,
+        Call $call,
+        EntityManagerInterface $entityManager,
+    )
+    {
+        /** @var User $user */
+        $user = $security->getUser();
+
+        $call->addView($user);
+
+        $entityManager->flush();
+
+        return new Response(status: 204);
+    }
+
     #[Route('/call/{call}/redirect/channel/{channel}')]
     public function redirectToChannel(
         Call $call,

@@ -99,9 +99,7 @@
             </div>
         </div>
     </div>
-    <div class="w-full text-lg font-semibold">
-        Звонки
-    </div>
+    <div class="w-full"></div>
     <div class="card p-3 shadow w-xs bg-base-100">
         Среднее время ожидания
         <div class="text-lg font-bold flex flex-row items-start justify-center mt-2 py-2">
@@ -126,6 +124,30 @@
             {{ callsTimes.maxServe }}
         </div>
     </div>
+    <div class="w-full text-lg font-semibold">
+        Распредение часам за сегодня
+    </div>
+    <div class="w-full card p-3 shadow max-w-7xl bg-base-100">
+        <img
+            class="w-[1200px] h-[400px]"
+            src="{{ path('app_monitoring_hours') }}"
+        >
+        <div class="flex flex-row items-center gap-3">
+            <div class="bg-[#05588f] w-15 h-3"></div>
+            Всего
+        </div>
+        <div class="flex flex-row items-center gap-3">
+            <div class="bg-[#ff6266] w-15 h-3"></div>
+            Пропущено
+        </div>
+        <div class="flex flex-row items-center gap-3">
+            <div class="bg-[#00a43b] w-15 h-3"></div>
+            Принято
+        </div>
+    </div>
+    <div class="w-full text-lg font-semibold">
+        Звонки
+    </div>
     <div class="w-full card p-3 shadow max-w-6xl bg-base-100">
         <table class="table">
             <thead>
@@ -133,7 +155,7 @@
                     <th>Канал</th>
                     <th>Номер</th>
                     <th>Статус</th>
-                    <th>Время ожидания</th>
+                    <th>Время простоя</th>
                     <th>Консультант</th>
                     <th>Время обслуживания</th>
                 </tr>
