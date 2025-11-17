@@ -390,7 +390,7 @@ class CallReportsRepository extends ServiceEntityRepository
             ->andWhere("c.waitStart > :today")
             ->setParameter("prefix", $call->getPrefix())
             ->setParameter("num", $call->getNum())
-            ->setParameter("today", DateTime::createFromFormat("Y-m-d H:i:s", date("Y-m-d")." 00:00:00"))
+            ->setParameter("today", DateTime::createFromFormat("Y-m-d H:i:s", $call->getWaitStart()->format('Y-m-d')." 00:00:00"))
             ->orderBy("c.waitStart", "ASC")
             ->getQuery()
             ->getResult()
