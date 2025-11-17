@@ -143,6 +143,14 @@ final class ApiConsultantController extends AbstractController
 
         if (!$payload->callId) {
             $raw->setCall(null);
+
+            $activeCalls = $callRepository->getActiveCallsForUser($user);
+
+            /** @var Call $call */
+            foreach ($activeCalls as $call) {
+                $call->addView($user);
+            }
+
         } else if (!$raw->getCall() || $payload->callId !== $raw->getCall()->getId()) {
             $raw->setCall($callRepository->findOneBy([ "id" => $payload->callId ]));
         }

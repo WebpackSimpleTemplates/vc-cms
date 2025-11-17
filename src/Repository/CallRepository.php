@@ -133,6 +133,25 @@ class CallRepository extends ServiceEntityRepository
         return $qb->getQuery()->getSingleColumnResult()[0];
     }
 
+    public function getActiveCallsForUser(User|UserInterface $user)
+    {
+        $qb = $this->createQueryBuilder('c');
+        $channels = $user->getChannels()->toArray();
+
+        if (!count($channels)) {
+            return [];
+        }
+
+        $qb
+            ->where("c.acceptedAt IS NULL")
+            ->andWhere("c.closedAt IS NULL")
+            ->andWhere("c.channel IN(:ids)")
+            ->setParameter("ids", $channels)
+        ;
+
+        return $qb->getQuery()->getResult();
+    }
+
     public function getActiveChannelsForUser(User $user)
     {
         $channels = $user->getChannels()->toArray();
