@@ -143,7 +143,11 @@ final class ApiConsultantController extends AbstractController
 
         if (!$payload->callId) {
             $raw->setCall(null);
+        } else if (!$raw->getCall() || $payload->callId !== $raw->getCall()->getId()) {
+            $raw->setCall($callRepository->findOneBy([ "id" => $payload->callId ]));
+        }
 
+        if ($payload->status === 'wait') {
             $activeCalls = $callRepository->getActiveCallsForUser($user);
 
             /** @var Call $call */
@@ -151,8 +155,6 @@ final class ApiConsultantController extends AbstractController
                 $call->addView($user);
             }
 
-        } else if (!$raw->getCall() || $payload->callId !== $raw->getCall()->getId()) {
-            $raw->setCall($callRepository->findOneBy([ "id" => $payload->callId ]));
         }
 
         $entityManager->flush();
