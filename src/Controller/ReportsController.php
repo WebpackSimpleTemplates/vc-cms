@@ -78,6 +78,7 @@ final class ReportsController extends AbstractController
                 'duration' => $call->getDuration(),
                 'hasViews' => $call->isHasViews(),
                 'redirected' => $call->isRedirected(),
+                'clientIsConnected' => $call->isClientIsConnected(),
                 'quality' => null,
                 'num' => $call->getPrefix().' '.$call->getNum(),
             ];
