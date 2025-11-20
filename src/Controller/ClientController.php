@@ -19,7 +19,7 @@ final class ClientController extends AbstractController
         }
 
         return $this->render('client/index.html.twig', [
-            'channels' => $repository->findAll(),
+            'channels' => $repository->getMany()->getQuery()->getResult(),
         ]);
     }
 

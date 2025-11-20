@@ -20,6 +20,7 @@ use App\Repository\QualityRepository;
 use App\Repository\QualityResponseRepository;
 use App\Repository\ScheduleRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
@@ -79,6 +80,8 @@ final class ApiClientController extends AbstractController
         $call->setWeekday((int) date("w"));
         $call->setIp($ip);
         $call->setConsultant($consultant);
+        $call->setIsClientFixedClosing(false);
+        $call->setIsClosedByClient(false);
 
         $entityManager->persist($call);
         $entityManager->flush();
@@ -104,10 +107,18 @@ final class ApiClientController extends AbstractController
         EntityManagerInterface $entityManager,
         PushRepository $pushRepository,
         HistoryRepository $history,
+        Security $security
     )
     {
         if (!$call->getClosedAt()) {
             $call->setClosedAt(new DateTime());
+
+            if ($security->getUser()) {
+                $call->setIsClosedByClient(false);
+            } else {
+                $call->setIsClosedByClient(true);
+                $call->setIsClientFixedClosing(true);
+            }
 
             $pushRepository->push("calls/".$call->getId(), "closed", $call);
             $pushRepository->push("", "call-closed", $call);
@@ -116,6 +127,16 @@ final class ApiClientController extends AbstractController
 
             $entityManager->flush();
         }
+
+        return new Response(null, 204);
+    }
+
+    #[Route('/{call}/record-closing', name:'api_reacong-closing_call')]
+    public function recordClosing(Call $call, EntityManagerInterface $entityManager)
+    {
+        $call->setIsClientFixedClosing(true);
+
+        $entityManager->flush();
 
         return new Response(null, 204);
     }

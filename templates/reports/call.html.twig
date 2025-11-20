@@ -74,6 +74,11 @@
                         <img class="w-3 h-3" src="/images/call-noconnected.svg">
                         Неявка клиента
                     </td>
+                {% elseif not call.isClientFixedClosing %}
+                    <td class="text-gray-500 flex flex-row h-max items-center gap-2">
+                        <img class="w-3 h-3" src="/images/call-noconnected.svg">
+                        Связь с клиентом потеряна
+                    </td>
                 {% elseif call.redirected %}
                     <td class="text-blue-500 flex flex-row h-max items-center gap-2">
                         <img class="w-3 h-3" src="/images/call-redirected.svg">
@@ -82,7 +87,7 @@
                 {% else %}
                     <td class="text-success flex flex-row h-max items-center gap-2">
                         <img class="w-3 h-3" src="/images/call-received.svg">
-                        Закрыт
+                        Закрыт {{ call.isClosedByClient ? 'клиентом' : 'консультантом' }}
                     </td>
                 {% endif %}
             </tr>

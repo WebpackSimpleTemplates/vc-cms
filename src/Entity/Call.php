@@ -95,6 +95,14 @@ class Call
     #[Ignore]
     private Collection $views;
 
+    #[Ignore]
+    #[ORM\Column(options:['default' => false])]
+    private ?bool $isClosedByClient = null;
+
+    #[Ignore]
+    #[ORM\Column(options:['default' => false])]
+    private ?bool $isClientFixedClosing = null;
+
     public function __construct()
     {
         $this->messages = new ArrayCollection();
@@ -505,5 +513,29 @@ class Call
     public function isAccepted()
     {
         return !!$this->acceptedAt;
+    }
+
+    public function isClosedByClient(): ?bool
+    {
+        return $this->isClosedByClient;
+    }
+
+    public function setIsClosedByClient(bool $isClosedByClient): static
+    {
+        $this->isClosedByClient = $isClosedByClient;
+
+        return $this;
+    }
+
+    public function isClientFixedClosing(): ?bool
+    {
+        return $this->isClientFixedClosing;
+    }
+
+    public function setIsClientFixedClosing(bool $isClientFixedClosing): static
+    {
+        $this->isClientFixedClosing = $isClientFixedClosing;
+
+        return $this;
     }
 }
