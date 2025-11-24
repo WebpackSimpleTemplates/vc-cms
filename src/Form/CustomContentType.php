@@ -33,7 +33,7 @@ class CustomContentType extends AbstractType
             ])
             ->add('logo', FileType::class, [
                 "attr" => [
-                    "accept" => "image/*",
+                    "accept" => "image/svg",
                 ],
                 "label" => "Логотип",
                 "required" => false,
@@ -41,7 +41,7 @@ class CustomContentType extends AbstractType
             ])
             ->add('logoDark', FileType::class, [
                 "attr" => [
-                    "accept" => "image/*",
+                    "accept" => "image/svg",
                 ],
                 "label" => "Логотип для тёмной темы",
                 "required" => false,
