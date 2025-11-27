@@ -64,7 +64,7 @@
                         <img class="w-3 h-3" src="/images/call-noviews.svg">
                         Не мог быть принят
                     </td>
-                {% elseif call.hasViews %}
+                {% elseif not call.accepted and call.hasViews %}
                     <td class="text-error flex flex-row h-max items-center gap-2">
                         <img class="w-3 h-3" src="/images/call-missed.svg">
                         Пропущен
