@@ -14,10 +14,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[AsCommand(
-    name: 'app:create-root',
+    name: 'app:set-root',
     description: 'Добавить суперпользователя',
 )]
-class CreateRootCommand extends Command
+class SetRootCommand extends Command
 {
     public function __construct(
         private UserRepository $userRepository,
@@ -32,6 +32,7 @@ class CreateRootCommand extends Command
     {
         $this
             ->addArgument('email', InputArgument::REQUIRED, 'Email')
+            ->addArgument('password', InputArgument::REQUIRED, 'Password')
         ;
     }
 
@@ -39,13 +40,18 @@ class CreateRootCommand extends Command
     {
         $io = new SymfonyStyle($input, $output);
         $email = $input->getArgument("email");
+        $password = $input->getArgument("password");
 
-        if ($this->userRepository->findOneBy(["email" => $email])) {
-            $io->error("Пользователь с таким email уже существует");
-            return Command::INVALID;
+        $user = $this->userRepository->findOneBy(["email" => $email]);
+
+        if ($user) {
+            $user->setPassword($this->userPasswordHasher->hashPassword($user, $password));
+            $this->entityManager->flush();
+
+            $io->success('Пароль суперпользователя '.$email.' обновлён');
+
+            return Command::SUCCESS;
         }
-
-        $password = bin2hex(random_bytes(8));
 
         $user = new User();
         $user->setEmail($email);
@@ -56,7 +62,7 @@ class CreateRootCommand extends Command
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-        $io->success('Суперпользователь '.$email.' создан, пароль: '.$password);
+        $io->success('Суперпользователь '.$email.' создан');
 
         return Command::SUCCESS;
     }
