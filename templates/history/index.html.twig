@@ -25,7 +25,7 @@
             <select class="select w-80" name="user" value="{{ user }}">
                 <option value="">-</option>
                 {% for item in users %}
-                    <option value="{{ item.id }}" {{ user == item.id ? 'selected' : '' }} >{{ item.displayName }}</option>
+                    <option value="{{ item.id }}" {{ user == item.id ? 'selected' : '' }} >{{ item.email }}</option>
                 {% endfor %}
             </select>
         </fieldset>
