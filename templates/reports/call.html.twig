@@ -59,7 +59,12 @@
                 <td class="w-max bg-base-200">
                     Статус
                 </td>
-                {% if not call.accepted and not call.hasViews %}
+                {% if call.isAutoClosed %}
+                    <td class="text-gray-500 flex flex-row h-max items-center gap-2">
+                        <img class="w-3 h-3" src="/images/call-autoclosed.svg">
+                        Закрыт автоматически
+                    </td>
+                {% elseif not call.accepted and not call.hasViews %}
                     <td class="text-gray-500 flex flex-row h-max items-center gap-2">
                         <img class="w-3 h-3" src="/images/call-noviews.svg">
                         Не мог быть принят

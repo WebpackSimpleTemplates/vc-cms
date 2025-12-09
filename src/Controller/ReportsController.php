@@ -81,6 +81,7 @@ final class ReportsController extends AbstractController
                 'clientIsConnected' => $call->isClientIsConnected(),
                 'isClientFixedClosing' => $call->isClientFixedClosing(),
                 'isClosedByClient' => $call->isClosedByClient(),
+                'isAutoClosed' => $call->isAutoClosed(),
                 'quality' => null,
                 'num' => $call->getPrefix().' '.$call->getNum(),
             ];

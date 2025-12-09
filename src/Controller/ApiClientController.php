@@ -82,6 +82,7 @@ final class ApiClientController extends AbstractController
         $call->setConsultant($consultant);
         $call->setIsClientFixedClosing(false);
         $call->setIsClosedByClient(false);
+        $call->setIsAutoClosed(false);
 
         $entityManager->persist($call);
         $entityManager->flush();

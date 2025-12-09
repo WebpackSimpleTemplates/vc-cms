@@ -103,6 +103,9 @@ class Call
     #[ORM\Column(options:['default' => false])]
     private ?bool $isClientFixedClosing = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $isAutoClosed = null;
+
     public function __construct()
     {
         $this->messages = new ArrayCollection();
@@ -535,6 +538,18 @@ class Call
     public function setIsClientFixedClosing(bool $isClientFixedClosing): static
     {
         $this->isClientFixedClosing = $isClientFixedClosing;
+
+        return $this;
+    }
+
+    public function isAutoClosed(): ?bool
+    {
+        return $this->isAutoClosed;
+    }
+
+    public function setIsAutoClosed(?bool $isAutoClosed): static
+    {
+        $this->isAutoClosed = $isAutoClosed;
 
         return $this;
     }
