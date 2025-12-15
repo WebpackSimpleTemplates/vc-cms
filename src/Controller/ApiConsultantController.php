@@ -17,7 +17,6 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PushRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -202,23 +201,6 @@ final class ApiConsultantController extends AbstractController
         $user = $security->getUser();
 
         return $this->json($callRepository->getRedirectedCalls($user));
-    }
-
-    #[Route('/call/{call}/view')]
-    public function viewCall(
-        Security $security,
-        Call $call,
-        EntityManagerInterface $entityManager,
-    )
-    {
-        /** @var User $user */
-        $user = $security->getUser();
-
-        $call->addView($user);
-
-        $entityManager->flush();
-
-        return new Response(status: 204);
     }
 
     #[Route('/call/{call}/redirect/channel/{channel}')]

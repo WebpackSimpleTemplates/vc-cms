@@ -74,6 +74,142 @@ paths:
                                             type: string
                                         max:
                                             type: string
+    /api/consultant/channels/connected:
+        get:
+            tags: ['Очередь']
+            summary: Подключенные к консультанту каналы
+            operationId: getConnectedChannels
+            responses:
+                200:
+                    description: Список каналов с количеством звонков, средним и максимальным временем ожидания
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        id:
+                                            type: integer
+                                        title:
+                                            type: string
+                                        prefix:
+                                            type: string
+                                        description:
+                                            type: string
+    /api/consultant/channels/all:
+        get:
+            tags: ['Очередь']
+            summary: Все каналы
+            operationId: getAllChannels
+            responses:
+                200:
+                    description: Список каналов с количеством звонков, средним и максимальным временем ожидания
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        id:
+                                            type: integer
+                                        title:
+                                            type: string
+                                        prefix:
+                                            type: string
+                                        description:
+                                            type: string
+    /api/consultant/defer:
+        get:
+            tags: ['Очередь']
+            summary: Принятые/отложенные звонки
+            operationId: getDefer
+            responses:
+                200:
+                    description: Список каналов с количеством звонков, средним и максимальным временем ожидания
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        id:
+                                            type: integer
+                                        num:
+                                            type: integer
+                                        prefix:
+                                            type: string
+                                        waitStart:
+                                            type: string
+                                        acceptedAt:
+                                            type: string
+                                        closedAt:
+                                            type: string
+                                        channel:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: integer
+                                                title:
+                                                    type: string
+                                                prefix:
+                                                    type: string
+                                        consultant:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: integer
+                                                email:
+                                                    type: string
+                                                displayName:
+                                                    type: string
+    /api/consultant/redirected:
+        get:
+            tags: ['Очередь']
+            summary: Переведённые звонки
+            operationId: getRedirected
+            responses:
+                200:
+                    description: Список каналов с количеством звонков, средним и максимальным временем ожидания
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        id:
+                                            type: integer
+                                        num:
+                                            type: integer
+                                        prefix:
+                                            type: string
+                                        waitStart:
+                                            type: string
+                                        acceptedAt:
+                                            type: string
+                                        closedAt:
+                                            type: string
+                                        channel:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: integer
+                                                title:
+                                                    type: string
+                                                prefix:
+                                                    type: string
+                                        consultant:
+                                            type: object
+                                            properties:
+                                                id:
+                                                    type: integer
+                                                email:
+                                                    type: string
+                                                displayName:
+                                                    type: string
     /api/consultant/accept-next:
         post:
             tags: ['Очередь']
@@ -172,7 +308,7 @@ paths:
                                                 type: string
     /api/consultant/status:
         put:
-            tags: ['Очередь']
+            tags: ['Профиль']
             summary: Обновить свой статус
             operationId: updateStatus
             requestBody:
@@ -350,6 +486,58 @@ paths:
                 required: true
                 schema:
                     type: string
+            responses:
+                204:
+                    description: Выполнено
+    /api/calls/{callId}/close:
+        post:
+            tags: ['Очередь']
+            summary: Завершить звонок
+            operationId: closeCall
+            parameters:
+              - name: callId
+                in: path
+                required: true
+                schema:
+                    type: string
+            responses:
+                204:
+                    description: Выполнено
+    /api/consultant/call/{callId}/redirect/channel/{channelId}:
+        post:
+            tags: ['Очередь']
+            summary: Перевести звонок на очередь
+            operationId: redirectToChannel
+            parameters:
+              - name: callId
+                in: path
+                required: true
+                schema:
+                    type: string
+              - name: channelId
+                in: path
+                required: true
+                schema:
+                    type: integer
+            responses:
+                204:
+                    description: Выполнено
+    /api/consultant/call/{callId}/redirect/consultant/{userId}:
+        post:
+            tags: ['Очередь']
+            summary: Перевести звонок на консультанта
+            operationId: redirectToConsultant
+            parameters:
+              - name: callId
+                in: path
+                required: true
+                schema:
+                    type: string
+              - name: userId
+                in: path
+                required: true
+                schema:
+                    type: integer
             responses:
                 204:
                     description: Выполнено
