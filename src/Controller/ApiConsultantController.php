@@ -219,6 +219,8 @@ final class ApiConsultantController extends AbstractController
 
         $pushRepository->push("calls/".$call->getId(), "redirected", $call);
         $history->write("Перевод звонка", $call->getPrefix()." ".$call->getNum()." -> Канал ".$channel->getTitle());
+
+        return new Response(null, 204);
     }
 
     #[Route('/call/{call}/redirect/consultant/{consultant}')]
@@ -237,5 +239,7 @@ final class ApiConsultantController extends AbstractController
 
         $pushRepository->push("calls/".$call->getId(), "redirected", $call);
         $history->write("Перевод звонка", $call->getPrefix()." ".$call->getNum()." -> Консультант ".$consultant->getDisplayName());
+
+        return new Response(null, 204);
     }
 }
