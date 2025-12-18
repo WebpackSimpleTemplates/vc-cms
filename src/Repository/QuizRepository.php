@@ -4,26 +4,26 @@ namespace App\Repository;
 
 use App\Entity\Call;
 use App\Entity\Channel;
-use App\Entity\Quality;
+use App\Entity\Quiz;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Quality>
+ * @extends ServiceEntityRepository<Quiz>
  */
-class QualityRepository extends ServiceEntityRepository
+class QuizRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Quality::class);
+        parent::__construct($registry, Quiz::class);
     }
 
     public function getMany()
     {
         $qb = $this->createQueryBuilder('q');
 
-        $qb->orderBy('q.id', 'DESC');
+        $qb->orderBy('q.relevance', 'DESC');
         $qb->where('q.deletedAt IS NULL');
 
         return $qb;
@@ -38,7 +38,7 @@ class QualityRepository extends ServiceEntityRepository
         return $qb;
     }
 
-    public function getChannelQualitiesQuery(Channel $channel)
+    public function getChannelQuizzesQuery(Channel $channel)
     {
         $qb = $this->getNotMain();
 
@@ -51,7 +51,7 @@ class QualityRepository extends ServiceEntityRepository
         return $qb;
     }
 
-    public function getUserQualitiesQuery(User $user)
+    public function getUserQuizzesQuery(User $user)
     {
         $qb = $this->getNotMain();
 

@@ -61,6 +61,9 @@ class Quality
     #[Ignore]
     private ?User $deletedBy = null;
 
+    #[ORM\Column(options:["default" => 0])]
+    private ?int $relevance = null;
+
     public function __construct()
     {
         $this->channels = new ArrayCollection();
@@ -219,6 +222,18 @@ class Quality
     public function setDeletedBy(?User $deletedBy): static
     {
         $this->deletedBy = $deletedBy;
+
+        return $this;
+    }
+
+    public function getRelevance(): ?int
+    {
+        return $this->relevance;
+    }
+
+    public function setRelevance(int $relevance): static
+    {
+        $this->relevance = $relevance;
 
         return $this;
     }

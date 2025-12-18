@@ -1,11 +1,11 @@
 {% extends 'layout.html.twig' %}
 
-{% block title %}Подключенные каналы{% endblock %}
+{% block title %}Все каналы{% endblock %}
 
 {% block content %}
-    {{ include('quality/_header.html.twig') }}
+    {{ include('quiz/_header.html.twig') }}
     <div class="card shadow bg-base-100 p-3">
-        {{ include('quality/_channels_header.html.twig') }}
+        {{ include('quiz/_channels_header.html.twig') }}
         <table class="table">
             <thead>
                 <tr>
@@ -24,15 +24,17 @@
                         <td>{{ channel.title }}</td>
                         <td>{{ channel.description }}</td>
                         <td>
-                            <form
-                                method="post"
-                                action="{{ path('app_quality_channels_disconnect', { 'id': quality.id, 'channel': channel.id }) }}"
-                                onsubmit="return confirm('Вы уверены, что хотите отключить оценку от данного канала?');"
-                            >
-                                <button type="submit" class="btn btn-sm">
-                                    Отключить
+                            {% if channel.id in connectedIds %}
+                                <button disabled class="btn btn-sm">
+                                    Подключен
                                 </button>
-                            </form>
+                            {% else %}
+                                <form method="post" action="{{ path('app_quiz_channels_connect', { 'id': quiz.id, 'channel': channel.id }) }}">
+                                    <button type="submit" class="btn btn-sm">
+                                        Подключить
+                                    </button>
+                                </form>
+                            {% endif %}
                         </td>
                     </tr>
                 {% else %}

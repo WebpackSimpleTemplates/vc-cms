@@ -101,6 +101,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Ignore]
     private ?self $deletedBy = null;
 
+    /**
+     * @var Collection<int, Quiz>
+     */
+    #[ORM\ManyToMany(targetEntity: Quiz::class, mappedBy: 'consultants')]
+    #[Ignore]
+    private Collection $quizzes;
+
     public function __construct()
     {
         $this->channels = new ArrayCollection();
@@ -108,6 +115,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->qualities = new ArrayCollection();
         $this->qualityResponses = new ArrayCollection();
         $this->historyLogs = new ArrayCollection();
+        $this->quizzes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -459,6 +467,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDeletedBy(?self $deletedBy): static
     {
         $this->deletedBy = $deletedBy;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Quiz>
+     */
+    public function getQuizzes(): Collection
+    {
+        return $this->quizzes;
+    }
+
+    public function addQuiz(Quiz $quiz): static
+    {
+        if (!$this->quizzes->contains($quiz)) {
+            $this->quizzes->add($quiz);
+            $quiz->addConsultant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuiz(Quiz $quiz): static
+    {
+        if ($this->quizzes->removeElement($quiz)) {
+            $quiz->removeConsultant($this);
+        }
 
         return $this;
     }

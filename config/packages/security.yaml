@@ -61,6 +61,7 @@ security:
         - { path: ^/manage/monitoring, roles: ROLE_READER }
         - { path: ^/manage/user, roles: ROLE_ADMIN }
         - { path: ^/manage/channel, roles: ROLE_ADMIN }
+        - { path: ^/manage/quiz, roles: ROLE_ADMIN }
         - { path: ^/manage/, roles: ROLE_USER }
         - { path: ^/, roles: PUBLIC_ACCESS }
 

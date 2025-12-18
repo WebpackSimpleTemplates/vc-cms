@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Call;
 use App\Entity\Channel;
 use App\Entity\Quality;
+use App\Entity\Quiz;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -71,6 +72,19 @@ class ChannelRepository extends ServiceEntityRepository
         $qb->andWhere("q.id = :qid");
 
         $qb->setParameter("qid", $quality);
+
+        return $qb;
+    }
+
+    public function getQuizChannelsQuery(Quiz $quiz)
+    {
+        $qb = $this->getMany();
+
+        $qb->join('c.quizzes', 'q');
+
+        $qb->andWhere("q.id = :qid");
+
+        $qb->setParameter("qid", $quiz);
 
         return $qb;
     }

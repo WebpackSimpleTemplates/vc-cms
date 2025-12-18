@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Channel;
 use App\Entity\Quality;
+use App\Entity\Quiz;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -74,6 +75,19 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $qb->andWhere("q.id = :qid");
 
         $qb->setParameter("qid", $quality->getId());
+
+        return $qb;
+    }
+
+    public function getQuizUsersQuery(Quiz $quiz)
+    {
+        $qb = $this->getMany();
+
+        $qb->join("u.quizzes", 'q');
+
+        $qb->andWhere("q.id = :qid");
+
+        $qb->setParameter("qid", $quiz->getId());
 
         return $qb;
     }

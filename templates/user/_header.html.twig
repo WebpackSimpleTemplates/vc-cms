@@ -30,6 +30,13 @@
       >
         Оценки качества
       </a>
+      <a
+        role="tab"
+        href="{{ path('app_user_quizzes', { 'id': user.id }) }}"
+        class="tab{% if app.request.attributes.get('_route') == 'app_user_quizzes' or app.request.attributes.get('_route') == 'app_user_quizzes_all' %} tab-active{% endif %}"
+      >
+        Опросы
+      </a>
     </div>
   {% endif %}
 </div>

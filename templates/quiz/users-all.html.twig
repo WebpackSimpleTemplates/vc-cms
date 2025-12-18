@@ -1,11 +1,11 @@
 {% extends 'layout.html.twig' %}
 
-{% block title %}Подключенные консультанты{% endblock %}
+{% block title %}Все консультанты{% endblock %}
 
 {% block content %}
-    {{ include('quality/_header.html.twig') }}
+    {{ include('quiz/_header.html.twig') }}
     <div class="card shadow bg-base-100 p-3">
-        {{ include('quality/_users_header.html.twig') }}
+        {{ include('quiz/_users_header.html.twig') }}
         <table class="table">
             <thead>
                 <tr>
@@ -20,15 +20,17 @@
                         <td>{{ user.id }}</td>
                         <td>{{ user.fullname }}</td>
                         <td>
-                            <form
-                                method="post"
-                                action="{{ path('app_quality_users_disconnect', { 'id': quality.id, 'user': user.id }) }}"
-                                onsubmit="return confirm('Вы уверены, что хотите отключить оценку от данного пользователя?');"
-                            >
-                                <button type="submit" class="btn btn-sm">
-                                    Отключить
+                            {% if user.id in connectedIds %}
+                                <button disabled class="btn btn-sm">
+                                    Подключен
                                 </button>
-                            </form>
+                            {% else %}
+                                <form method="post" action="{{ path('app_quiz_users_connect', { 'id': quiz.id, 'user': user.id }) }}">
+                                    <button type="submit" class="btn btn-sm">
+                                        Подключить
+                                    </button>
+                                </form>
+                            {% endif %}
                         </td>
                     </tr>
                 {% else %}

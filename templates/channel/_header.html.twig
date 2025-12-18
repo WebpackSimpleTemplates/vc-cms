@@ -29,6 +29,13 @@
       Оценки качества
     </a>
     <a
+      role="tab"
+      href="{{ path('app_channel_quizzes', { 'id': channel.id }) }}"
+      class="tab{% if app.request.attributes.get('_route') == 'app_channel_quizzes' or app.request.attributes.get('_route') == 'app_channel_quizzes_all' %} tab-active{% endif %}"
+    >
+      Опросы
+    </a>
+    <a
         role="tab"
         href="{{ path('app_channel_schedule', { 'id': channel.id }) }}"
         class="tab{% if app.request.attributes.get('_route') == 'app_channel_schedule' %} tab-active{% endif %}"

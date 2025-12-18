@@ -2,15 +2,16 @@
 
 namespace App\Form;
 
-use App\Entity\Quality;
+use App\Entity\Quiz;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class QualityType extends AbstractType
+class QuizType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -24,14 +25,10 @@ class QualityType extends AbstractType
             ])
             ->add('relevance', null, [
                 "label" => "Важность",
-                "help" => "Чем выше значение, тем первее вопрос будет задан клиенту",
+                "help" => "Чем выше значение, тем первее будет задан клиенту",
             ])
             ->add('isMain', CheckboxType::class, [
-                "label" => "Общая для всех",
-                "required" => false,
-            ])
-            ->add('isConsultant', CheckboxType::class, [
-                "label" => "Влияет на рейтинг консультанта",
+                "label" => "Общий для всех",
                 "required" => false,
             ])
         ;
@@ -40,7 +37,7 @@ class QualityType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Quality::class,
+            'data_class' => Quiz::class,
         ]);
     }
 }

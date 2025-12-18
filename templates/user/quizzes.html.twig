@@ -1,29 +1,29 @@
 {% extends 'layout.html.twig' %}
 
-{% block title %}Подключенные консультанты{% endblock %}
+{% block title %}Подключенные оценки качества{% endblock %}
 
 {% block content %}
-    {{ include('quality/_header.html.twig') }}
+    {{ include('user/_header.html.twig') }}
     <div class="card shadow bg-base-100 p-3">
-        {{ include('quality/_users_header.html.twig') }}
+        {{ include('user/_quizzes_header.html.twig') }}
         <table class="table">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>ФИО</th>
+                    <th>Название</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
-                {% for user in pagination %}
+                {% for quiz in pagination %}
                     <tr>
-                        <td>{{ user.id }}</td>
-                        <td>{{ user.fullname }}</td>
+                        <td>{{ quiz.id }}</td>
+                        <td>{{ quiz.title }}</td>
                         <td>
                             <form
                                 method="post"
-                                action="{{ path('app_quality_users_disconnect', { 'id': quality.id, 'user': user.id }) }}"
-                                onsubmit="return confirm('Вы уверены, что хотите отключить оценку от данного пользователя?');"
+                                action="{{ path('app_user_quizzes_disconnect', { 'id': user.id, 'quiz': quiz.id }) }}"
+                                onsubmit="return confirm('Вы уверены, что хотите отключить вопрос от данного пользователя?');"
                             >
                                 <button type="submit" class="btn btn-sm">
                                     Отключить
